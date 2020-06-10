@@ -1,0 +1,171 @@
+---
+title: "04 Probability"
+output: html_document
+---
+# 04 Probability 
+## Introduction
+- **Probability** is the measure of long run relative frequency 
+  - In the long run, the accumulated relative frequency converges to a constant
+- **Law of Large Numbers (LLN)**
+  - The relative frequency of an outcome converges to a number
+  - Only applies in the long run
+  
+```{r}
+# Set seed that creates randomness
+set.seed(123)
+
+n = 10
+
+# Sample is 0 and 1 (range between 0 and 1)
+# n = sample size
+# p assigns .3 probability to 0 and .7 to 1
+# Sampling is with replacement, each is independent
+x <- sample(0:1, n, p = c(0.3,0.7), replace = TRUE)
+
+# Print x
+x
+```
+  
+Calculate cumulated relative frequency and feed it into sumx
+  
+```{r}
+sumx <- cumsum(x)
+```
+
+c() creates empty vector
+
+```{r}
+cumMean <- c()
+
+# Iterate through 1:n calculating means and adding to cumMean
+# sumx is cumulative sum, dividing by i gives mean
+for (i in 1:n) {
+  cumMean[i] <- sumx[i]/i
+}
+
+# Plot it
+plot(cumMean, type = "l")
+```
+
+There's a lot of variance, change n to 100 to see LLN in action:
+```{r}
+n = 100
+```
+
+Re-execute above code with new n
+```{r}
+plot(cumMean, type = "l")
+```
+  Now much less separation, we are arriving at a specific mean
+  ###Rules for Probability
+  - Sample space
+    - Set of all possible outcomes
+    - E.g. rolling a die, outcomes are 1:6
+      - Coin flip is heads or tails
+    - Denoted by S; e.g. S={heads, tails}
+    - Subsets of sample spaces are **events**
+      - Denoted as A, B, etc...
+      - E.g. heads is event A, tails B
+  - Venn Diagrams 
+    - The probability of an event A is denoted P(A)
+    - Venn diagrams are graphs for depicting the relationship among events
+  - Addition rule for disjoint events
+    - Disjoint events are mutually exclusive, no outcomes in common
+    - The union of two events is the collection of outcomes in A, in B, or in
+      both (A and B)
+    - The venn diagrams don't touch
+    - P(A or B) = P(A) + P(B)
+    - Can extend to more than two events (E)
+      - P(E1 or E2 or E3...) = P(E1) + P(E2)...
+  - Complement Rule
+    - The complement of event A consists of the outcomes in S but not in A 
+    - Denoted as AC (superscript C)
+    - P(A) = 1 - P(AC)
+  - Addition Rule
+    - For two events that are not disjoint A and B
+    - The probability that one or the other occurs is the sum of the probability
+      minus the probability of their intersection
+    - Venn Diagram minus the middle 
+    - P(A or B) = P(A) + P(B) - P(A and B)
+  
+  
+  ## Conditional Probability
+  - Contingency Table
+    - Show counts and sums of two variables
+  - Probability table
+    - Divide cells in contingency tables by totals to determine probability
+    - Replace all cell counts with probabilities to create joint probability 
+  - Joint Probability
+    - Represents the probability of an intersection of two or more events 
+      - Combination of attributes
+  - Marginal probablity 
+    - The probability of observing an outcome with a single attribute regardless 
+    of other attributes
+    - In the joint probability table, this are the total cells
+  - Conditional probabilities 
+    - "The probability of A given B" is written as P(A | B)
+    - P(A | B) = P(A and B)/P(B)
+    - Example: Are purchases more likely than Comcast?
+      - Yes = successful purchase
+      - P(Yes | Comcast) = P(Yes and Comcast)/P(Comcast)
+  - Independent Events
+    - Two events are independent if the occurrence of one does not affect the
+      chances for the occurrence of the other
+    - Events that are not independent are dependent
+    - Two events A and B are independent if the probability that both A and B
+      occur is the product of the probabilities of the two events
+      - P(A and B) = P(A) * P(B)
+    - Example: Probability that a breakdown on an assembly line will occur in 
+      the next five days, interfering with the completion of an order?
+      - Past data indicates a 95% chance the assembly doesn't break in a day
+      - Assuming days are independent:
+        - P(OK for 5 days) = 95**5 = .774
+      - Probability that it WILL occur is 1 - .774 = .226 (complement rule)
+  - Dependent Events
+    - Dependent 
+      If A and B are dependent:
+        P(A/B) = P(A and B) / P(B)
+        P(B/A) = P(A and B) / P(A)
+    - **Multiplication Rule**
+      - P(A and B) = P(B | A) * P(A)
+      - P(A and B) = P(A | B) * P(B)
+    - Order in Conditional Probabilities 
+      - Imagine a table of ads seen vs tv show
+      - If the viewer sees ads, what is the chance they are watching Survivor?
+        - Find P (Survivor | See Ads)
+          = P(Survivor and See Ads)/P(See Ads)
+  ### Bayes Theorem
+  - P(Bi | A) = P(A | Bi)P(Bi)/P(A)
+  - Bi = Different dimensions you're examining
+    - Columns in a contingency table
+    - Example: Probability of cancer given a test is positive
+      - P(Cancer | Test positive)
+      - P(Test negative | No cancer) = .925
+      - P(Test positive | Cancer) = .85
+      - P(Cancer) = .005
+        |         |Positive | Negative|Total|
+        |:--------|:--------|:--------|----:|
+        |Cancer   |.00425   |         |.005 |
+        |No Cancer|         |.92      |.995 |
+        |Total    |         |         |1    | 
+    - P(Cancer and positive) = P(Positive | Cancer)*P(Cancer)
+    - The probability of positive given cancer * the probability of having
+      cancer
+       P(Positive | Cancer) =.85
+       P(Cancer) = .005
+       .85 * .005
+      = .00425
+    - P(No cancer and negative) = .925 * .995 = .92
+    - With those two values you can fill out the rest of the contingency table
+        |         |Positive | Negative|Total|
+        |:--------|:--------|:--------|----:|
+        |Cancer   |.00425   |.00075   |.005 |
+        |No Cancer|.074625  |.92      |.995 |
+        |Total    |.078875  |.921125  |1    | 
+        
+    - Calculate marginal probabilities by dividing inner cells by totals
+      - P(Cancer | Positive) = P(Cancer and Positive) / P(Positive)
+      - P(Positive) is the total of the positive column
+      - The probability of positive AND cancer / the probability of positive
+      - .00425/.078875 = .053
+        

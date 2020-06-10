@@ -1,0 +1,62 @@
+# Intro to Data
+## Organizing Data
+Data is a collection of numbers, labels, or symbols with context
+- **Data table**
+	- Rectangular arrangement of data with rows and columns
+	- **Rows:** Observations or cases 
+	- **Columns** Common attributes or variables 
+	- 
+## Types of Datasets
+- **Categorical data**
+	- Qualitative or nominal variables
+	- Represents characteristics of something
+	- Identifies group membership
+	- Can't do any computation on it, if numbers are used they have no mathematical meaning
+	- E.g. brand, type, address
+	-**Nominal scale**
+		- Name or description that doesn't imply order 
+		- E.g. brands, name of a state, gender
+	- **Ordinal scale**
+		- Categories that can be ordered
+		- E.g. 1-5 stars
+- **Numerical data**
+	- Quantitative or continuous variables
+	- Describes the numerical properties of cases
+	- The difference between two measurements have mathematical meaning
+	- **Interval**
+		- Numerical values that can be added or subtracted but have no absolute zero concept
+		- E.g. Temperature, test scores
+		- Can't multiply or divide 
+	- **Ratio**
+		- Does have meaningful zero
+		- Can be added, subtracted, multiplied, or divided 
+- **Time series**
+	- Data recorded over time
+	- For prediction or casting
+	- **Timeplot**
+		- Graph of a time series showing values in chronological order 
+	- **Frequency**
+		- Regular time spacing of data in a time series (e.g. daily, monthly)
+	- **Cross-sectional**
+		- Data observed at a point in time
+		- 
+## Aggregation and Recoding
+- Recode 
+	- Building a new variable from another variable
+	- E.g. recoding a price into expensive or inexpensive
+- Aggregate 
+	- Reduce rows in a data table by counting or summing values within categories
+	- Rolls granular information into bigger views
+		- E.g. individual transactions -> revenue
+		- "Shortens" or "reduces" data
+## Best Practices
+- Provide a context for your data
+	- Definitions of variables, sampling, etc
+- Assign clear names for variables
+- Distinguish numerical from categorical data 
+	- Statistical programs will struggle distinguishing categorical numbers
+- Keep track of the source data 
+- Pitfalls
+	- Don't assume that a list of numbers is numerical data
+	- Don't trust all of the data that you get from the internet 
+	- Don't believe every claim based on survey data  

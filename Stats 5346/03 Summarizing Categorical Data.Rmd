@@ -1,0 +1,107 @@
+---
+title: "03 Summarizing Data"
+output: html_document
+---
+# Data Summary
+## Summarizing Categorical data
+- Relative frequency
+	- Ratios of frequencies
+	- Number of observations belonging to a category divided by total observations
+	- Proportions, can be multiplied by 100 and expressed as percentage
+- Distribution of a categorical variable
+	- List of values with its associated count
+
+Read in CSV into "fund" 
+
+```{r}
+fund <- read.csv("http://tiny.cc/retirment_fund")
+```
+
+See first six rows of data with **head**
+```{r}
+head(fund)
+```
+Display the **str**ucture of the dataset, see [Rdocumentation](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str) for extra options and arguments
+```{r}
+str(fund)
+```
+
+*How many retirement funds are low, average, or high risk?*
+Make a table of the Risk column in the Fund dataset, this will be a **frequency** table that shows the counts of each variable
+```{r}
+risk.tb <- table(fund$Risk)
+```
+
+Display new table risk.tb
+```{r}
+risk.tb
+```
+
+*What percentage of retirement funds are low, average, or high risk?*
+Make a table to show the proportions, multiply by 100 to create percentage, round to two decimals
+```{r}
+risk.prop <- prop.table(risk.tb)*100
+round(risk.prop,2)
+```
+
+View as barplot, use **main** to set title:
+```{r}
+barplot(risk.prop, main = "Level of Risk in Retirement Funds Sample")
+```
+Mode of Categorical Data
+- Mode
+  - Category with the highest frequency
+  - Longest bar in the bar chart
+  - Two or more categories can tie for the highest frequency
+    - Bimodal (2) multimodal (2+)
+
+## Summarizing Numerical Data
+Summaries of numerical variables:
+- Median
+- Mean
+- Lower quartile (25th percentile)
+- Upper Quartile (75th percentile)
+- Interquartile Range (IQR, 75th-25th percentile)
+
+Use file.choose to have IDE open Finder and select file
+```{r}
+music <- read.csv(file.choose())
+```
+
+Use **Summary** to get some basic information about a variable, in this case Size..MB.
+```{r}
+summary(music$Size..MB.)
+```
+
+Notice large Max outlier, explains why Mean is larger than Median
+
+Create a histogram
+```{r}
+hist(music$Size..MB.)
+```
+Let's look at standard deviation:
+```{r}
+sd(music$Size..MB.)
+```
+Find total size of music library by multiplying song count and size:
+```{r}
+500*mean(music$Size..MB.)
+```
+
+95% of data will be between +- 2 standard deviations (STD)
+
+```{r}
+500*(2*sd(music$Size..MB.) + mean(music$Size..MB.))
+```
+
+## Shape of a Distribution
+- Symmetrical data
+  - 50% of date below mean, 50% above mean
+- Right skewed
+  - Not symmetrical and more outliers to right
+- Left skewed
+  - Outliers to left
+- Area under curve
+  - 68% of data is between -1 to 1 STD
+  - 95% of data is between -2 to 2 STDs
+  - 99.7% of data is between -3 to 3 STDs

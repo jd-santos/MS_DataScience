@@ -1,0 +1,43 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+# Intro to R Markdown
+
+This is an R Markdown document, a format that allows intermingling code with text for the purpose of exporting to other formats such as HTML and Word with the code input and output formatted into a single document.
+
+Insert a code chunk by typing the following, using the Insert GUI in RStudio, or typing CMD-OPT-I on Mac.
+
+```{r include=FALSE}
+#Use include=FALSE to hide code chunk from HTML/Word
+#Code goes here
+#{r} tells the IDE to use R
+#The following commands load packages mosaic and tigerstats
+require(mosaic)
+require(tigerstats)
+```
+
+Now that those packages are loaded we can run some statistics.
+
+```{r echo=FALSE}
+#Use echo=FALSE to hide the code but show the output
+favstats(~fastest,data=m111survey)
+```
+
+Let's make a density plot of the fastest speed ever driven:
+```{r echo=FALSE}
+densityplot(~fastest,data=m111survey,
+            xlab="fastest speed (mph)",
+            main="Fastest Speed Ever Driven")
+```
+
+You can run just the chunk your cursor is in by pressing CMD-SHIFT-Enter on Mac. This allows you to check your output in the console before knitting.
+
+Practice adding some other parameters to the code chunk to change the graphic size
+
+```{r echo=FALSE, fig.width=3.5, fig.height=3}
+densityplot(~fastest,data=m111survey,
+            xlab="fastest speed (mph)",
+            main="Fastest Speed Ever Driven")
+```
