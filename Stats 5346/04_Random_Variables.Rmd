@@ -1,0 +1,156 @@
+# 04 Random Variables
+## Overview
+- Describes the uncertain outcomes of a random process
+- Denoted by *X* 
+- Defined by listing all the possible outcomes and their associated probabilities 
+
+Random Variable Example
+- Let X represent the change in price of IBM shares
+- You pay \$100 today, tomorrow can either be \$105, \$100, or $95
+- Probability P(X = x)
+
+        | Stock Price |Change x | Probability |
+        |:------------|:--------|:------------|
+        |Increase     | $5      | 0.11        |
+        |Stays same   | 0       | 0.8         |
+        |Decrease     | -$5     | 0.9         |
+
+- Two types of variables:
+  - Discrete
+    - Takes on one of a list of possible values (counts)
+    - E.g. number of customers visiting store
+  - Continuous
+    - Takes on any value in an interval
+    - E.g. height
+- Random variables are statistical models
+ - Represents a simplified or idealized view of reality
+ - Data affects the choice of probability distribution for a random variable
+
+## Properties of Random Variables
+- Parameters
+  - Characteristics of a random variable, such as mean or standard deviation
+  - Denoted by Greek letters
+  - **Mean (µ) of a Random variable**
+    - Weighted sum of possible values with probabilities as weights
+      - Multiply values and probabilities, sum them
+    - ==µ = x~1~p(x~1~) + x~2~p(x~2~)...==
+    - Type opt-m on a Mac or alt-m on Windows for µ
+    - Balancing point of data
+    - Also considered the **Expected value**
+      - E(*X*)
+      - Based on law of large numbers, with a large enough dataset the E(*X*) = µ
+  - **Variance (σ^2^)**
+    - The variance of *X* is the expected value of the squared deviation from µ
+    - === Var(*X*) = Σ(*X* - µ)^2^==
+    - or: Sum(Each data point - mean)^2^
+    - Square used to exaggerate differnce from mean and also make all values positive
+  - **Standard Deviation (σ)**
+    - Sqrt of Variance
+    - ==Written: SD(*X*) = Sqrt(Var(*X*))==
+
+SD/Variance Example:
+- Problem:
+    - You ship two computers to a client out of 15 computers you have in stock
+    - Out of those 15, 4 were mistakenly stocked as refurbs but you don't know which
+    - If client receives:
+      - Two new computers: you get $10k profit
+      - One new one refurb: You get $4.5k profit
+      - Two refurb: -$1k
+    - What is expected value and standard deviation of your profits
+-Method:
+  - Identify random variable (*X*) 
+    - Amount of profit earned
+  - Determine associated probabilities for its values
+  - Compute µ and σ
+- Solve:
+  - Determine probabilities:
+    - Both refurb: 4/15 * 3/14 = 12/210
+    - One refurb: 4/15 * 11/14 = 88/210
+    - Both new: 11/14 * 10/13 = 110/210
+  - Determine µ
+    -1000 * 12/210 + 4500 * 88/210 + 10000 * 110/210
+    = $7,067
+  - Determine σ^2^
+    - (-1000-7067)^2^ + (4500-7067)^2^ + (10000-7067)^2^
+    = $10,986,032
+  - Determine SD
+    - Sqrt(10986032)
+    = $3,315
+## Properties of Expected Values
+- **Adding or subtracting a constant (c)**
+  - Amount of change applied to all values (*X*)
+  - Changes the E by a fixed amount:
+    ==E(*X* +- c) = E(*X*) +- c==
+  - Does not change variance or SD
+- **Multiplying by a constant (c)**
+  - Changes the mean by a factor of c:
+    ==E(c*X*) = c * E(*X*)==
+  - Changes SD by a factor of |c|:
+    ==SD(c*X*) = |c|SD(*X*)==
+    - Same as mean but with absolute value of c
+  - Changes the variance by a factor of c^2^
+    ==Var(c*X*) = c^2^Var(*X*)==
+- If a and b are constants
+  ==E(a+b*X*) = a + bE(*X*)==
+  ==SD(a+b(*X*)) = |b|SD(*X*)==
+  ==Var(a + b*X*) = b^2^Var(*X*)==  
+## Association Between Random Variables
+- Determining if there is a relationship between multiple random variables
+- Properties of independent random variables review
+	- Two random variables are independent iff the joint probability distribution is the product of the marginal distributions 
+	- ==p(x,y) = p(x)*p(y) for all x,y==
+		- Variation of our old friend: p(A and B) = p(A) * p(B)
+- Dependence between two random variables
+  - Joint probability distribution
+    - Combines two different random variables (*X* and *Y*) that are not independent
+    - Gives probabilities for events of the form *X*=x and *Y*=y
+/Images/04_joint_distribution.png
+- **Covariance**
+	- The expected value of the product of deviations from the means 
+	- ==Cov(X,Y) = E((X - µX*)(*Y*-µY))==
+- Sums of random variables
+	- **Addition Rule for Expected Value of a Sum**
+		- The expected value of a sum of random variables is the sum of their expected values 
+		- ==E(*X* + *Y*) = E(*X*) + E(*Y*)==
+	- **Variance of a Sum of Random Variables**
+		- Not necessarily the sum of variances
+		- The variance of the sum of two random variables is the sum of their variances plus twice their covariance
+		- ==*Var(X + Y) = Var(X) + Var(Y) + 2Cov(X, Y)*==
+
+- Dependence Between Random Variables
+	- Correlation
+		- Covariance divided by the product of standard deviations
+		- ==Corr(X,Y) = Cov(*X*,*Y*)/σ~x~σ~y~==
+		- Denoted by greek rho (p)
+		- Always between -1 and 1
+		- Correlation of zero does not necessarily imply independence
+			- e.g. negative correlation
+			- Does imply that the covariance and correlation are zero 
+	- Addition rule for variances of independent random variables
+		- Variance of the sum of independent random variables is the sum of their variances 
+- Independent and Identically Distribution variables
+	- Random variables that are independent of each other and share a common probability distribution
+	- Have same mean and standard deviation
+	- **Addition Rule for iiD Random Variables**
+		- If n random variables (X~1~, X~2~,...X~n~) are iid with mean µ~x~ and standard deviation σ~x~
+		- ==E(X~1~ + X~2~ +...+X~n~)=nµ~x~==
+		- ==Var(X~1~ + X~2~ +...+X~n~)=nσ^2^==
+		- ==SD(X~1~ + X~2~ +...+X~n~)=Sqrt(nσ~x~)==
+	- **Addition rule for weighted sums**
+		- Equals the weighted sum of the expected values 
+			- ==E(aX + bY + c) = aE(X) + bE(Y) + c==  
+		- The variance of a weighted sum of random variables  
+			- ==Var(aX + bY + c) = a^2^Var(X) + b^2^Var(Y)+2abCov(X,Y)==
+
+Best Practices
+- Always consider the possibility of dependence
+- Only add variance for random variables that are uncorrelated
+- Use several random variables to capture different features of a problem
+- Use new symbols for new random variables
+
+Pitfalls
+- Don't think that uncorrelated random variables are independent
+- Don't forget the covariance when finding the variance of a sum
+- Never add standard deviations of random variables
+- 
+  

@@ -2,7 +2,7 @@
 title: "04 Probability"
 output: html_document
 ---
-# 04 Probability 
+# 03 Probability 
 ## Introduction
 - **Probability** is the measure of long run relative frequency 
   - In the long run, the accumulated relative frequency converges to a constant
