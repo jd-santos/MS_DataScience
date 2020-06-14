@@ -128,7 +128,7 @@ SD/Variance Example:
 			- Does imply that the covariance and correlation are zero 
 	- Addition rule for variances of independent random variables
 		- Variance of the sum of independent random variables is the sum of their variances 
-- Independent and Identically Distribution variables
+- Independent and Identical-Distribution variables
 	- Random variables that are independent of each other and share a common probability distribution
 	- Have same mean and standard deviation
 	- **Addition Rule for iiD Random Variables**

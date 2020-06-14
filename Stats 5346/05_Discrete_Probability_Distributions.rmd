@@ -1,0 +1,85 @@
+---
+title: "05_Binomial_Random_Variables"
+output: html_document
+---
+# 05_Discrete_Probability_Distributions
+## Bernoulli Random Variable
+- Bernoulli trials are random events with three characteristics:
+	- Two possible outcomes (success or failure, 0 or 1, etc) 
+	- Fixed probability of success for each outcome
+	- Variables are independent
+- Definition
+	- A random variable *B* with two possible values 
+	- 1 = success and 0 = failure
+	- E(*B*)=p
+		- Var(*B*)=p(1-p)
+## Random Variables for Counts
+- The sum of independent and identical-distribution (IID) Bernoulli random variables is *Y*
+- *Y*
+	- Number of successes in n Bernoulli trials
+	- Defined by parameters (n) and (p)
+		- Each trial (n) has probability of success (p)
+- **Properties of Binomial Random Variables**
+	- Mean and Variance
+		- E(Y) = np
+			- Number of trials * the probability of each trial
+		- Var(Y) = np(1-p)
+			- Variance of random variables p(1-p) times number of variables\
+	- Consists of two parts:
+		- The number of sequences that have *Y* successes in n attempts
+		- The probability of a specific sequence of Bernoulli trials with *Y* success in n attempts
+	- Binomial probability for *Y* success in n trials
+		- P(*Y* = y)= nC~y~p^Y^(1-p)^n-y^
+		- nC~y~: "n choose y"
+			- Calculated (n!/(y!(n-y!))
+		- Range of random variable *Y* is 0-n because you can have zero success to at most, n success
+/Images/05_BiProb_Formula.png
+		
+### R Examples
+```{r}
+y <- 0:10
+# Discrete binomial with n of 10 and probability of .4
+p_y <- dbinom(y, size = 10, prob = 0.4)
+
+# Create distribution of y and probability of y
+dist <- cbind(y,p_y)
+
+# Name columns
+colnames(dist) <- c("y", "p(y)")
+
+# Call distribution
+dist
+
+# Create plot with type = histogram
+plot(y, p_y, type = "h")
+points(y, p_y, pch=19)
+
+# Cumulative probability
+# p(Y>=8) = 1-P(Y<=7)
+1-pbinom(7, size = 10, prob = 0.4)
+```
+
+/Images/05_BiProb_Example.png
+
+/Images/05_BiProb_Solution.png
+
+## Poisson Distribution
+- Measures counts in a continuous interval of trials
+- Poisson Random Variable
+	-  Describes the number of events determined by a random process during an interval of time or space
+	-  Is not finite, possible values are infinite
+		-  Opposed to binomial where range is 0:n
+- Example: How many people enter a store in a day?
+- Represented by λ
+	- The rate of events
+- P(X = x) = e^λ^(λ^x^/x!)
+	 /Images/05_Poisson_Formula.png
+	- e is a constant, 2.71828
+	- λ = rate or average number of counts in an interval of time
+	- x = number of counts
+		- P(x) = probability of number of counts in your range
+- E(*X*) = λ
+- Var(*X*) = λ
+Example:
+/Images/05_Poisson_Example.png
+![Poisson Example](/Images/05_Poisson_Example)
