@@ -1,0 +1,33 @@
+---
+title: "Exam_Scratch"
+output: html_document
+---
+
+```{r}
+y <- 0:10
+# Discrete binomial with n of 10 and probability of .1
+p_y <- dbinom(2, size = 10, prob = 0.1)
+p_y
+
+a <- pbinom(2, size = 10, prob = 0.1)
+a
+
+b <- 1-pbinom(1, size = 10, prob = 0.1)
+b
+# Create distribution of y and probability of y
+dist <- cbind(y,p_y)
+
+# Name columns
+colnames(dist) <- c("y", "p(y)")
+
+# Call distribution
+dist
+
+# Create plot with type = histogram
+plot(y, p_y, type = "h")
+points(y, p_y, pch=19)
+
+# Cumulative probability
+# p(Y>=8) = 1-P(Y<=7)
+1-pbinom(7, size = 10, prob = 0.4)
+```
