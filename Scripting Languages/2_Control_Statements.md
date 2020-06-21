@@ -1,4 +1,4 @@
-# 02 Control Statements
+# Control Statements
 
 ## Decision Structures
 ### Single Alternative Decision Structure (IF)

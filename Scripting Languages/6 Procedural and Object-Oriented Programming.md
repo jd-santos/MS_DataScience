@@ -1,4 +1,4 @@
-# 06 Procedural and Object-Oriented Programming
+# Procedural and Object-Oriented Programming
 ## Overview
 - Procedural Programming
 	- Writing programs made of functions that perform specific tasks
@@ -19,3 +19,13 @@
 		- Data hiding
 			- Object's data attributes are hidden from code outside the object
 ## Classes
+- Class
+	- Code that specifies the data attributes and methods of a particular objects
+	- Similar to a blueprint 
+- Instance
+	- An object created from a class
+	- Like a specific house built according to blueprint
+	- There can be many instances of a class
+- Format
+	- Starts with capital letter by convention
+	/06.1_Procedural_OOP_Scripts.py

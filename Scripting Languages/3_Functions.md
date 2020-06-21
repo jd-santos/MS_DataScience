@@ -1,4 +1,4 @@
-# 03 Functions
+# Functions
 ## Overview
 - Function
 	- Group of statements within a program that perform a specific task

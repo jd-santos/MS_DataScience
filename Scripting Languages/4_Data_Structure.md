@@ -1,4 +1,4 @@
-# 04 Data Structure
+# Data Structure
 ## Lists
 Sequence
 	- Object that contains multiple items of data
