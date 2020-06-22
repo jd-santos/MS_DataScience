@@ -28,4 +28,11 @@
 	- There can be many instances of a class
 - Format
 	- Starts with capital letter by convention
-	/06.1_Procedural_OOP_Scripts.py
+- **__init__** initializer
+	- Used to initialize (assign values) to the data members of the class when an object of the class is created
+	- Runs as soon as an object of the class is instantiated
+- **__str__** string method
+	- Returns a string variable of the object's state
+	- Invoked with print(object_name)
+### Examples with Notes
+/6.1_Procedural_OOP_Scripts.py
