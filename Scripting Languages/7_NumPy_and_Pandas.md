@@ -1,0 +1,165 @@
+---
+Title: 7_NumPy_and_Pandas
+Author: Jonathan De Los Santos
+---
+# NumPy and Pandas
+## NumPy
+- Numerical Python (NumPy)
+	- An open source Python library for scientific computing
+	- Provides a lot of features to work with arrays and metrics
+	- NumPy Arrays are more efficient than Python lists
+- Allows mathematical operations to be vectorized
+	- Results in higher performance than Python loops
+- Pandas (covered later) builds upon the functionality by NumPy
+- Arrays
+	- Central data structure of NumPy\
+	- Called ndarray
+	- Look like lists and hold similar types of data
+	- Have rows and columns
+		- Rows are indicated by as axis 0
+		- Columns indicated by axis 1
+		- Can have third dimensional axis 3
+- Creating nddarray
+	- Use array function
+	- Convert data (list, tuple, array, or other sequence type) to an ndarray by inferring dtype or explicityly specifying dtype (data type)
+	- dtype explains the kind of data contained in array
+- Placeholder functions
+	- Can be used to create placeholder numbers in array
+	- .zeroes, .ones, etc
+	- Examples
+		- `np.zeroes(10)` 
+			- Creates array of 10 zeroes
+		- `np.ones(3,6)` 
+			- Creates array of 3 rows and 6 columns of ones
+	- Can also use `np.ones` to create arrays with 1s instead
+	- .arange
+		- Creates incrementing list
+		- `np.arange(10)`
+			- Creates array of values 0-9
+### Indexing and Slicing
+- There are different ways of selecting a subset of data or individual elements
+- One-dimensional arrays
+	- Use scalar value to slice
+	- `array_name[3]`
+		- Prints value of index 4
+	- `array_name[5:8]`
+		- Prints range from index 5 up to *but not including* index 8
+	- Write array values
+		- `array_name[5:8] = 12`
+			- Values from index 5-7 all changed to `1
+	- Array character widths stay equal
+		- If one value is longer, the rest of the array widens to fit it
+- N-dimension arrays
+	- Two-dimension array
+		- Identified by wrapping brackets of lists with one bracket or two levels of nested brackets
+		- Index with a slice with axis 0 as row and axis 1 as column
+		- `np.array([[list1],[list2],[list3]])`
+			- Will print each list as a row (3x3 array)
+				1,2,3,
+				4,5,6,
+				7,8,9
+		- Call a row (list)
+			- `array_name[2]` calls third element
+				- 7,8,9
+		- Call a specific value
+			- `array+name[0,2]` calls value at row index 0 (first row/element) and column index 2 (third element)
+## Pandas
+- Package that contains high-level data structures and manipulation tools designed to make data analysis
+	- Makes it easy to use n NumPy-centric applications
+- Series
+	- One-dimensional array-like object containing an array of data
+	- An associated array of data labels is called its index
+- Dataframe
+	- Two dimensional data structures with multiple columns
+	- Easiest to create Python dictionaries and convert to dataframe
+### Cleaning data
+- The process of preparing raw data for analysis
+- Missing data ("NaN") happens when
+	- A join of two sets of data do not have matched values
+	- Data is incomplete
+	- The NaN value is not known at a given point in time
+	- There is a data collection error
+- Interpolation
+	- Filling NaN values with specific value
+	- Data like time series
+	- Filling of value when reindexing
+		- Filling the current non-null value forward or backwards overwriting nulls until you reach another non-null value, then you fill that forward or backwards instead
+		- .fillna(method) option
+			- forward: `df.selection.fillna(method = 'ffill')`
+			- backwards: `df.selection.fillna(method = 'bfill')`
+- Arithmetic between objects with different indexes
+		/Images/07_Arithmetic_Example.png
+		- Format: `df1 + df2`
+		- If values are missing from one DF, the result will be NaN
+- NumPy **.apply()**
+	- If you have a previously defined function, use .apply() to use that function on the DF
+- Common Pandas math and stats methods
+	- Summary statistics
+		- sum(), count(), mean()
+		- idxmax()
+			- Compute index values at which maximum value is obtained
+		- describe()
+			- Compute set of summary statistics for Series or each DF column
+	-Options 
+		- axis
+			- 0 for DF rows
+			- 1 for DF columns
+		- skipna
+			- Exclude missing value
+			- Defaults to TRUE
+## Data Loading and Storage
+- Reading and writing data using Pandas
+- There are a number of functions for reading tabular data as DataFrame object
+	- **read_csv**
+		- Load delimited data from a file, URL, or file-like object
+		- Use commas as default delimiter
+	- **read_table**
+		- Load delimited data from a file, URL, or file-like object
+		- Use tab (\t) as default delimiter
+	- Function arguments
+		- sep or delimiter
+		- index_col
+			- Column numbers or names to use as the row index in the results
+		- nrows
+			- Number of rows to read from beginning of file
+	- Usage in dataframe
+		- Format: `df = pandas.read_csv('csv_name')`
+- Merging and combining
+	- Data in Pandas object can be combined together
+	- Built-in
+		- **pandas.merge**
+			- Connects rows in DataFrames based on one or more keys
+			- Example
+				- Two dataframes in df1 and df2
+				- `pandas.merge(df1, df2)`
+				- Arguments
+					- how = (inner or outer)
+						- Default is inner
+		- **pandas.concat**
+			- Stacks together objects along an axis
+			- In NumPy:
+				- `numpy.concatenate()`
+				- Will stack arrays by default or place them side by side if axis = 1
+			- `pandas.concat()`
+				- Labeled axes enable generalizing of array concatenation
+				- Considerations
+					- If objects are indexed differently on other axes, do you want to union those axes?
+					- Do the groups need to be identifiable in the resulting objects?
+					- Does the concatenation axis matter?
+				- See ipynb 07_4.1
+		- **combine_first**
+			- Slicing together overlapping data to fill in missing values in one object with values from another 
+## Grouping and Aggregating
+- Split-Apply-Combine (SAC) Approach
+		/Images/07_SAC.png
+	- Data is first combined into groups based on criteria like indexes or column values
+	- Groups are transformed or aggregated 
+	- In Pandas, groups are then combined into single data structure
+	- Very similar to MapReduce
+	- Pandas SAC
+		- Splitting
+			- groupby()
+		- Applying functions
+			- Aggregation, transformation, or filtration
+		- Combine
+			- Performed automatically by Pandas
