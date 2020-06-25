@@ -3,7 +3,7 @@
 These are my notes, projects, and assignments from the [MS Data Science program](https://www.depts.ttu.edu/rawlsbusiness/graduate/ms/datascience/) at Texas Tech's Rawls College of Business.
 
 ## Classes
-You can refer to the [course schedule] on TTU's website to follow along in the coursework. Classes and material will be added as I progress through the program.
+You can refer to the [course schedule](https://www.depts.ttu.edu/rawlsbusiness/graduate/ms/datascience/schedule.php) on TTU's website to follow along in the coursework. Classes and material will be added as I progress through the program.
 
 Courses so far:
 - Statistics for Data Science
