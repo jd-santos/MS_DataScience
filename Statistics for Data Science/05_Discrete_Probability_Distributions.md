@@ -29,3 +29,4 @@
 		- nC~y~: "n choose y"
 			- Calculated (n!/(y!(n-y!))
 		- Range of random variable *Y* is 0-n because you can have zero success to at most, n success
+

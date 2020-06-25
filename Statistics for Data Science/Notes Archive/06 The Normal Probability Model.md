@@ -3,6 +3,7 @@ Title: The Normal Probability Model
 Author: Jonathan De Los Santos
 ---
 # 06 The Normal Probability Model
+## REPLACED BY JUPYTER NOTEBOOK
 
 - Normal Random Variable
 	- A continuous random variable whose probability distribution defines a standard bell-shaped curve
@@ -57,3 +58,6 @@ Author: Jonathan De Los Santos
 	
 - **Empirical Rule**
 	/Images/06_Empirical_Rule.png	
+## Applications
+- Rest of notes on Jupyter
+- Convert this

@@ -96,7 +96,7 @@ Format: `tuple_name = (item1, item2)`
 	- Referred to as mapping a key to value
 	- Key must be immutable
 - To retrieve a specific value, use the associated key
-- Format: `dictionary = {key1:val1, key2:val2...}
+- Format: `dictionary = {key1:val1, key2:val2...}`
 - Uses ==curly braces== 
 - `clear` method
 	- Deletes all elements in a dictionary leaving it empty

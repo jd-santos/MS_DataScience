@@ -62,7 +62,7 @@ Author: Jonathan De Los Santos
 			- `array_name[2]` calls third element
 				- 7,8,9
 		- Call a specific value
-			- `array+name[0,2]` calls value at row index 0 (first row/element) and column index 2 (third element)
+			- `array_name[0,2]` calls value at row index 0 (first row/element) and column index 2 (third element)
 ## Pandas
 - Package that contains high-level data structures and manipulation tools designed to make data analysis
 	- Makes it easy to use n NumPy-centric applications
