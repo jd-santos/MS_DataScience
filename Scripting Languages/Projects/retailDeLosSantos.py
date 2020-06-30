@@ -11,10 +11,10 @@ class RetailItem:
         self.price = price
 
 # Define several set- methods to assign attributes
-    def set_description(self, desc):
+    def set_description(self):
         self.description = desc
 
-    def set_units(self, units):
+    def set_units(self):
         self.set_units = units
 
     def set_price(self, price):

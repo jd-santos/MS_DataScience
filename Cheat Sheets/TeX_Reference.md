@@ -17,3 +17,15 @@
 	- \leq
 	- $\geq$
 	- $\leq$
+- Hat
+	- \hat{}
+	- $\hat{p}$\
+- Square Root
+	- \sqrt{}
+	- $\sqrt{x}$
+- Absolute Value
+	- \mid
+	- $\mid10\mid$
+- Plus/Minus
+	- \pm
+	- $\pm$
