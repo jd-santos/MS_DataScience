@@ -29,3 +29,6 @@
 - Plus/Minus
 	- \pm
 	- $\pm$
+- Not Equal
+	- \neq
+	- $\neq$
