@@ -32,3 +32,9 @@
 - Not Equal
 	- \neq
 	- $\neq$
+- Parentheses
+	- \left( \right)
+	- $\left(x\right)$
+- Tilde (similar)
+	- \sim
+	- $\sim$ 

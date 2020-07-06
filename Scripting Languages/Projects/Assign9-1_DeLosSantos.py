@@ -27,4 +27,4 @@ df_salary.groupby(['Name'])['Holding'].agg('sum')
 
 # Draw a line plot that shows each person's holdings change
 df_holding = df_salary.groupby(['Name'])['Holding']
-df_holding.plot( x = 'Year', y = ['Joe', 'Tom'], legend = True, title = 'Holding Comparison')~
+df_holding.plot( x = 'Year', y = ['Joe', 'Tom'], legend = True, title = 'Holding Comparison')
