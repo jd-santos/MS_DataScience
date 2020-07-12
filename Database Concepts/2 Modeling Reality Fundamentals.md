@@ -67,5 +67,3 @@
 	- Cardinality
 		- Showing whether a relationship is one-to-one, one-to-many, or many-to-many
 		- This step is where you’ll specify the foreign keys in entities, typically on the ‘many’ side of a relationship
-
-﻿﻿﻿﻿
