@@ -1,0 +1,71 @@
+# 2 Modeling Reality Fundamentals
+## Models Overview
+- Models are used to better represent reality in a database
+- Three levels of modeling reality: conceptual, logical, physical
+	- We will start with logical models which includes the components of conceptual models that matter for our purposes
+	- Logical modeling techniques
+		- Entity-Relationship Modeling
+			- Used primarily for online transaction processing (OLTP) systems
+		- Dimensional Modeling
+			- Used for Online Analytical Processing (OLAP) systems
+- Normalization
+	- Splitting entities into separate tables to reduce redundancy and ensure data integrity
+	- Described as forms, normal forms are not discussed here but are covered in reference material
+- Data Redundancy 
+	- The storage of the same data multiple times
+	- E.g. storing a customer’s email individually on every order
+	- Can lead to loss of data integrity
+- Data integrity
+	- Consistency of data in a database
+	- Inconsistency arises due to certain avoidable modification anomalies
+## Logical Model Building Blocks
+- Entities 
+	- Things in reality we want to keep data about, usually expressed as nouns 
+	- It is a representation of a thing or concept
+	- E.g. products, customers, employees
+- Attributes
+	- Characteristics or property of entity for which you want to store data
+	- Key attributes
+		- Uniquely identifies instances of an entity
+		- Instances identify something specific that occurs in reality, we need to be able to capture and uniquely identify that occurrence 
+		- **Candidate keys**
+			- Any set of attributes that could be chosen as a key of an entity
+		- **Primary key**
+			- The candidate key designated for principal use in uniquely identifying instances of an entity
+			- **Composite key**
+				- A primary key consisting of one or more attributes
+			- **Surrogate key**
+				- Artificial attribute added to an entity to serve as the primary key
+		- **Alternate key**
+			- A candidate key not designated as primary key
+		- **Foreign key**
+			- An attribute in one entity that constitutes a key in some other (possibly the same) entity
+			- Used to indicate logical links between entities 
+- Relationships
+	- Logical link between entities, often stated as verbs
+	- Shows how entities are related
+	- **Cardinality**
+		- The number of instances of one entity related to a single instance of another entity 
+		- **Minimum cardinality**
+			- The minimum number of entities that **must** participate in a relationship instance
+			- Tells us if either side’s participation is optional or mandatory
+		- **Maximum cardinality** 
+			- The maximum number of entity instances that **can** participate in a relationship instance 
+			- Specifies what is possible in terms of how many entity instances can be related to another entity instance
+## Entity-Relationship (ER) Diagram
+- Purpose and scope
+	- Define the purpose (of the database) and the scope (of reality) you are modeling
+- Entities
+	- The things in reality we want to capture and store data about
+	- Drawn in rectangles and labeled as nouns
+- Attributes
+	- Added in the entity rectangles
+	- Select one or more of the candidate keys to act as the primary key
+- Relationships
+	- Determine how the entities are related
+	- Draw lines between them to signify the relationships and label them
+	- Cardinality
+		- Showing whether a relationship is one-to-one, one-to-many, or many-to-many
+		- This step is where you’ll specify the foreign keys in entities, typically on the ‘many’ side of a relationship
+
+﻿﻿﻿﻿

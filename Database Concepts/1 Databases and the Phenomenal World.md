@@ -10,3 +10,4 @@
 	- Data = facts + symbols
 	- Information = data + meaning
 	- Knowledge = information + application
+/Images/1_app_hierarchy.png
