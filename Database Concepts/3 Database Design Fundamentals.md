@@ -1,0 +1,55 @@
+# 3 Database Design Fundamentals
+## Physical Modeling
+- After logical modeling, we move to modeling the physical design of our database
+	- This now covers topics like table names, column names, and column data types
+- Main terms in database modeling have several names
+	- Entity, Table, or Relation
+		- Relations specifically meet first normal form criteria
+	- Attribute, Column, or Field
+	- Instance, Row, Tuple, or Record
+		- Think of them as instances of an entity
+## Moving from logical to physical models
+- Entities become tables or relations that are constructed in a Database Management System (DBMS) like MySQL
+- Fields become columns or attributes
+- Add **Data types**
+	- Type of data allowed for each column
+	- Must be specified in logical models
+	- Example categories
+		- String
+		- Numeric
+		- Data/Time
+	- Data types are DBMS specific, refer to documentation to understand what specific types are available
+	- We will be using [MySql data types](https://dev.mysql.com/doc/en/data-types.html) 
+-  Table properties
+	-  Properties that can be specified for each field besides just the data type
+	-  Not NULL
+		-  The field must contain a value for every instance/row
+	-  Unique
+		-  The field must be unique
+		-  Useful for primary keys
+	-  Auto Increment
+		-  The DBMS will automatically increment the value of the field
+		-  Often used for surrogate keys 
+-  Resolve many-to-many relationships
+	-  Usually resolved by creating a new entity/table between the two tables
+	-  Use primary keys from both tables to create composite key in the joining table
+	-  Extra attributes can be added that provide information for the combination of the two tables
+/Images/3_Many_to_many_design.png
+## Database Design Fundamentals
+- Database
+	- A collection of interrelated, shared, and controlled data
+	- Can be processed by one or more application systems
+	- A self-describing collection of related records and tables
+- Relational database
+	- A type of database that stores data in relations (tables)
+	- Each relation is composed of tuples (rows/records) and attributes (columns/fields)
+	- Data can be structured in an organized way that minimizes redundancy and prevents tables from being out of sync
+	- **ACID Compliant**
+		- Atomicity, Consistency, Isolation, Durability
+		- Assures all database transactions are reliably processed
+		- Prescribes exactly how transactions interact with the database
+- Non-Relational Databases (NoSQL)
+	- Often document rather than table-oriented
+		- Single document file vs multiple tables
+	- Easier to store unstructured data
+	- Generally sacrifice ACID compliance for flexibility and processing speed
