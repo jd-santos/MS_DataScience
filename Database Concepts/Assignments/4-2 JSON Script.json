@@ -1,0 +1,18 @@
+{
+    "about": [
+        {
+        "firstname": "Jonathan",
+        "lastname": "De Los Santos",
+        "email": "jonadelo@ttu.edu",
+        "linkedin": "JDsantos.com"
+        }
+    ],
+    "funfacts": [
+        {
+        "pettype": "Chihuahua",
+        "petname": "Bandito",
+        "hobbies": ["woodworking", "music", "finding new calendar apps"],
+        "dislikes": ["Anything Oracle does", "Uber delivery charges"]
+        }
+    ]
+}
