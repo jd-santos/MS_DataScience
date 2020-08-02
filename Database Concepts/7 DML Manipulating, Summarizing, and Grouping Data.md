@@ -1,4 +1,4 @@
-# 7 DML Manipulating, Summarizing, and Grouping Data
+# 7 DML: Manipulating, Summarizing, and Grouping Data
 ## Manipulating Data
 - We often do not want the data returned in a SQL statement exactly as it is represented in a database
 - Uses
