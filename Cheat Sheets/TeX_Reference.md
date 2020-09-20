@@ -38,3 +38,7 @@
 - Tilde (similar)
 	- \sim
 	- $\sim$ 
+- Summation 
+	- \sum\limits_{i=1}^n
+	- Use \nolimit to show characters to the right rather than top and bottom
+	- $\sum\limits_{i=1}^n$
