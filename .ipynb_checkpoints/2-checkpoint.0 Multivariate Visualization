@@ -1,0 +1,490 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "toc": true
+   },
+   "source": [
+    "<h1>Table of Contents<span class=\"tocSkip\"></span></h1>\n",
+    "<div class=\"toc\"><ul class=\"toc-item\"><li><span><a href=\"#Missing-Values\" data-toc-modified-id=\"Missing-Values-1\"><span class=\"toc-item-num\">1&nbsp;&nbsp;</span>Missing Values</a></span><ul class=\"toc-item\"><li><span><a href=\"#Overview\" data-toc-modified-id=\"Overview-1.1\"><span class=\"toc-item-num\">1.1&nbsp;&nbsp;</span>Overview</a></span></li><li><span><a href=\"#Complete-Case-Analysis\" data-toc-modified-id=\"Complete-Case-Analysis-1.2\"><span class=\"toc-item-num\">1.2&nbsp;&nbsp;</span>Complete-Case Analysis</a></span></li><li><span><a href=\"#Available-Case-Analysis\" data-toc-modified-id=\"Available-Case-Analysis-1.3\"><span class=\"toc-item-num\">1.3&nbsp;&nbsp;</span>Available-Case Analysis</a></span></li><li><span><a href=\"#Maximum-Likelihood\" data-toc-modified-id=\"Maximum-Likelihood-1.4\"><span class=\"toc-item-num\">1.4&nbsp;&nbsp;</span>Maximum Likelihood</a></span></li><li><span><a href=\"#|Value-Insertion\" data-toc-modified-id=\"|Value-Insertion-1.5\"><span class=\"toc-item-num\">1.5&nbsp;&nbsp;</span>|Value Insertion</a></span><ul class=\"toc-item\"><li><span><a href=\"#Mean/Median-Insertion\" data-toc-modified-id=\"Mean/Median-Insertion-1.5.1\"><span class=\"toc-item-num\">1.5.1&nbsp;&nbsp;</span>Mean/Median Insertion</a></span></li><li><span><a href=\"#Simple-Random-Imputation\" data-toc-modified-id=\"Simple-Random-Imputation-1.5.2\"><span class=\"toc-item-num\">1.5.2&nbsp;&nbsp;</span>Simple Random Imputation</a></span></li></ul></li></ul></li><li><span><a href=\"#Detecting-Outliers\" data-toc-modified-id=\"Detecting-Outliers-2\"><span class=\"toc-item-num\">2&nbsp;&nbsp;</span>Detecting Outliers</a></span></li><li><span><a href=\"#Multivariate-Scatterplots\" data-toc-modified-id=\"Multivariate-Scatterplots-3\"><span class=\"toc-item-num\">3&nbsp;&nbsp;</span>Multivariate Scatterplots</a></span></li><li><span><a href=\"#Multivariate-Density-Plots\" data-toc-modified-id=\"Multivariate-Density-Plots-4\"><span class=\"toc-item-num\">4&nbsp;&nbsp;</span>Multivariate Density Plots</a></span></li><li><span><a href=\"#Multivariate-Normal-Distribution\" data-toc-modified-id=\"Multivariate-Normal-Distribution-5\"><span class=\"toc-item-num\">5&nbsp;&nbsp;</span>Multivariate Normal Distribution</a></span></li></ul></div>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 2.0 Multivariate Visualization"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Missing Values"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Overview\n",
+    "- Null values arise often in statistical analysis\n",
+    "    - Reasons: Non-reponse, dropouts in time-series, non-answer on questionnaire, etc\n",
+    "- This will prevent us from calculating some measures such as correlation\n",
+    "- We'll set up an example dataset of 10 people and look at some strategies for handling nulls"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<table>\n",
+       "<caption>A data.frame: 10 × 7</caption>\n",
+       "<thead>\n",
+       "\t<tr><th scope=col>individual</th><th scope=col>sex</th><th scope=col>age</th><th scope=col>IQ</th><th scope=col>depression</th><th scope=col>health</th><th scope=col>weight</th></tr>\n",
+       "\t<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th></tr>\n",
+       "</thead>\n",
+       "<tbody>\n",
+       "\t<tr><td> 1</td><td>Male  </td><td>21</td><td>120</td><td>Yes</td><td>Very good</td><td>150</td></tr>\n",
+       "\t<tr><td> 2</td><td>Male  </td><td>43</td><td> NA</td><td>No </td><td>Very good</td><td>160</td></tr>\n",
+       "\t<tr><td> 3</td><td>Male  </td><td>22</td><td>135</td><td>No </td><td>Average  </td><td>135</td></tr>\n",
+       "\t<tr><td> 4</td><td>Male  </td><td>86</td><td>150</td><td>No </td><td>Very poor</td><td>140</td></tr>\n",
+       "\t<tr><td> 5</td><td>Male  </td><td>60</td><td> 92</td><td>Yes</td><td>Good     </td><td> NA</td></tr>\n",
+       "\t<tr><td> 6</td><td>Female</td><td>16</td><td>130</td><td>Yes</td><td>Good     </td><td>110</td></tr>\n",
+       "\t<tr><td> 7</td><td>Female</td><td>NA</td><td>150</td><td>Yes</td><td>Very good</td><td>120</td></tr>\n",
+       "\t<tr><td> 8</td><td>Female</td><td>43</td><td> NA</td><td>Yes</td><td>Average  </td><td>120</td></tr>\n",
+       "\t<tr><td> 9</td><td>Female</td><td>22</td><td> 84</td><td>No </td><td>Average  </td><td>105</td></tr>\n",
+       "\t<tr><td>10</td><td>Female</td><td>80</td><td> 70</td><td>No </td><td>Good     </td><td>100</td></tr>\n",
+       "</tbody>\n",
+       "</table>\n"
+      ],
+      "text/latex": [
+       "A data.frame: 10 × 7\n",
+       "\\begin{tabular}{lllllll}\n",
+       " individual & sex & age & IQ & depression & health & weight\\\\\n",
+       " <int> & <chr> & <int> & <int> & <chr> & <chr> & <int>\\\\\n",
+       "\\hline\n",
+       "\t  1 & Male   & 21 & 120 & Yes & Very good & 150\\\\\n",
+       "\t  2 & Male   & 43 &  NA & No  & Very good & 160\\\\\n",
+       "\t  3 & Male   & 22 & 135 & No  & Average   & 135\\\\\n",
+       "\t  4 & Male   & 86 & 150 & No  & Very poor & 140\\\\\n",
+       "\t  5 & Male   & 60 &  92 & Yes & Good      &  NA\\\\\n",
+       "\t  6 & Female & 16 & 130 & Yes & Good      & 110\\\\\n",
+       "\t  7 & Female & NA & 150 & Yes & Very good & 120\\\\\n",
+       "\t  8 & Female & 43 &  NA & Yes & Average   & 120\\\\\n",
+       "\t  9 & Female & 22 &  84 & No  & Average   & 105\\\\\n",
+       "\t 10 & Female & 80 &  70 & No  & Good      & 100\\\\\n",
+       "\\end{tabular}\n"
+      ],
+      "text/markdown": [
+       "\n",
+       "A data.frame: 10 × 7\n",
+       "\n",
+       "| individual &lt;int&gt; | sex &lt;chr&gt; | age &lt;int&gt; | IQ &lt;int&gt; | depression &lt;chr&gt; | health &lt;chr&gt; | weight &lt;int&gt; |\n",
+       "|---|---|---|---|---|---|---|\n",
+       "|  1 | Male   | 21 | 120 | Yes | Very good | 150 |\n",
+       "|  2 | Male   | 43 |  NA | No  | Very good | 160 |\n",
+       "|  3 | Male   | 22 | 135 | No  | Average   | 135 |\n",
+       "|  4 | Male   | 86 | 150 | No  | Very poor | 140 |\n",
+       "|  5 | Male   | 60 |  92 | Yes | Good      |  NA |\n",
+       "|  6 | Female | 16 | 130 | Yes | Good      | 110 |\n",
+       "|  7 | Female | NA | 150 | Yes | Very good | 120 |\n",
+       "|  8 | Female | 43 |  NA | Yes | Average   | 120 |\n",
+       "|  9 | Female | 22 |  84 | No  | Average   | 105 |\n",
+       "| 10 | Female | 80 |  70 | No  | Good      | 100 |\n",
+       "\n"
+      ],
+      "text/plain": [
+       "   individual sex    age IQ  depression health    weight\n",
+       "1   1         Male   21  120 Yes        Very good 150   \n",
+       "2   2         Male   43   NA No         Very good 160   \n",
+       "3   3         Male   22  135 No         Average   135   \n",
+       "4   4         Male   86  150 No         Very poor 140   \n",
+       "5   5         Male   60   92 Yes        Good       NA   \n",
+       "6   6         Female 16  130 Yes        Good      110   \n",
+       "7   7         Female NA  150 Yes        Very good 120   \n",
+       "8   8         Female 43   NA Yes        Average   120   \n",
+       "9   9         Female 22   84 No         Average   105   \n",
+       "10 10         Female 80   70 No         Good      100   "
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# Create hypothetical dataset for example\n",
+    "hypo <- read.csv(\"https://bit.ly/3jf6mJz\")\n",
+    "hypo"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We will examine just the variables age, IQ, and weight:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<table>\n",
+       "<caption>A data.frame: 10 × 3</caption>\n",
+       "<thead>\n",
+       "\t<tr><th scope=col>age</th><th scope=col>IQ</th><th scope=col>weight</th></tr>\n",
+       "\t<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>\n",
+       "</thead>\n",
+       "<tbody>\n",
+       "\t<tr><td>21</td><td>120</td><td>150</td></tr>\n",
+       "\t<tr><td>43</td><td> NA</td><td>160</td></tr>\n",
+       "\t<tr><td>22</td><td>135</td><td>135</td></tr>\n",
+       "\t<tr><td>86</td><td>150</td><td>140</td></tr>\n",
+       "\t<tr><td>60</td><td> 92</td><td> NA</td></tr>\n",
+       "\t<tr><td>16</td><td>130</td><td>110</td></tr>\n",
+       "\t<tr><td>NA</td><td>150</td><td>120</td></tr>\n",
+       "\t<tr><td>43</td><td> NA</td><td>120</td></tr>\n",
+       "\t<tr><td>22</td><td> 84</td><td>105</td></tr>\n",
+       "\t<tr><td>80</td><td> 70</td><td>100</td></tr>\n",
+       "</tbody>\n",
+       "</table>\n"
+      ],
+      "text/latex": [
+       "A data.frame: 10 × 3\n",
+       "\\begin{tabular}{lll}\n",
+       " age & IQ & weight\\\\\n",
+       " <int> & <int> & <int>\\\\\n",
+       "\\hline\n",
+       "\t 21 & 120 & 150\\\\\n",
+       "\t 43 &  NA & 160\\\\\n",
+       "\t 22 & 135 & 135\\\\\n",
+       "\t 86 & 150 & 140\\\\\n",
+       "\t 60 &  92 &  NA\\\\\n",
+       "\t 16 & 130 & 110\\\\\n",
+       "\t NA & 150 & 120\\\\\n",
+       "\t 43 &  NA & 120\\\\\n",
+       "\t 22 &  84 & 105\\\\\n",
+       "\t 80 &  70 & 100\\\\\n",
+       "\\end{tabular}\n"
+      ],
+      "text/markdown": [
+       "\n",
+       "A data.frame: 10 × 3\n",
+       "\n",
+       "| age &lt;int&gt; | IQ &lt;int&gt; | weight &lt;int&gt; |\n",
+       "|---|---|---|\n",
+       "| 21 | 120 | 150 |\n",
+       "| 43 |  NA | 160 |\n",
+       "| 22 | 135 | 135 |\n",
+       "| 86 | 150 | 140 |\n",
+       "| 60 |  92 |  NA |\n",
+       "| 16 | 130 | 110 |\n",
+       "| NA | 150 | 120 |\n",
+       "| 43 |  NA | 120 |\n",
+       "| 22 |  84 | 105 |\n",
+       "| 80 |  70 | 100 |\n",
+       "\n"
+      ],
+      "text/plain": [
+       "   age IQ  weight\n",
+       "1  21  120 150   \n",
+       "2  43   NA 160   \n",
+       "3  22  135 135   \n",
+       "4  86  150 140   \n",
+       "5  60   92  NA   \n",
+       "6  16  130 110   \n",
+       "7  NA  150 120   \n",
+       "8  43   NA 120   \n",
+       "9  22   84 105   \n",
+       "10 80   70 100   "
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "mydata <- hypo[,c(3,4,7)]\n",
+    "mydata"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Because of the nulls, we can't calculate the correlations between all of the variables:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<table>\n",
+       "<caption>A matrix: 3 × 3 of type dbl</caption>\n",
+       "<thead>\n",
+       "\t<tr><th></th><th scope=col>age</th><th scope=col>IQ</th><th scope=col>weight</th></tr>\n",
+       "</thead>\n",
+       "<tbody>\n",
+       "\t<tr><th scope=row>age</th><td> 1</td><td>NA</td><td>NA</td></tr>\n",
+       "\t<tr><th scope=row>IQ</th><td>NA</td><td> 1</td><td>NA</td></tr>\n",
+       "\t<tr><th scope=row>weight</th><td>NA</td><td>NA</td><td> 1</td></tr>\n",
+       "</tbody>\n",
+       "</table>\n"
+      ],
+      "text/latex": [
+       "A matrix: 3 × 3 of type dbl\n",
+       "\\begin{tabular}{r|lll}\n",
+       "  & age & IQ & weight\\\\\n",
+       "\\hline\n",
+       "\tage &  1 & NA & NA\\\\\n",
+       "\tIQ & NA &  1 & NA\\\\\n",
+       "\tweight & NA & NA &  1\\\\\n",
+       "\\end{tabular}\n"
+      ],
+      "text/markdown": [
+       "\n",
+       "A matrix: 3 × 3 of type dbl\n",
+       "\n",
+       "| <!--/--> | age | IQ | weight |\n",
+       "|---|---|---|---|\n",
+       "| age |  1 | NA | NA |\n",
+       "| IQ | NA |  1 | NA |\n",
+       "| weight | NA | NA |  1 |\n",
+       "\n"
+      ],
+      "text/plain": [
+       "       age IQ weight\n",
+       "age     1  NA NA    \n",
+       "IQ     NA   1 NA    \n",
+       "weight NA  NA  1    "
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "options(digits = 3)\n",
+    "\n",
+    "corr<- cor(mydata)\n",
+    "corr"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We'll look at four strategies for dealing with missing values: complete-case, available-case, maximum likelihood, and value insertion"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Complete-Case Analysis"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "- A complete-case approach scans the dataset and deletes an entire row if it contains any nulls"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Available-Case Analysis"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Maximum Likelihood"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### |Value Insertion"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Mean/Median Insertion"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Simple Random Imputation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Detecting Outliers"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Multivariate Scatterplots"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Multivariate Density Plots"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Multivariate Normal Distribution"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "R",
+   "language": "R",
+   "name": "ir"
+  },
+  "language_info": {
+   "codemirror_mode": "r",
+   "file_extension": ".r",
+   "mimetype": "text/x-r-source",
+   "name": "R",
+   "pygments_lexer": "r",
+   "version": "4.0.0"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": true,
+   "skip_h1_title": true,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": true,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": false
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
