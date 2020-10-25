@@ -1,50 +1,57 @@
 ---
-title: "2.0 Multivariate Visualization Assignment"
+title: "2.0-Multivariate_Visualization_Assignment"
 author: "JD Santos"
-output: 
-   pdf_document: 
-     fig_caption: yes
-     keep_tex: yes
-     includes:
-       in_header: latex_header.tex
-     fig_width: 5
-     fig_height: 3.75
+date: "10/24/2020"
+output: pdf_document
 ---
+<style type="text/css">
+   h4.date { /* Header 4 - and the author and data headers use this too  */
+     font-size: 18px;
+     font-family: "Times New Roman", Times, serif;
+     color: DarkBlack;
+     float: right;
+   }
+   
+   h4.author { /* Header 4 - and the author and data headers use this too  */
+     font-size: 18px;
+     font-family: "Times New Roman", Times, serif;
+     color: DarkBlack;
+     float: left;
+   }
+</style>
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, tidy = FALSE, fig.align="center")
+knitr::opts_chunk$set(echo = TRUE)
 ```
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
-# This assignment uses the MVA, HSAUR, Kernsmooth, and norm packages
+This assignment uses the MVA, HSAUR, Kernsmooth...packages
+```{r}
 install.packages("MVA")
 install.packages("HSAUR")
 install.packages("KernSmooth")
 install.packages("norm")
 ```
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
-# Load packages
+Load packages
+```{r}
 library(MVA)
 library(HSAUR)
 library(KernSmooth)
 library(norm)
 ```
-  
+
 
 ## Problem 1
 >Use the bivariate boxplot on the scatterplot of pairs of variables ((temp, wind), (temp, precip)) in the air pollution data to identify any outliers. Calculate the correlation between each pair of variables using all the data and the data with any identified outliers removed. Comment on the results.
-  
-#### **1. Begin by pulling the variable pairs from USairpollution into objects**
+
+1. **Begin by pulling the variable pairs from USairpollution into objects**
 
 ```{r}
-data("USairpollution", package = "HSAUR2") 
-temp_wind <- USairpollution[, c("temp", "wind")] 
+data("USairpollution", package = "HSAUR2")
+temp_wind <- USairpollution[, c("temp", "wind")]
 temp_precip <- USairpollution[, c("temp", "precip")]
 ```
-#### **2. Create the bivariate boxplot for temp/wind pair**
-  
-  
+
+**2. Create the bivariate boxplot for temp/wind pair**
+
 ```{r}
 bvbox(temp_wind, xlab = "Temperature", ylab = "Wind (MPH)", type = "n")
 
@@ -52,47 +59,38 @@ text(USairpollution$temp, USairpollution$wind,
      cex = 0.6,
      labels = abbreviate(row.names(USairpollution)))
 ```
-
-
-#### **3. Phoenix and Miami are identified as outliers, we will perform a match to obtain their positions and store them in `outcity`**
+**3. Phoenix and Miami are identified as outliers, we will perform a match to obtain their positions and store them in `outcity`**
 ```{r}
 outcity <- match(c("Miami", "Phoenix"),
                  rownames(USairpollution))
 ```
-  
 
-#### **4. Calculate correlations with and without these outliers.**
+**4. Calculate correlations with and without these outliers.**
 - The correlation drops significantly from -0.35 to -0.26 with the outliers removed. This makes sense if you examine the visualization and notice that these outliers are generally in line with the regression line. Removing them reduces the fit of this line.
 ```{r}
 cor(temp_wind$temp, temp_wind$wind)
 cor(temp_wind$temp[-outcity], temp_wind$wind[-outcity])
 ```
-  
 
-#### **5. Create the bivariate boxplot for temp/precip pair**
-  
+
+**5. Create the bivariate boxplot for temp/precip pair**
 ```{r}
 bvbox(temp_precip, xlab = "Temperature", ylab = "Precipitation", type = "n")
 
-text(USairpollution$temp, USairpollution$precip, cex = 0.6,
-     labels = abbreviate(row.names(USairpollution)))
+text(USairpollution$temp, USairpollution$precip, cex = 0.6, labels = abbreviate(row.names(USairpollution)))
 ```
-  
-
-#### **6. This time we identify Albuquerque as well as Miami and Phoenix as outliers. Perform the same operation as above to store this in an object** 
+**6. This time we identify Albuquerque as well as Miami and Phoenix as outliers. Perform the same operation as above to store this in an object** 
 ```{r}
 outcity2 <- match(c("Miami", "Phoenix", "Albuquerque"),
                  rownames(USairpollution))
 ```
-  
 
-#### **7. Calculate correlations with and without these outliers.**
+**7. Calculate correlations with and without these outliers.**
 - This time we have the opposite effect; the correlation increases from 0.39 to 0.62. Looking at the bivariate boxplot, we can see that at least two of the outliers are extremely 'far' from the regression lines.
 ```{r}
 cor(temp_precip$temp, temp_precip$precip)
 cor(temp_precip$temp[-outcity2], temp_precip$precip[-outcity2])
 ```
-  
 
 ## Problem 2 
 >The banknote dataset contains measurements on 200 Swiss banknotes: 100 genuine and 100 counterfeits. The variables are the status of the "note," length of the bill, width of the left edge, width of the right edge, bottom margin width, and top margin width. All measurements are in millimeters. Read the data and pick the variables: "note,” "top_margin," and "diag_length."
@@ -102,39 +100,34 @@ banknote <- read.csv("http://westfall.ba.ttu.edu/isqs6348/Rdata/swiss.csv")
 notedata <- banknote[,c(1,6,7)]
 head(notedata)
 ```
-  
-  
+
 ### A
 >a)	Construct separate univariate kernel estimates (Gaussian kernel) of the distributions of these two variables. 
 
-#### **1. First, we find the kernel density estimator of top_margin with the Gaussian kernel:**
+**1. First, we find the kernel density estimator of top_margin with the Gaussian kernel:**
 ```{r}
 plot(density(notedata$top_margin, bw = 0.5, kernel = "gaussian"))
 ```
-#### **2. Next, the same Gaussian kernel density estimator for the diagonal length:**
+**2. Next, the same Gaussian kernel density estimator for the diagonal length:**
 ```{r}
 plot(density(notedata$diag_length, bw = 0.5, kernel = "gaussian"))
 ```
 
-
 ### B
 >b)	Using the bivariate Gaussian kernel, estimate the two variables' bivariate density using (i) a contour plot and (ii) a 3-D perspective plot. 
 
-
-#### **1. Determine appropriate bandwidth for both variables with `dpik()`**
+**1. Determine appropriate bandwidth for both variables with `dpik()`**
 ```{r}
 bw <- c(dpik(notedata$top_margin), dpik(notedata$diag_length))
 ```
 
-
-#### **2. Save the density for contouring**
+**2. Save the density for contouring**
 ```{r}
 notedimensions <- notedata[,c(2,3)]
 density <- bkde2D(notedimensions, bandwidth = bw)
 ```
 
-
-#### **3. Create the scatter plot with the (2D) density contours**
+**3. Create the scatter plot with the (2D) density contours**
 ```{r}
 plot(notedata$top_margin, notedata$diag_length,
      xlab = "Note Top Margin",
@@ -144,9 +137,7 @@ plot(notedata$top_margin, notedata$diag_length,
 # Add countours
 contour(x = density$x1, y = density$x2, z = density$fhat, add = TRUE)
 ```
-
-
-#### **4. Create the scatterplot with 3D density perspective**
+**4. Create the scatterplot with 3D density perspective**
 ```{r}
 persp(x = density$x1, y = density$x2,
       z = density$fhat,
@@ -155,7 +146,7 @@ persp(x = density$x1, y = density$x2,
       zlab = "Density",
       main="Swiss Banknote Forgeries", phi = 30)
 ```
-  
+
 
 ### C
 >c)	Plot the scatterplot, highlighting points with different colors according to whether the bills are real or fake (the "note" variable in the data set has that information). Explain your findings. 
@@ -177,7 +168,6 @@ legend("topright",
 # Add countours
 contour(x = density$x1, y = density$x2, z = density$fhat, add = TRUE)
 ```
-  
 
 ## Problem 3
 >Examine the multivariate normality (MVN) of the banknote data (excluding the "note" variable) by creating the chi-square plot of the data. Load the data as follow. Follow the listed steps to examine the multivariate normality.
@@ -186,15 +176,12 @@ contour(x = density$x1, y = density$x2, z = density$fhat, add = TRUE)
 notedata2 <- banknote[,-1]
 head(notedata2)
 ```
-  
-
 ### A) Find the column-means vector. 
 **Here we find the column means and store them in Xbar**
 ```{r}
 xbar <- colMeans(notedata2)
 xbar
 ```
-  
 
 ### B) Find the covariance matrix of the data.
 ** Save the covariance of our Swiss notes data in S:**
@@ -202,22 +189,18 @@ xbar
 S <- cov(notedata2)
 S
 ```
-  
-
-### C) Find the Mahalanobis distances given using the data and the result of parts a and b.
+### C)	Find the Mahalanobis distances given using the data and the result of parts a and b.
 **Using the `mahalanobis()` function, we plug in the data with the column means and covariance to find the Mahalanobis distances:**
 ```{r}
 d2 <- mahalanobis(notedata2, xbar, S)
 d2
 ```
-  
-
-### D) Sort the Mahalanobis distances from smallest to largest.
+### D)	Sort the Mahalanobis distances from smallest to largest.
 **Sort the distances to see which are the closest and furthest from the mean. Save into sorted_d2 for future use.**
 ```{r}
 sorted_d2 <- sort(d2, decreasing = FALSE) 
 ```
-  
+
 ### E)	Chi-Square Distribution
 >Suppose your data is multivariate normal, by definition. In that case, the Mahalanobis distances should follow the chi-sq distribution (with df = number of columns), so create a chi-square quantile values list and plot them vs. the sorted Mahalanobis distances. The quantiles should be on the x-axis, and the sorted Mahalonobis distances must be on the y-axis. Please label your chart correctly. You also need to add a 45-degree line to your plot by running this code abline(a = 0, b = 1) after the plot code.
 
@@ -236,26 +219,21 @@ xlab = expression(paste(chi[3]^2, " Quantile")), ylab = "Ordered squared distanc
 # Add 45 degree reference line 
 abline(a = 0, b = 1)
 ```
-  
-
 ### F)	Interpret the plot of part e. Is the data MVN?
 **Based on the closeness of the data to the reference line and zero, the data does appear to be a multivariate normal distribution.** 
-  
 
 ## Problem 4
 > Use TTU graduate student exit survey data to answer the following questions.
 
 ```{r}
 grad <- read.csv("http://westfall.ba.ttu.edu/isqs6348/Rdata/pgs.csv")
+head(grad)
 ```
-  
-
 ### A) This data contains a rating of how many students?
 **This dataset contains ratings from 2002 students:**
 ```{r}
 nrow(grad)
 ```
-  
 
 ### B) Make a scatterplot of "Facteaching" and "FacKnowledge"
 >If your plot looks odd, use jitter() of each variable, then plot.
@@ -267,14 +245,11 @@ plot(jitter(grad$FacTeaching), jitter(grad$FacKnowledge),
      ylab = "Faculty Knowledge Rating",
      main = "Faculty Teaching vs Knowledge")
 ```
-  
-
 ### C) Create new dataframe for "FacTeaching,” "FacKnowledge", and "Housing"
 **Let's create an object with these three variables so we can compare them in the next section:**
 ```{r}
 grad_3var <- grad[,c("FacTeaching", "FacKnowledge", "Housing")]
 ```
-  
 
 ### D) Find a correlation matrix for the data of part (c).
 >If there are NAs (missing values) in your data, estimate the correlation matrix by all three following methods.
@@ -284,26 +259,19 @@ grad_3var <- grad[,c("FacTeaching", "FacKnowledge", "Housing")]
 ```{r}
 cor(grad_3var)
 ```
-  
-
 #### i. Complete-case analysis.
-
 **First we will calculate the correlation using complete-case analysis, which deletes all rows that contain any NAs.**
 ```{r}
 cor(na.omit(grad_3var))
 ```
-  
-
 #### ii. Available-case analysis.
-
 **Next we calculate the correlation matrix using available-case, or "pairwise" analysis:**
 ```{r}
 cor(grad_3var, use = "pairwise")
 ```
-  
+
 
 #### iii. Maximum likelihood estimation.
-
 **Using the `norm` package, we can calculate the maximum likelihood estimate:**
 ```{r}
 pre <- prelim.norm(as.matrix(grad_3var))
@@ -313,16 +281,11 @@ theta_hat <- em.norm(pre)
 ml.fit <- getparam.norm(pre,theta_hat)
 ```
 
-
 ```{r}
 corr.ml <- cov2cor(ml.fit$sigma)
 corr.ml
 ```
-  
 
 #### Is there a noticeable difference between the three methods of missing value treatment? Which method do you suggest? 
-
-The correlation matrices are extremely close, in this case it appears that any of these methods would give you an accurate value. From this, I would speculate that there are few nulls in the data.  
-  
-This could be because some responses are enforced through the survey software, or that students don't feel the need to skip questions. However, knowing that our data is distributed fairly normally it would be best to use maximum likelihood estimates to impute these nulls.
+**The correlation matrices are extremely close, in this case it appears that any of these methods would give you an accurate value. From this, I would speculate that there are few nulls in the data. This could be because some responses are enforced through the survey software, or that students don't feel the need to skip questions. That said, knowing that our data is distributed fairly normally it would be best to use maximum likelihood estimates to impute these nulls.**
 
