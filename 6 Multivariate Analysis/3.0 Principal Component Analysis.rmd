@@ -1,0 +1,15 @@
+---
+title: "3.0 Principal Component Analysis"
+output: html_notebook
+---
+
+## Goals
+- Dimension reduction technique 
+- Trying to narrow our dataset to fewer variables
+
+## Eigenvalues and Eigenvectors
+These are used to describe the shape of multivariate data
+
+### Eigenvalues
+
+
