@@ -1,0 +1,158 @@
+---
+title: "3.0-Principal-Component-Analysis"
+author: "JD Santos"
+date: "11/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+For this problem we'll be using a dataset of police application fields:
+```{r}
+police <- read.csv("https://bit.ly/police_applications")
+```
+
+##### a) Perform principal component analysis using the correlation matrix. You do not need to do data cleaning or fixing the direction of variables in this data.
+
+To perform principal component anlysis, use the `princomp()` function
+
+- Use `cor = T` to use the correlation matrix (correlation = True) 
+- Run `summary()` with `loading = T` To view the components and the variable eigenvectors
+```{r}
+police.pca <- princomp(police, cor = T)
+summary(police.pca, loading =T)
+```
+
+##### b) What percentage of the total variance is covered by the first two principal components?
+If we refer to the "Importance of components" output above, we can find this answer in the "cumulative proportion" section. This reports that the cumulative proportion of the second component is 51.23% 
+
+##### c) Report the loading coefficients (eigenvector of the correlation matrix) of the first two principal components.
+We can select the first two loadings from our police.pca by specifying loadings:
+```{r}
+police.pca$loadings[,1:2]
+```
+
+##### d) Describe what information we can extract from the first two principal components? Explain. (You need to interpret the loading of the first two PCs)
+We would expect a candidate scoring high in PC1 would be tall and large in multiple dimensions (chest, thighs, weight, etc). They would struggle with chin-ups, and have relatively low endurance. Candidates scoring high in PC2are smaller, but have higher recovery and pulse rate in general
+
+## Problem 2
+These questions use per-state crime data:
+```{r}
+crime <- read.csv("https://rb.gy/wu8kvo", row.names = "STATE")
+head(crime)
+```
+##### a) Perform the principal components using the correlation matrix. You do not need to do data cleaning or fixing the direction of variables in this data.
+As before, we will save the principal component analysis into an object and print the results with `summary()`
+```{r}
+crime.pca <- princomp(crime, cor = T)
+summary(crime.pca, loading = T)
+```
+
+##### b) What percentage of the total variance is covered by the first two principal components?
+Per the output above, the cumulative proportion of the first two components is 76.5%.
+
+##### c) Report the loading coefficients (eigenvector of the correlation matrix) of the first two principal components.
+The first two loadings can be pulled from our `crime.pca` variable, here we will store it in `pc1_2`:
+```{r}
+pc1_2 <- crime.pca$loadings[,1:2]
+pc1_2
+```
+
+##### d) Describe what information we can extract from the first two principal components? Explain. (You need to interpret the loading of the first two PCs)
+A state in PC1 scores highly in almost every type of crime, with Auto crime being the lowest. In PC2, there are strong scores for murders and somewhat for assault, but many of the other types of crime are actually negative associated like larceny and auto
+
+##### e) Construct the biplot graph of the crime data. Interpret the resulting biplot graph for “MISSISSIPPI,” “NEVADA,” and “HAWAII.” (You can validate your conclusions by looking at the actual standardized (scaled) data values.)
+
+A biplot graph can be created with the aptly named `biplot()` function. From this graph we can see:
+
+- Mississippi scores the highest of all states in PC2, we would it expect its crime indicators to align to the features described about PC2 above
+  - This can be confirmed looking at the z-scores of the scaled crime data, murder is extremely high compared to the rest
+  - We also see negative larceny and auto scored
+  
+- Nevada is the state with the highest PC1 score
+  - Again we'd expect the features described above, with strong scores across all crime categories 
+  
+- Hawaii scores very low on PC1, and negative in PC2
+  - From this I'd assume crime in general is low in Hawaii
+  - Checking the scaled data, we see that most crimes are low with the most prevalent being larceny
+```{r}
+biplot(crime.pca, col=c("black", "red"), cex = 0.6)
+```
+
+
+```{r}
+options(digits = 2) 
+scale(crime)
+```
+## Problem 3
+These questions use a husband/wife survey dataset involving a rating three questions:
+
+1. What is the level of passionate love you feel for your partner?
+2. What is the level of passionate love your partner feels for you?
+3. What is the level of companionship love you feel for your partner?
+
+Install CCA library
+```{r}
+install.packages("CCA")
+```
+```{r message=FALSE, warning=FALSE}
+#hide
+library(CCA)
+```
+
+
+Read in our survey CSV, save it as scaled data (z-scores), and create two sets for husband and wife responses:
+```{r}
+love <- read.csv("https://bit.ly/3onLanp", header = T)
+love <- scale(love)
+options(digits = 3)
+# Creating two sets for correlations
+X <- love[, 1:4]  # Husband's responses
+Y <- love[, 5:8]  # Wife's responses
+```
+##### a) Find the linear combination of the four husband responses and the linear combination of the four wife responses, maximizing the two derived variables' correlation. (Hint: use X coefficients and write U_1 as a linear combination of X variables, then use Y coefficients and write V_1 as a linear combination of Y variables)
+Using the `cc()` function from CCA, we can get the canonical correlation between our husband and wife responses:
+```{r}
+cca <- cc(X,Y)
+```
+
+Find the linear combination of the husband responses:
+```{r}
+a <- cca$xcoef
+round(a, 2)
+```
+
+
+```{r}
+a1 <- a[,1]/min(a[,1])
+round(a1, 3)
+```
+$U_1 = -.11X_1 + .36X_2 + X_3 - 0.98X_4$
+
+Find the linear combination of the wife's responses:
+```{r}
+b <- cca$ycoef
+round(b, 2)
+```
+
+```{r}
+b1 <- b[,1]/min(b[,1])
+round(b1, 3)
+```
+$V_1 = 0.69X_1 + .54X_2 + X_3 - 0.49X_4$
+
+##### b) Find the correlation between U_1, V_1.
+We can find the correlations from the CC function:
+```{r}
+round(cca$cor, 2)
+```
+
+
+##### c) What does the husband linear combination (U_1) measure? To answer, based on the coefficient of X in U_1, ask yourself, “What does the husband linear combination measure?”
+The husband's $U_1$ measures the score for their reported "level of compassionate love."
+
+##### d)	Repeat C. for the wives linear combination (V_1).
+The wife's $V_1$ measures the score for their reported "level of compassionate love."

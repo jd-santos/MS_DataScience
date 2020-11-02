@@ -8,8 +8,17 @@ output: html_notebook
 - Trying to narrow our dataset to fewer variables
 
 ## Eigenvalues and Eigenvectors
-These are used to describe the shape of multivariate data
+These are used to describe the shape of multivariate data. Formal definition:
+- If A is an n*n matrix, the eigenvalue of A is the scalar (λ) provided there is a nonzero vector $\bar{x}$ that allows the following to be true:
+  - $A\bar{x} = λ\bar{x}$
+  - λ is the Eigenvalue
+    - A scalar that gives us the magnitude of the Eigenvector
+  - $\bar{x}$ is the Eigenvector of A corresponding to λ
+    - Any nonzero multiple of this matrix is also an Eigenvector of A
 
-### Eigenvalues
+[Eigenvalues and Eigenvectors demonstration](https://www.youtube.com/watch?v=5UjQVJu89_Q&feature=emb_title) from Solid Mechanics Classroom:
 
+```{r}
+knitr::include_graphics('Images/3.1_EigenVs_Graph.png')
+```
 
