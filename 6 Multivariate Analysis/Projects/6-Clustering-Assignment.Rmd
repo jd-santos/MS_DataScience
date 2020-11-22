@@ -1,0 +1,194 @@
+---
+title: "6.0 Clustering Assignment"
+output:
+  html_document:
+    df_print: paged
+---
+## Data Setup
+Europe employment dataset showing the percentage of people employed in nine industry sectors in Europe for the years 1989 to 1995.
+
+Variables:
+
+- AGR: Agriculture, forestry, and fishing
+- MIN: Mining and quarrying
+- MAN: Manufacturing
+- PS: Power and water supplies
+- CON: Construction
+- SER: Services
+- FIN: Finance
+- SPS: Social and personal services
+- TC: Transport and communications
+
+1. Read in data
+```{r}
+euro <- read.csv("https://bit.ly/3ktLWfr", header=TRUE, row.names=1)
+head(euro)
+```
+2. Remove outliers Albania and Giblartar as well as the non-numerical "Group" column:
+
+```{r}
+# Remove outlier countries
+euro.c <- euro[-c(19,28), ]
+
+# Remove the first column
+mydata = euro.c[, -1]
+head(mydata)
+
+```
+
+#### a)	Create a hierarchical clustering dendrogram
+*Based on complete linkage (default).*
+
+This requires bothing scaling and creating a distance matrix of our original data which we can accomplish by wrapping mydata with the `scale()` and `dist()` functions.
+
+We then perform the hierarchical clustering with `hclust()` and plot the dendogram:
+```{r}
+scale.dist = dist(scale(mydata))
+hc <- hclust(scale.dist)
+plot(hc, main = "Europe Employment Complete Linkage Dendogram")
+```
+
+
+#### b)	Identify the appropriate number of clusters in Hierarchical clustering using a scree plot 
+
+To create this scree plot, we simply reverse the height of our clustering.Based on the drop-up point at 3, we will use that many clusters.
+
+```{r}
+plot(rev(hc$height))
+```
+
+
+#### c)	Based on your decision in part b, determine what countries are in which group?
+
+Using our assumption of 3 clusters above, we can cut the clustering and see which countries land in the three groups.
+
+1. Cut the clustering, display number of countires in each cluster:
+```{r}
+ct <- cutree(hc, 3)
+table(ct)
+```
+
+2. List the countries in cluster 1: 
+```{r}
+cluster1 = subset(rownames(mydata), ct==1)
+cluster1
+```
+
+3. List the countries in cluster 2: 
+```{r}
+cluster2 = subset(rownames(mydata), ct==2)
+cluster2
+```
+
+4. List the countries in cluster 3: 
+```{r}
+cluster3 = subset(rownames(mydata), ct==3)
+cluster3
+```
+
+
+#### d)	Identify the appropriate number of clusters in kmeans clustering based on the WGSS scree plot function.
+
+Another method of identifying the best number of clusters is k-means clustering. For this we use the actual data instance of the distance matrix.
+
+In this plot we limit the data to 15 points because additional clusters likely aren't helpful and make reading the elbow more difficult. For this analysis, we see that 4 clusters might actually be a better number to work with.
+```{r}
+plot.wgss = function(mydata, maxc) {
+  wss = numeric(maxc)
+  for (i in 1:maxc) 
+    wss[i] = kmeans(mydata,centers=i, nstart = 10)$tot.withinss 
+  plot(1:maxc, wss, type="b", xlab="Number of Clusters",
+  ylab="Within groups sum of squares", main="Scree Plot") 
+}
+
+# Set max groups to 15 to see relevant clusters more easily
+plot.wgss(mydata, 15)
+```
+
+#### e)	Based on your decision in part e, perform k-means clustering and determine what countries are in which group?
+With our number of clusters (centers), we can scale the data and perform the k-means clustering. The number of countries in each cluster is printed below along with the country groupings.
+```{r}
+mydata.s <- scale(mydata)
+km <- kmeans(mydata.s, centers = 4)
+table(km$cluster)
+km$cluster
+```
+
+
+#### f)	Attempt to identify the meanings of the clusters you found in part e by finding and interpreting the cluster centroids.
+By pulling the centers from our k-means analysis, we can see some patterns in the centroids:
+
+1. Cluster 1 contains countries that have heavy employment in construction, services, and finance with low employment elsewhere
+2. Cluster 2 represents countries that have extremely high mining employment and some employment in transport. They have particularly low manufacturing employment.
+3. Cluster 3 countries countries have relatively low employment across the board, with some representation in finance and social services
+4. Cluster 4 countries are almost entirely employed in agriculture and manufacturing industries.
+```{r}
+km$centers
+```
+
+
+#### g)	Attempt to identify the meanings of the clusters you found in part f 
+*Plot different pairs of principal component scores, the (PC1,PC2), (PC1,PC3), and (PC2,PC3) scatterplots, with points labeled (or colored) according to the assigned cluster. You can look at the loading of the first three PCs to find a meaning for each PC.*
+
+To try to interpret these meanings, we can use Principal Component Analysis and examine the first few loadings. The first two components appear very high in traditional economic employment, like agriculture or manufacturing.
+
+There appears to be some specialization within those traditional employment countries, such as component 2 being high in manufacturing as opposed to component 1. Component 3 reads high in what we'd consider "modern" industries, like services and power supplies.
+```{r}
+pca <- princomp(mydata, cor = T)
+pca$loadings[,1:3]
+```
+These clusters become more apparently if we plot the k-means with country labels and cluster colors:
+```{r}
+km <- kmeans(scale(mydata), 3, nstart = 20)
+plot(pca$scores[,c(1,2)], pch = ".", xlab = "Traditional vs. Modern Economy", ylab = "Manuf. vs. Mining.")
+text(pca$scores[,c(1,2)], label = rownames(mydata), cex = 0.7, col = km$cluster)
+```
+
+
+
+#### h)	Perform model-based clustering without identifying the number of clusters
+*Plot the result of classification. How many groups are identified in your data? Determine what countries are in which group?*
+
+First, the "Mclust" module is needed so we install and load it. Then we can run Mclust on our dataset and plot the classifications. This classification identifies two groups, the countries in these groups are identified below.
+```{r}
+install.packages("mclust")
+```
+
+```{r}
+library(mclust)
+```
+
+```{r}
+mc <- Mclust(mydata)
+mc$classification
+```
+Here we can see the color-coded plots of the clusters for each industry variable.
+
+```{r}
+plot(mc, what = "classification")
+```
+
+
+#### i)	Use “plot” on your fitted mclust object, and report the “uncertainty” plot for variables (SER, SPS)
+*Explain the grouping of what country is more uncertain with what probability of uncertainty*
+
+We can plot the uncertainty of the countries by specifying `what = uncertainty` as a plot parameter, and specifying the dimensions for the two variables of interest:
+```{r}
+plot(mc, what = "uncertainty", dimens = c(6,8))
+text(mc$data[,c(6,8)], labels = abbreviate(rownames(mydata)), col = mc$classification)
+```
+To find the most uncertain country, we can create a dataframe of the rows, classification, and uncertainty, then order by uncertainty. By doing this we see that Malta is the most uncertain between these variables with a probability of 0.045.
+```{r}
+clust.data = cbind(rownames(mydata), mc$classification, mc$uncertainty)
+clust.data[order(mc$uncertainty),]
+```
+
+
+#### j)	Construct the appropriate contingency table between the given grouping in the original cleaned data (euro.c$Group) and the groups we found in the model-based clustering.
+*Interpret the table, and explain how well do the model-based clusters correspond?*
+
+Looking at the contingency table, we see there is a significant disconnect between the original EU groups and the model classifications. Namely, the model classified way too many countries in the Eastern categories, and very few in the EU category. 
+
+```{r}
+table(euro.c$Group, mc$classification)
+```
