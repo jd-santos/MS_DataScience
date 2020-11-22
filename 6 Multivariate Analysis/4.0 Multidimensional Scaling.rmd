@@ -1,0 +1,266 @@
+---
+title: "4.0 Multidimensional Scaling"
+output: html_notebook
+---
+## Multidimensional Scaling
+- MDS is designed to construct a map of relationships between variables using the distance matrix
+  - Distance matrix
+    - Table of distances between objects 
+- The goal is to find points in low dimensions that approximate the high-dimensional configuration of the original distance matrix
+  - Tries to represent this with a geometric map
+- Useful when the underlying relationships between variables isn't known but a distance matrix can be estimated
+
+### Classical Multidimensional Scaling Overview
+- Only uses the distances, not the original data
+- Distance matrix pt. ii electric boogalo
+  - Matrix of Euclidean distances from object i to object j $d_{ij}$
+- The distance matrix is converted to X and Y coordinates (in 2D) to be used for plots
+  - The graphical representation is built so that the Euclidean distances match the provided distance matrix
+  - Or tries to match it anyway, the goal is to be as close as possible
+- The coordinates should match the principal components from PCA
+- Works on any positive zero-diagonal symmetric matrix
+
+### Classical Dimensional Scaling in R
+
+1. Create a sample matrix with 10 rows and 5 columns
+
+```{r}
+data <- matrix(c(
+3, 5, 6, 1, 4, 2, 0, 0, 7, 2,
+4, 1, 2, 1, 7, 2, 4, 6, 6, 1,
+4, 1, 0, 1, 3, 5, 1, 4, 5, 4,
+6, 7, 2, 0, 6, 1, 1, 3, 1, 3,
+ 1, 3, 6, 3, 2, 0, 1, 5, 4, 1), ncol = 5)
+```
+
+
+## Correspondence Analysis
+
+## Exploratory Factor Analysis (EFA)
+### Factor Analysis Overview
+- Factor analysis is a regression model that links two types of variables: manifest and latent
+- Manifest variables
+  - Variables that can be directly measured or observed
+- Latent variables (Factors)
+  - Cannot be directly observed
+  - We need manifest variables to test for their presence
+- Two types of factor analysis
+  - Exploratory
+    - Investigates relationships between manifest and latent variables without making assumptions about which ones are related
+  - Confirmatory
+    - Tests whether specific factors fit the covariances or correlations between manifest variables
+    
+### The K-Factor Analysis Model
+- Factor analysis is similar to a regression models examining the link between manifest and latent variables 
+$Z_i = λ_{i1}f_1 + λ_i2f_2+...+λ_{ik}f_k + u_i, i = 1,2,...,q$
+  - i: the manifest variable index, there are q variables (columns) i = 1,2,...,q
+  - $Z_i$: z-score of the i-th manifest variable ($x_i$)
+    = Mean of zero and unit variance
+  - $λ_{i1},...,λ_{ik}$: factor loadings for Z_i
+    -Coefficients of the regression model
+    - Help interpret the factors
+    - Larger values relate factors more close to corresponding observed variables that sometimes give us a meaningful description of the factor
+  -$f_1,...,f_k$: Uncorrelated common factors with means of zero and unit variance
+  - $u_i$: error term
+    - Only applies to $Z_i$
+    - Uncorrelated with other disturbance terms and factors
+    
+### Factor Analysis in R
+- Use `factanal()` function and pass in the matrix as well as the number of factors
+  - Function performs maximum-likelihood factor analysis on a covariance matrix or data matrix
+- Null hypothesis: the k factors are sufficient for presenting the data
+  - In this example we assume k = 3 is sufficient
+    - The p-value > 0.05 so we fail to reject the null
+    - The appropriate number of factors (latent variables) is 3
+
+Example: Crime data
+```{r}
+crime <- read.csv("https://rb.gy/wu8kvo", row.names = "STATE")
+
+dim(crime)
+```
+
+```{r}
+crime.fa <- factanal(crime, factors = 3)
+crime.fa
+```
+We can examine the loadings by pullings them from the factor analysis:
+```{r}
+crime.fa$loadings
+```
+
+### Uniqueness
+
+$Var(Z_i) = λ^2_{i1}Var(f_1) + λ^2_{i2}Var(f_2)+...+λ^2_{ik}Var(f_k) + Var(u_i)$
+
+$= λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik} + Var(u_i)$
+
+ - The right half is the commonality of variable $Z_i$
+  - Represents the variance shared with other variables through the common factors
+  
+- $Var(u_i)$ the specificity or uniqueness of Z_i
+  - The variability in Z_i not shared with other variables
+  - Smaller uniqueness: the factors explain more variance
+    - It's "less unique"
+    
+- We know Variance of $Z_i$ is unit, therefore $Var(Z_i) = 1$
+  - We solve for uniqueness of variable i:
+  
+  $Var(u_i) = 1 - (λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik})$
+  
+#### Uniqueness in R
+- To perform this in R, we do 1 - the sum of the factor analysis loadings squared
+- In this example we grab the uniqueness of murder by calling it's location `[1,1:]` with the three factor columns `[:3]`
+```{r}
+1 - sum(crime.fa$loadings[1,1:3]^2)
+```
+
+### Exploratory Factor Analysis
+- We've reached the title of the song
+- Let's do some math 
+
+#### EFA Model
+
+$\hatΣ = ΛΛ^T + Ψ$
+
+- Σ: the covariance matrix of scaled data (Z-scores)
+  - Equal to the correlation of non-scaled data
+  - In this formula, it has a hat because it's the *estimate* of our original correlation matrix
+    - Should be close to the original correlation matrix is we did good 
+- Λ: The loading matrix
+  - We pulled this with `$Loadings`
+  - In the equation we multiply it by its own tranpose
+- Ψ: The covariance matrix of the error term 
+  - Cov(U)
+  - The uniqueness matrix
+  - Matrix of the variance of disturbance terms ($u_i$) on the diagonal and zero everywhere else because th the terms must be independent of each other
+
+#### EFA in R
+
+- `factanal()` uses maximum likelihood estimation (MLE) by default
+  - MLE is for estimating model parameters and we have some model parameters to estimate!
+    - The parameters are the loading coefficients and the u term (error) but of course you already knew that 
+- R Process
+1. Manually perform the EFA model with matrix operations to get the estimate of the correlation matrix
+
+```{r}
+options(digits = 2)
+
+# obtain the loading coefficients
+f.loading <- crime.fa$loadings[,1:3]
+
+# multiply loadings by the transpose of itself
+# add the diagonal of error covariance matrix (uniqueness)
+corHat <- f.loading %*% t(f.loading) + diag(crime.fa$uniquenesses)
+
+# the estimate of the correlation matrix
+corHat
+```
+2. Compare the estimate to the actual correlation matrix by finding the discrepancy with root-mean-square error (RMSE)
+- An RMSE below 0.05 is acceptable
+- This is acceptable, you did great darling
+```{r}
+# original correlation
+corr <- cor(crime)
+
+# Root-mean-square error
+rmse = sqrt(mean((corHat-corr)^2))
+rmse
+```
+### EFA Application and Cut
+
+1. Load evaluation data
+- P-value is not >0.05 so we should say the model isn't valid
+  - Here we ignore that since the data sample size is large so small discrepancies between $\hatΣ$ and Σ will be detected as significant
+  - If we redid this with a sample of the data we would see a much larger p-value
+```{r}
+evals <- read.csv("https://bit.ly/3ed5Bia")
+
+# variables related to 16 evaluation questions
+evals = na.omit(evals[,3:18]) 
+evals.fa <- factanal(evals, factors = 3)
+evals.fa
+```
+2. Pass in `cut = 0.5` to drop all loadings below that level
+- This allows us to easily view the higher correlations
+
+```{r}
+print(evals.fa$loadings, cut = 0.5)
+```
+
+## Rotation
+- In the model $\hatΣ = ΛΛ^T + Ψ$ we don't have a single solution for the factor loading matrix Λ
+  - Remember that in PCA we do have single solutions for loadings: the eigenvectors
+- We can perform a rotation which changes the factor loadings for easier interpretation
+  - Underlying math isn't changed, the outputs are just easier to interpret
+- `factanal()` uses *varimax* rotation, the most common technique
+
+### Factor Analysis Without Rotation
+- Since `factanal()` has a default rotation of varimax, we need to specify `rotation = "none"` for this example
+```{r}
+faNR <- factanal(evals, factors = 3, rotation = "none")
+faNR
+```
+2. Perform our cut and notice that we can't find mutually exclusive characteristics for the factors
+- In this loading we only see a single factor with correlations
+```{r}
+print(faNR$loadings, cut = 0.5)
+```
+### Varimax Rotation
+- The goal is to find high loadings for some factors and low loadings for others
+  - Improves interpretation 
+- An orthogonal factor rotation that assumes factor j interpretation can be measured by the variance of squares of its factors loadings
+  - i.e. the variance of $λ^2_{1j} + λ^2_{2j} +...+λ^2_{qj}$
+- A large variance the $Λ_{ij}$ values are closer to zero or one
+  - Varimax rotation maximizes the sum of those variances for all factors
+
+1. Factor analysis without rotation
+- fa: factor analysis
+- L: loadings
+- NR: no rotation
+- var: variance
+```{r}
+faNR <- factanal(evals, factors = 3, rotation = "none")
+faLNR <- faNR$loadings[,1:3]
+varLNR = var(faLNR[,1]^2) + var(faLNR[,2]^2) + var(faLNR[,3]^2)
+varLNR
+```
+
+2. Factor analysis with rotation (by default, the varimax rotation)
+```{r}
+faR <- factanal(evals, factors = 3)
+faLR <- faR$loadings[,1:3]
+faLR
+```
+
+3. Varimax rotation maximizes the sum squared variance of loading
+- About 9% here versus less than 1% with rotation disabled
+```{r}
+varLR = var(faLR[,1]^2) + var(faLR[,2]^2) + var(faLR[,3]^2) 
+varLR
+```
+
+### Factor Scores
+- We can also approximate the measure of latent variables (factor scores) by regression 
+  - Similar to PCA scores
+  - The factor loadings are the approximate correlation of the manifest variables and factors
+- Final point: both PCA and factor analysis require observed (manifest) variables to be correlated
+  - Otherwise FA has nothing to explain and PCA will just give us components similar to the original variables
+  
+Use `scores = regression` to get scaled scores 
+```{r}
+faR <- factanal(evals, factors = 3, scores = "regression", rotation = "none")
+
+# score before rotation are independent of each other
+round(cor(faR$scores), 10)
+```
+Calculate approximate correlations of manifest and latent variables:
+```{r}
+s0 <- rowSums(evals)
+s1 <- rowSums(evals[,11:16])
+s2 <- rowSums(evals[,1:10])
+cor(s0, faR$scores[,1])
+cor(s1, faR$scores[,1])
+cor(s2, faR$scores[,1])
+```
+

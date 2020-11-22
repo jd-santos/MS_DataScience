@@ -1,0 +1,219 @@
+---
+title: "4.0 Multidimensional Scaling Assignment"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Problem 1 
+Use the Olympic Heptathlon data, be sure to remove PNG as an outlier and the final scores variable:
+```{r}
+data("heptathlon",package="HSAUR2")
+mydata <- heptathlon[-25,-8] 
+```
+#### a) Create a scaled distance matrix for observations
+This is the scaled distance matrix for the first two coordinates.  We can look at the eigenvalues printed or calculate the cumulative proportion of the eigenvalues (commented out) to see that two coordinates is an appropriate number to examine.
+```{r}
+cmd <- cmdscale(dist(scale(mydata)), k = 2,  eig = T)
+# cumsum(cmd$eig)/sum(cmd$eig)
+cmd
+```
+
+
+#### b) Perform graphical MDS analysis on the "distance" matrix of a
+*Label the points using the row names (set an appropriate cex (size) for a better view). Who is the most similar athlete to Scheider(SWI)?*
+
+This is the plot of the scaled distances, from this we can see that Braun from FRG (West Germany) is the closest toe Scheider. 
+```{r}
+plot(cmd$points[,1:2], pch = ".")
+text(cmd$points[,1:2], labels = rownames(mydata), cex = 0.6)
+```
+
+
+#### c) Create a distance matrix from a correlation matrix, explain why this represents distance between variables
+*Create a correlation matrix, convert it to a distance matrix by computing 1-correlation*
+This is a distance matrix created by performing 1 - the correlation matrix of the data. The resulting distances can be understood relative to their correlations, with a distance of zero being perfect correlation. Therefore, higher distances in this matrix represent lower correlations and vice versa.
+```{r}
+v.dist <- 1-cor(mydata) 
+v.dist
+```
+
+#### d) Perform graphical MDS analysis on the correlation-distance matrix
+*Label the points using the column names (set an appropriate cex (size) for a better view). What variables are more similar (related) to each other?*
+This is the MDS plot of the correlation-distance matrix created above. Unfortunately it is difficult to tell which variables are related regardless of how the text is scaled, but there are obvious clusters and the ones near the bottom would be the most closely related.
+
+```{r}
+v.cmd <- cmdscale(v.dist, eig = T)
+plot(v.cmd$points[,1:2], pch = ".")
+text(v.cmd$points[,1:2], labels = rownames(mydata), cex = .4)
+```
+
+# Problem 2
+Use the TTU grad student exit survey data. Two variables of interest are FacTeaching, a 1, 2, 3, 4, 5 ratings of teaching at TTU by the student, and COL, the college from which the student graduated.
+
+```{r}
+grad <- read.csv("http://westfall.ba.ttu.edu/isqs6348/Rdata/pgs.csv", header = T)
+```
+```{r}
+install.packages("ca")
+```
+
+```{r}
+library(ca)
+```
+
+
+#### a) Construct the contingency table showing counts of students in all combinations of these two variables
+
+```{r}
+attach(grad)
+
+tbl = table(COL, FacTeaching)
+tbl
+```
+
+
+#### b) Construct the correspondence analysis (CA) plot and comment on the outlier in the previous problem
+*Remove the outlier data you discovered and re-construct the CA plot.*
+Using the `ca()` function, we create a CA plot of the evaluation data. One obvious outlier is "Dual," which has an extremely low count. This may be because students who are dual majors are counted in other categories, or there are just very few of them. We can remove it before executing the final plot.
+
+```{r}
+grad.ca <- ca(tbl) 
+
+# remove column 5, dual
+grad.ca <- ca(tbl2 <- tbl[-5, ])
+plot(grad.ca)
+```
+
+
+#### c) Analysis of three selected colleges
+*Pick three colleges in your graph, two of which are close to each other, and the third of which is far from your first two. Find the three conditional distributions of rating for your three colleges, and interpret the distance between the graph points in terms of "distances" between those three conditional distributions.*
+
+R-Documentation:
+- `prop.table` returns conditional proportions given margins, i.e. entries of x, divided by the appropriate marginal sums.
+
+1. First we create the proportion table with the `prop.table()` function:
+```{r}
+tbl2 <- tbl[-5, ]
+
+# create proportion table 
+prop.tbl2 <- prop.table(tbl2)
+round(prop.tbl2, 3)
+```
+2. Let's examine an apparent cluster of three schools: BA, EN, and MC BA and EN appear close, while MC is extremely far from both.
+```{r}
+prop.table(tbl2, 1)[c(4, 6, 9), ]
+```
+The distances between BA and EN are extremely close between all scores with the exception of 1, and BA is visibly close to 1 on the graph. MC is far on most of the scores, with most of the proportion centered on 4. It is weighted significantly towards higher scores in general.
+
+# Problem 3
+Use the Daily stock returns data set. The columns are companies; Man1, Man2, Man3 are manufacturing companies; Serv1, Serv2, Serv3, Serv4 are service companies.The numbers (returns) are all small, close to zero, and this causes some numerical problems with the computer analyses. (As a general rule, numerical algorithms are designed for stability when the numbers are "nice," like 12.3, 4.56, 2.38 rather than .000123, .0000456, .0000238.) So multiply everything in the data set by 100 first. (This converts returns to % scale; eg, 0.013 becomes 1.3%).
+```{r}
+stock <- read.csv("https://bit.ly/3egKiMU")
+stock = stock*100
+```
+
+#### a)	Perform an exploratory factor analysis (EFA) using two factors.
+
+To perform a basic EFA, we will use the `factanal()` function and pass in `factors = 2` to specify the number of factors.
+
+```{r}
+stock.fa<- factanal(stock, factors = 2)
+stock.fa
+```
+
+
+#### b)	Interpret the p-value reported in your EFA.
+The null hypothesis is that the number of factors is sufficient for presenting the data. With a p-value of 0.75, we fail to reject the null hypothesis.
+
+#### c)	What are the factors (latent variables) in this model? Name them.
+The factors are the types of companies, namely manufacturing and service. This is apparent from the clustered loadings of each company type. 
+
+#### d)	Write the EFA regression model for variable Man1. 
+*For example: Man1 = a f1 + b f2 + e. Based on the outputs, what are a and b?*
+*Note: e is an unknown error term random variable (called u in the lecture video). The most important thing we know about e is the variance of e, which we call it uniqueness, also we know that e is normally distributed with the mean of zero. Long story short, do not plug a value for e because it's a random variable, not a constant value.*
+The regression model for Man1 uses the coefficients of the loadings and the additional error term.
+$Man1 = 0.46f_1 + 0.15f_2 + e$
+
+#### e)	In the model of part d, determine the variance of the error term e.
+
+Knowing that the variance of the scaled variable is unit, we can solve for the error term and establish that the variance of the error term (uniqueness) is one minus the sum of squared loadings:
+
+$Var(e_i) = 1 - (λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik})$ 
+
+We can calculate this in R and arrive at a uniqueness of 0.76:
+```{r}
+1 - sum(stock.fa$loadings[1,1:2]^2)
+```
+
+#### f)	What is the correlation between f2 and Serve2?
+
+From the analysis above we can find this at 0.52.
+
+
+#### g)	Compare the EFA approximated correlation matrix versus the actual correlation matrix. Report RMSE. What do you conclude?
+
+To perform the extimated correlation, we use the formula:
+
+$\hatΣ = ΛΛ^T + Ψ$
+
+Multiply the loadings matrix by its transpose and add the covariance matrix of error. Then we can perform the RMSE on that result and the original correlation matrix. From the result of 0.01 it appears the matrices have low error and are therefore very similar 
+
+```{r}
+s.loadings = stock.fa$loadings[,1:2]
+corHat <- s.loadings %*% t(s.loadings) + diag(stock.fa$uniquenesses)
+
+corr <- cor(stock)
+rmse = sqrt(mean((corHat-corr)^2))
+rmse
+```
+
+
+# Problem 4
+Perform factor analysis on questions 22-35 of TTU web survey data:
+```{r}
+ttuweb <- read.csv("https://bit.ly/3oNr5qX")
+mydata <- ttuweb[,22:35]
+```
+#### a)	There are some missing values in this data. Find the correlation matrix based on pair-wise deletion. 
+*Use this correlation matrix as an input for EFA.*
+
+The nulls can be dropped by performing a correlation and passing in pairwise for the `use` argument:
+```{r}
+cor(mydata, use = "pairwise.complete.obs")
+```
+#### b)	Perform EFA suggesting two common factors. How would you name those factors?
+*You find corr in part a, then you can perform EFA based on the corr matrix given knowing the size of the original data. This is the expected outcome*
+
+fter performing EFA, the two factors group around types of questions. Factor one appears to be attitudes towards the university, and Factor two is related to opinions about the website. 
+
+```{r}
+cleandata = na.omit(mydata)
+cleandata.fa <- factanal(cleandata, factors = 2)
+cleandata.fa
+```
+
+
+#### c)	Perform EFA suggesting three common factors. How would you name those factors?
+
+The first two factors are the same as before, but there is a third factor with a cluster of questions 22-25 which appear to be about value of the university.
+
+```{r}
+cleandata.fa <- factanal(cleandata, factors = 3)
+cleandata.fa
+```
+
+#### d)	What rotation method is used in factanal as a default method? Explain what that rotation does?
+
+Rotation changes the factor loadings with the goal of making them easier to interpret. The default rotation method is varimax.
+
+#### e)	Repeat part b (EFA with two factors) without rotation (inside factanal put rotation = "none")
+*Will you end up with the same names for your factors?*
+
+This is the EFA with no rotation rather than the default of Varimax. The names would remain the same, as the underlying math is not changed.
+
+```{r}
+cleandata = na.omit(mydata)
+cleandata.fa <- factanal(cleandata, factors = 2, rotation = "none")
+cleandata.fa
+```
