@@ -6,17 +6,22 @@ These are my notes, projects, and assignments from the [MS Data Science program]
 You can refer to the [course schedule](https://www.depts.ttu.edu/rawlsbusiness/graduate/ms/datascience/schedule.php) on TTU's website to follow along in the coursework. Classes and material will be added as I progress through the program.
 
 Courses so far:
+-	Multivariate Analysis
+	-	Statistical methods for analyzing multivariate data in the R language
+	-	Topics: Principal component analysis, multidimensional scaling, exploratory and confirmatory factor analysis, and clustering
+-	Big Data Strategy
+	-	Review of corporate big data strategy literature and case studies involving management, monetization, privacy, and ethics
 -	Business Intelligence
-	-	Really smart narrow focus on ETLs in Pentaho, Python web scraping, and visualization in Tableau
+	-	Practices for collecting, transforming, cleaning, preparing, and visualizing data
+	-	Topics: Web scraping with Python and HTML, data preparation and cleaning (ETL) with Pandas
 -	Time Series Analysis
 	- Overview of basic econometrics, linear and nonlinear regression, panel data, and fundamental time series techniques 
 - Database Concepts
-	- Data defintion language, database design, entity-relationship modeling, Stuctured Query Language(SQL) with MySQL, joins, and subqueries
+	- Data defintion language, database design, entity-relationship modeling, Stuctured Query Language(SQL) with MySQL, and NoSQL
 - Statistics for Data Science
   - An introduction to statistical concepts as well as the R language
 - Scripting Languages
-  - An introduction of software development intended for data analytics
-  - This course uses Python with Pandas and NumPy, but is careful to focus on conceptual information rather than technical specifics
+  - Overview of Python data analysis with Pandas and NumPy
 
   
 ## Repo organization
