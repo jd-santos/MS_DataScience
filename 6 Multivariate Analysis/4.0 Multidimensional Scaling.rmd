@@ -264,3 +264,49 @@ cor(s1, faR$scores[,1])
 cor(s2, faR$scores[,1])
 ```
 
+## Canonical Correlation Analysis (CCA)
+- PCA analyzes interrelationships between a single set of variables, but CCA assesses relationships between **two whole sets of variables**
+- The objective is finding the linear functions of the variables of one set that maximally correlate with the functions of the other set 
+- Comparison to multiple regression
+  - In multiple regression you relate one Y variable to several X variables
+  - CCA is a multiple regression where several Y variables are related to several X variables
+  
+### CCA Math
+*AKA the section where I punish myself by using LaTeX*
+
+
+If we have $q$ variables $X_1, X_2,...,X_q$ and p variables $Y_1, Y_2,...,Y_p$ then CCA finds the minimization of $(q,p)$ pairs of variables
+
+$U_1 = a_{11}X_1 + a_{12}X_2 +...+ a_{1q}X_q$
+
+$U_2 = a_{21}X_1 + a_{22}X_2 +...+ a_{2q}X_q$
+
+...
+
+$U_q = a_{q1}X_1 + a_{q2}X_2 +...+ a_{qq}X_q$
+
+and
+
+$V_1 = b_{11}Y_1 + b_{12}Y_2 +...+ b_{1q}Y_p$
+
+$V_2 = b_{21}Y_1 + b_{22}Y_2 +...+ b_{2q}Y_p$
+
+...
+
+$V_q = b_{p1}Y_1 + b_{p2}Y_2 +...+ b_{pp}Y_p$
+
+We choose pairs of canonical variables so the correlation between $U_1$ and $V_1$ is maximum
+  - As is $U_2$ and $V_2$ if they are uncorrelated (orthagonal) to the first pair
+  - Same with $U_3$ and $V_3$ and so on
+  
+### CCA in R
+- This example uses a Texas Tech Student class evaluation dataset
+- The first ten variables are associated with instructor performance
+- The next six are related to course evaluation
+
+```{r}
+data <- read.csv("http://tiny.cc/isqs6350_evals")
+evals <- data[,3:18] # select variables to use
+evals <- na.omit(evals) # do listwise cleaning for missing values
+```
+
