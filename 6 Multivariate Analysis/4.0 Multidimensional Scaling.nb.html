@@ -1837,249 +1837,264 @@ summary {
 </ol>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YSA8LSBtYXRyaXgoYyhcbjMsIDUsIDYsIDEsIDQsIDIsIDAsIDAsIDcsIDIsXG40LCAxLCAyLCAxLCA3LCAyLCA0LCA2LCA2LCAxLFxuNCwgMSwgMCwgMSwgMywgNSwgMSwgNCwgNSwgNCxcbjYsIDcsIDIsIDAsIDYsIDEsIDEsIDMsIDEsIDMsXG4gMSwgMywgNiwgMywgMiwgMCwgMSwgNSwgNCwgMSksIG5jb2wgPSA1KVxuYGBgIn0= -->
-<pre class="r"><code>data &lt;- matrix(c(
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGF0YSA8LSBtYXRyaXgoYyhcbjMsIDUsIDYsIDEsIDQsIDIsIDAsIDAsIDcsIDIsXG40LCAxLCAyLCAxLCA3LCAyLCA0LCA2LCA2LCAxLFxuNCwgMSwgMCwgMSwgMywgNSwgMSwgNCwgNSwgNCxcbjYsIDcsIDIsIDAsIDYsIDEsIDEsIDMsIDEsIDMsXG4gMSwgMywgNiwgMywgMiwgMCwgMSwgNSwgNCwgMSksIG5jb2wgPSA1KVxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+data &lt;- matrix(c(
 3, 5, 6, 1, 4, 2, 0, 0, 7, 2,
 4, 1, 2, 1, 7, 2, 4, 6, 6, 1,
 4, 1, 0, 1, 3, 5, 1, 4, 5, 4,
 6, 7, 2, 0, 6, 1, 1, 3, 1, 3,
  1, 3, 6, 3, 2, 0, 1, 5, 4, 1), ncol = 5)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-</div>
-<div id="correspondence-analysis" class="section level2">
-<h2>Correspondence Analysis</h2>
-</div>
-<div id="exploratory-factor-analysis-efa" class="section level2">
-<h2>Exploratory Factor Analysis (EFA)</h2>
-<div id="factor-analysis-overview" class="section level3">
-<h3>Factor Analysis Overview</h3>
-<ul>
-<li>Factor analysis is a regression model that links two types of variables: manifest and latent</li>
-<li>Manifest variables
-<ul>
-<li>Variables that can be directly measured or observed</li>
-</ul></li>
-<li>Latent variables (Factors)
-<ul>
-<li>Cannot be directly observed</li>
-<li>We need manifest variables to test for their presence</li>
-</ul></li>
-<li>Two types of factor analysis
-<ul>
-<li>Exploratory
-<ul>
-<li>Investigates relationships between manifest and latent variables without making assumptions about which ones are related</li>
-</ul></li>
-<li>Confirmatory
-<ul>
-<li>Tests whether specific factors fit the covariances or correlations between manifest variables</li>
-</ul></li>
-</ul></li>
-</ul>
-</div>
-<div id="the-k-factor-analysis-model" class="section level3">
-<h3>The K-Factor Analysis Model</h3>
-<ul>
-<li>Factor analysis is similar to a regression models examining the link between manifest and latent variables <span class="math inline">\(Z_i = λ_{i1}f_1 + λ_i2f_2+...+λ_{ik}f_k + u_i, i = 1,2,...,q\)</span>
-<ul>
-<li>i: the manifest variable index, there are q variables (columns) i = 1,2,…,q</li>
-<li><span class="math inline">\(Z_i\)</span>: z-score of the i-th manifest variable (<span class="math inline">\(x_i\)</span>) = Mean of zero and unit variance</li>
-<li><span class="math inline">\(λ_{i1},...,λ_{ik}\)</span>: factor loadings for Z_i -Coefficients of the regression model
-<ul>
-<li>Help interpret the factors</li>
-<li>Larger values relate factors more close to corresponding observed variables that sometimes give us a meaningful description of the factor -<span class="math inline">\(f_1,...,f_k\)</span>: Uncorrelated common factors with means of zero and unit variance</li>
-</ul></li>
-<li><span class="math inline">\(u_i\)</span>: error term
-<ul>
-<li>Only applies to <span class="math inline">\(Z_i\)</span></li>
-<li>Uncorrelated with other disturbance terms and factors</li>
-</ul></li>
-</ul></li>
-</ul>
-</div>
-<div id="factor-analysis-in-r" class="section level3">
-<h3>Factor Analysis in R</h3>
-<ul>
-<li>Use <code>factanal()</code> function and pass in the matrix as well as the number of factors
-<ul>
-<li>Function performs maximum-likelihood factor analysis on a covariance matrix or data matrix</li>
-</ul></li>
-<li>Null hypothesis: the k factors are sufficient for presenting the data
-<ul>
-<li>In this example we assume k = 3 is sufficient
-<ul>
-<li>The p-value &gt; 0.05 so we fail to reject the null</li>
-<li>The appropriate number of factors (latent variables) is 3</li>
-</ul></li>
-</ul></li>
-</ul>
-<p>Example: Crime data</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JpbWUgPC0gcmVhZC5jc3YoXCJodHRwczovL3JiLmd5L3d1OGt2b1wiLCByb3cubmFtZXMgPSBcIlNUQVRFXCIpXG5cbmRpbShjcmltZSlcbmBgYCJ9 -->
-<pre class="r"><code>crime &lt;- read.csv(&quot;https://rb.gy/wu8kvo&quot;, row.names = &quot;STATE&quot;)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+## Correspondence Analysis
+
+## Exploratory Factor Analysis (EFA)
+### Factor Analysis Overview
+- Factor analysis is a regression model that links two types of variables: manifest and latent
+- Manifest variables
+  - Variables that can be directly measured or observed
+- Latent variables (Factors)
+  - Cannot be directly observed
+  - We need manifest variables to test for their presence
+- Two types of factor analysis
+  - Exploratory
+    - Investigates relationships between manifest and latent variables without making assumptions about which ones are related
+  - Confirmatory
+    - Tests whether specific factors fit the covariances or correlations between manifest variables
+    
+### The K-Factor Analysis Model
+- Factor analysis is similar to a regression models examining the link between manifest and latent variables 
+$Z_i = λ_{i1}f_1 + λ_i2f_2+...+λ_{ik}f_k + u_i, i = 1,2,...,q$
+  - i: the manifest variable index, there are q variables (columns) i = 1,2,...,q
+  - $Z_i$: z-score of the i-th manifest variable ($x_i$)
+    = Mean of zero and unit variance
+  - $λ_{i1},...,λ_{ik}$: factor loadings for Z_i
+    -Coefficients of the regression model
+    - Help interpret the factors
+    - Larger values relate factors more close to corresponding observed variables that sometimes give us a meaningful description of the factor
+  -$f_1,...,f_k$: Uncorrelated common factors with means of zero and unit variance
+  - $u_i$: error term
+    - Only applies to $Z_i$
+    - Uncorrelated with other disturbance terms and factors
+    
+### Factor Analysis in R
+- Use `factanal()` function and pass in the matrix as well as the number of factors
+  - Function performs maximum-likelihood factor analysis on a covariance matrix or data matrix
+- Null hypothesis: the k factors are sufficient for presenting the data
+  - In this example we assume k = 3 is sufficient
+    - The p-value &gt; 0.05 so we fail to reject the null
+    - The appropriate number of factors (latent variables) is 3
+
+Example: Crime data
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY3JpbWUgPC0gcmVhZC5jc3YoXFxodHRwczovL3JiLmd5L3d1OGt2b1xcLCByb3cubmFtZXMgPSBcXFNUQVRFXFwpXG5cbmRpbShjcmltZSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+crime &lt;- read.csv(\https://rb.gy/wu8kvo\, row.names = \STATE\)
 
 dim(crime)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDUwICA3XG4ifQ== -->
-<pre><code>[1] 50  7</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JpbWUuZmEgPC0gZmFjdGFuYWwoY3JpbWUsIGZhY3RvcnMgPSAzKVxuY3JpbWUuZmFcbmBgYCJ9 -->
-<pre class="r"><code>crime.fa &lt;- factanal(crime, factors = 3)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDUwICA3XG4ifQ== --&gt;
+</code></pre>
+<p>[1] 50 7</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY3JpbWUuZmEgPC0gZmFjdGFuYWwoY3JpbWUsIGZhY3RvcnMgPSAzKVxuY3JpbWUuZmFcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+crime.fa &lt;- factanal(crime, factors = 3)
 crime.fa</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZmFjdGFuYWwoeCA9IGNyaW1lLCBmYWN0b3JzID0gMylcblxuVW5pcXVlbmVzc2VzOlxuICBNVVJERVIgICAgIFJBUEUgIFJPQkJFUlkgIEFTU0FVTFQgQlVSR0xBUlkgIExBUkNFTlkgICAgIEFVVE8gXG4gICAwLjI3NSAgICAwLjIxNyAgICAwLjM3MyAgICAwLjI4MiAgICAwLjE4OSAgICAwLjAwNSAgICAwLjA2MCBcblxuTG9hZGluZ3M6XG4gICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuTVVSREVSICAgMC44NTEgICAgICAgICAgICAgICAgICBcblJBUEUgICAgIDAuNjk0ICAgMC41MTIgICAwLjE5OCAgXG5ST0JCRVJZICAwLjUxOSAgIDAuMjgzICAgMC41MjcgIFxuQVNTQVVMVCAgMC43NzYgICAwLjI5MiAgIDAuMTc0ICBcbkJVUkdMQVJZIDAuNDM4ICAgMC42NzkgICAwLjM5NyAgXG5MQVJDRU5ZICAwLjEwOCAgIDAuOTY2ICAgMC4yMjIgIFxuQVVUTyAgICAgICAgICAgICAwLjIzOCAgIDAuOTM4ICBcblxuICAgICAgICAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblNTIGxvYWRpbmdzICAgICAgIDIuMjkgICAgMS44OCAgICAgMS40XG5Qcm9wb3J0aW9uIFZhciAgICAwLjMzICAgIDAuMjcgICAgIDAuMlxuQ3VtdWxhdGl2ZSBWYXIgICAgMC4zMyAgICAwLjU5ICAgICAwLjhcblxuVGVzdCBvZiB0aGUgaHlwb3RoZXNpcyB0aGF0IDMgZmFjdG9ycyBhcmUgc3VmZmljaWVudC5cblRoZSBjaGkgc3F1YXJlIHN0YXRpc3RpYyBpcyAxLjcgb24gMyBkZWdyZWVzIG9mIGZyZWVkb20uXG5UaGUgcC12YWx1ZSBpcyAwLjYzIFxuIn0= -->
 <pre><code>
-Call:
-factanal(x = crime, factors = 3)
+&lt;!-- rnb-source-end --&gt;
 
-Uniquenesses:
-  MURDER     RAPE  ROBBERY  ASSAULT BURGLARY  LARCENY     AUTO 
-   0.275    0.217    0.373    0.282    0.189    0.005    0.060 
-
-Loadings:
-         Factor1 Factor2 Factor3
-MURDER   0.851                  
-RAPE     0.694   0.512   0.198  
-ROBBERY  0.519   0.283   0.527  
-ASSAULT  0.776   0.292   0.174  
-BURGLARY 0.438   0.679   0.397  
-LARCENY  0.108   0.966   0.222  
-AUTO             0.238   0.938  
-
-               Factor1 Factor2 Factor3
-SS loadings       2.29    1.88     1.4
-Proportion Var    0.33    0.27     0.2
-Cumulative Var    0.33    0.59     0.8
-
-Test of the hypothesis that 3 factors are sufficient.
-The chi square statistic is 1.7 on 3 degrees of freedom.
-The p-value is 0.63 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>We can examine the loadings by pullings them from the factor analysis:</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY3JpbWUuZmEkbG9hZGluZ3NcbmBgYCJ9 -->
-<pre class="r"><code>crime.fa$loadings</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5Mb2FkaW5nczpcbiAgICAgICAgIEZhY3RvcjEgRmFjdG9yMiBGYWN0b3IzXG5NVVJERVIgICAwLjg1MSAgICAgICAgICAgICAgICAgIFxuUkFQRSAgICAgMC42OTQgICAwLjUxMiAgIDAuMTk4ICBcblJPQkJFUlkgIDAuNTE5ICAgMC4yODMgICAwLjUyNyAgXG5BU1NBVUxUICAwLjc3NiAgIDAuMjkyICAgMC4xNzQgIFxuQlVSR0xBUlkgMC40MzggICAwLjY3OSAgIDAuMzk3ICBcbkxBUkNFTlkgIDAuMTA4ICAgMC45NjYgICAwLjIyMiAgXG5BVVRPICAgICAgICAgICAgIDAuMjM4ICAgMC45MzggIFxuXG4gICAgICAgICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuU1MgbG9hZGluZ3MgICAgICAgMi4yOSAgICAxLjg4ICAgICAxLjRcblByb3BvcnRpb24gVmFyICAgIDAuMzMgICAgMC4yNyAgICAgMC4yXG5DdW11bGF0aXZlIFZhciAgICAwLjMzICAgIDAuNTkgICAgIDAuOFxuIn0= -->
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZmFjdGFuYWwoeCA9IGNyaW1lLCBmYWN0b3JzID0gMylcblxuVW5pcXVlbmVzc2VzOlxuICBNVVJERVIgICAgIFJBUEUgIFJPQkJFUlkgIEFTU0FVTFQgQlVSR0xBUlkgIExBUkNFTlkgICAgIEFVVE8gXG4gICAwLjI3NSAgICAwLjIxNyAgICAwLjM3MyAgICAwLjI4MiAgICAwLjE4OSAgICAwLjAwNSAgICAwLjA2MCBcblxuTG9hZGluZ3M6XG4gICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuTVVSREVSICAgMC44NTEgICAgICAgICAgICAgICAgICBcblJBUEUgICAgIDAuNjk0ICAgMC41MTIgICAwLjE5OCAgXG5ST0JCRVJZICAwLjUxOSAgIDAuMjgzICAgMC41MjcgIFxuQVNTQVVMVCAgMC43NzYgICAwLjI5MiAgIDAuMTc0ICBcbkJVUkdMQVJZIDAuNDM4ICAgMC42NzkgICAwLjM5NyAgXG5MQVJDRU5ZICAwLjEwOCAgIDAuOTY2ICAgMC4yMjIgIFxuQVVUTyAgICAgICAgICAgICAwLjIzOCAgIDAuOTM4ICBcblxuICAgICAgICAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblNTIGxvYWRpbmdzICAgICAgIDIuMjkgICAgMS44OCAgICAgMS40XG5Qcm9wb3J0aW9uIFZhciAgICAwLjMzICAgIDAuMjcgICAgIDAuMlxuQ3VtdWxhdGl2ZSBWYXIgICAgMC4zMyAgICAwLjU5ICAgICAwLjhcblxuVGVzdCBvZiB0aGUgaHlwb3RoZXNpcyB0aGF0IDMgZmFjdG9ycyBhcmUgc3VmZmljaWVudC5cblRoZSBjaGkgc3F1YXJlIHN0YXRpc3RpYyBpcyAxLjcgb24gMyBkZWdyZWVzIG9mIGZyZWVkb20uXG5UaGUgcC12YWx1ZSBpcyAwLjYzIFxuIn0= --&gt;
+</code></pre>
+<p>Call: factanal(x = crime, factors = 3)</p>
+<p>Uniquenesses: MURDER RAPE ROBBERY ASSAULT BURGLARY LARCENY AUTO 0.275 0.217 0.373 0.282 0.189 0.005 0.060</p>
+<p>Loadings: Factor1 Factor2 Factor3 MURDER 0.851<br />
+RAPE 0.694 0.512 0.198<br />
+ROBBERY 0.519 0.283 0.527<br />
+ASSAULT 0.776 0.292 0.174<br />
+BURGLARY 0.438 0.679 0.397<br />
+LARCENY 0.108 0.966 0.222<br />
+AUTO 0.238 0.938</p>
+<pre><code>           Factor1 Factor2 Factor3</code></pre>
+<p>SS loadings 2.29 1.88 1.4 Proportion Var 0.33 0.27 0.2 Cumulative Var 0.33 0.59 0.8</p>
+<p>Test of the hypothesis that 3 factors are sufficient. The chi square statistic is 1.7 on 3 degrees of freedom. The p-value is 0.63</p>
 <pre><code>
-Loadings:
-         Factor1 Factor2 Factor3
-MURDER   0.851                  
-RAPE     0.694   0.512   0.198  
-ROBBERY  0.519   0.283   0.527  
-ASSAULT  0.776   0.292   0.174  
-BURGLARY 0.438   0.679   0.397  
-LARCENY  0.108   0.966   0.222  
-AUTO             0.238   0.938  
 
-               Factor1 Factor2 Factor3
-SS loadings       2.29    1.88     1.4
-Proportion Var    0.33    0.27     0.2
-Cumulative Var    0.33    0.59     0.8</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="uniqueness" class="section level3">
-<h3>Uniqueness</h3>
-<p><span class="math inline">\(Var(Z_i) = λ^2_{i1}Var(f_1) + λ^2_{i2}Var(f_2)+...+λ^2_{ik}Var(f_k) + Var(u_i)\)</span></p>
-<p><span class="math inline">\(= λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik} + Var(u_i)\)</span></p>
-<ul>
-<li><p>The right half is the commonality of variable <span class="math inline">\(Z_i\)</span></p></li>
-<li><p>Represents the variance shared with other variables through the common factors</p></li>
-<li><p><span class="math inline">\(Var(u_i)\)</span> the specificity or uniqueness of Z_i</p>
-<ul>
-<li>The variability in Z_i not shared with other variables</li>
-<li>Smaller uniqueness: the factors explain more variance
-<ul>
-<li>It’s “less unique”</li>
-</ul></li>
-</ul></li>
-<li><p>We know Variance of <span class="math inline">\(Z_i\)</span> is unit, therefore <span class="math inline">\(Var(Z_i) = 1\)</span></p>
-<ul>
-<li>We solve for uniqueness of variable i:</li>
-</ul>
-<p><span class="math inline">\(Var(u_i) = 1 - (λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik})\)</span></p></li>
-</ul>
-<div id="uniqueness-in-r" class="section level4">
-<h4>Uniqueness in R</h4>
-<ul>
-<li>To perform this in R, we do 1 - the sum of the factor analysis loadings squared</li>
-<li>In this example we grab the uniqueness of murder by calling it’s location <code>[1,1:]</code> with the three factor columns <code>[:3]</code></li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuMSAtIHN1bShjcmltZS5mYSRsb2FkaW5nc1sxLDE6M11eMilcbmBgYCJ9 -->
-<pre class="r"><code>1 - sum(crime.fa$loadings[1,1:3]^2)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMjhcbiJ9 -->
-<pre><code>[1] 0.28</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-</div>
-<div id="exploratory-factor-analysis" class="section level3">
-<h3>Exploratory Factor Analysis</h3>
-<ul>
-<li>We’ve reached the title of the song</li>
-<li>Let’s do some math</li>
-</ul>
-<div id="efa-model" class="section level4">
-<h4>EFA Model</h4>
-<p><span class="math inline">\(\hatΣ = ΛΛ^T + Ψ\)</span></p>
-<ul>
-<li>Σ: the covariance matrix of scaled data (Z-scores)
-<ul>
-<li>Equal to the correlation of non-scaled data</li>
-<li>In this formula, it has a hat because it’s the <em>estimate</em> of our original correlation matrix
-<ul>
-<li>Should be close to the original correlation matrix is we did good</li>
-</ul></li>
-</ul></li>
-<li>Λ: The loading matrix
-<ul>
-<li>We pulled this with <code>$Loadings</code></li>
-<li>In the equation we multiply it by its own tranpose</li>
-</ul></li>
-<li>Ψ: The covariance matrix of the error term
-<ul>
-<li>Cov(U)</li>
-<li>The uniqueness matrix</li>
-<li>Matrix of the variance of disturbance terms (<span class="math inline">\(u_i\)</span>) on the diagonal and zero everywhere else because th the terms must be independent of each other</li>
-</ul></li>
-</ul>
-</div>
-<div id="efa-in-r" class="section level4">
-<h4>EFA in R</h4>
-<ul>
-<li><code>factanal()</code> uses maximum likelihood estimation (MLE) by default
-<ul>
-<li>MLE is for estimating model parameters and we have some model parameters to estimate!
-<ul>
-<li>The parameters are the loading coefficients and the u term (error) but of course you already knew that</li>
-</ul></li>
-</ul></li>
-<li>R Process</li>
-</ul>
-<ol style="list-style-type: decimal">
-<li>Manually perform the EFA model with matrix operations to get the estimate of the correlation matrix</li>
-</ol>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3B0aW9ucyhkaWdpdHMgPSAyKVxuXG4jIG9idGFpbiB0aGUgbG9hZGluZyBjb2VmZmljaWVudHNcbmYubG9hZGluZyA8LSBjcmltZS5mYSRsb2FkaW5nc1ssMTozXVxuXG4jIG11bHRpcGx5IGxvYWRpbmdzIGJ5IHRoZSB0cmFuc3Bvc2Ugb2YgaXRzZWxmXG4jIGFkZCB0aGUgZGlhZ29uYWwgb2YgZXJyb3IgY292YXJpYW5jZSBtYXRyaXggKHVuaXF1ZW5lc3MpXG5jb3JIYXQgPC0gZi5sb2FkaW5nICUqJSB0KGYubG9hZGluZykgKyBkaWFnKGNyaW1lLmZhJHVuaXF1ZW5lc3NlcylcblxuIyB0aGUgZXN0aW1hdGUgb2YgdGhlIGNvcnJlbGF0aW9uIG1hdHJpeFxuY29ySGF0XG5gYGAifQ== -->
-<pre class="r"><code>options(digits = 2)
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+We can examine the loadings by pullings them from the factor analysis:
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY3JpbWUuZmEkbG9hZGluZ3NcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+crime.fa$loadings</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG5Mb2FkaW5nczpcbiAgICAgICAgIEZhY3RvcjEgRmFjdG9yMiBGYWN0b3IzXG5NVVJERVIgICAwLjg1MSAgICAgICAgICAgICAgICAgIFxuUkFQRSAgICAgMC42OTQgICAwLjUxMiAgIDAuMTk4ICBcblJPQkJFUlkgIDAuNTE5ICAgMC4yODMgICAwLjUyNyAgXG5BU1NBVUxUICAwLjc3NiAgIDAuMjkyICAgMC4xNzQgIFxuQlVSR0xBUlkgMC40MzggICAwLjY3OSAgIDAuMzk3ICBcbkxBUkNFTlkgIDAuMTA4ICAgMC45NjYgICAwLjIyMiAgXG5BVVRPICAgICAgICAgICAgIDAuMjM4ICAgMC45MzggIFxuXG4gICAgICAgICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuU1MgbG9hZGluZ3MgICAgICAgMi4yOSAgICAxLjg4ICAgICAxLjRcblByb3BvcnRpb24gVmFyICAgIDAuMzMgICAgMC4yNyAgICAgMC4yXG5DdW11bGF0aXZlIFZhciAgICAwLjMzICAgIDAuNTkgICAgIDAuOFxuIn0= --&gt;
+</code></pre>
+<p>Loadings: Factor1 Factor2 Factor3 MURDER 0.851<br />
+RAPE 0.694 0.512 0.198<br />
+ROBBERY 0.519 0.283 0.527<br />
+ASSAULT 0.776 0.292 0.174<br />
+BURGLARY 0.438 0.679 0.397<br />
+LARCENY 0.108 0.966 0.222<br />
+AUTO 0.238 0.938</p>
+<pre><code>           Factor1 Factor2 Factor3</code></pre>
+<p>SS loadings 2.29 1.88 1.4 Proportion Var 0.33 0.27 0.2 Cumulative Var 0.33 0.59 0.8</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Uniqueness
+
+$Var(Z_i) = λ^2_{i1}Var(f_1) + λ^2_{i2}Var(f_2)+...+λ^2_{ik}Var(f_k) + Var(u_i)$
+
+$= λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik} + Var(u_i)$
+
+ - The right half is the commonality of variable $Z_i$
+  - Represents the variance shared with other variables through the common factors
+  
+- $Var(u_i)$ the specificity or uniqueness of Z_i
+  - The variability in Z_i not shared with other variables
+  - Smaller uniqueness: the factors explain more variance
+    - It&#39;s &quot;less unique&quot;
+    
+- We know Variance of $Z_i$ is unit, therefore $Var(Z_i) = 1$
+  - We solve for uniqueness of variable i:
+  
+  $Var(u_i) = 1 - (λ^2_{i1} + λ^2_{i2} +...+λ^2_{ik})$
+  
+#### Uniqueness in R
+- To perform this in R, we do 1 - the sum of the factor analysis loadings squared
+- In this example we grab the uniqueness of murder by calling it&#39;s location `[1,1:]` with the three factor columns `[:3]`
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuMSAtIHN1bShjcmltZS5mYSRsb2FkaW5nc1sxLDE6M11eMilcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+1 - sum(crime.fa$loadings[1,1:3]^2)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMjhcbiJ9 --&gt;
+</code></pre>
+<p>[1] 0.28</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Exploratory Factor Analysis
+- We&#39;ve reached the title of the song
+- Let&#39;s do some math 
+
+#### EFA Model
+
+$\hatΣ = ΛΛ^T + Ψ$
+
+- Σ: the covariance matrix of scaled data (Z-scores)
+  - Equal to the correlation of non-scaled data
+  - In this formula, it has a hat because it&#39;s the *estimate* of our original correlation matrix
+    - Should be close to the original correlation matrix is we did good 
+- Λ: The loading matrix
+  - We pulled this with `$Loadings`
+  - In the equation we multiply it by its own tranpose
+- Ψ: The covariance matrix of the error term 
+  - Cov(U)
+  - The uniqueness matrix
+  - Matrix of the variance of disturbance terms ($u_i$) on the diagonal and zero everywhere else because th the terms must be independent of each other
+
+#### EFA in R
+
+- `factanal()` uses maximum likelihood estimation (MLE) by default
+  - MLE is for estimating model parameters and we have some model parameters to estimate!
+    - The parameters are the loading coefficients and the u term (error) but of course you already knew that 
+- R Process
+1. Manually perform the EFA model with matrix operations to get the estimate of the correlation matrix
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxub3B0aW9ucyhkaWdpdHMgPSAyKVxuXG4jIG9idGFpbiB0aGUgbG9hZGluZyBjb2VmZmljaWVudHNcbmYubG9hZGluZyA8LSBjcmltZS5mYSRsb2FkaW5nc1ssMTozXVxuXG4jIG11bHRpcGx5IGxvYWRpbmdzIGJ5IHRoZSB0cmFuc3Bvc2Ugb2YgaXRzZWxmXG4jIGFkZCB0aGUgZGlhZ29uYWwgb2YgZXJyb3IgY292YXJpYW5jZSBtYXRyaXggKHVuaXF1ZW5lc3MpXG5jb3JIYXQgPC0gZi5sb2FkaW5nICUqJSB0KGYubG9hZGluZykgKyBkaWFnKGNyaW1lLmZhJHVuaXF1ZW5lc3NlcylcblxuIyB0aGUgZXN0aW1hdGUgb2YgdGhlIGNvcnJlbGF0aW9uIG1hdHJpeFxuY29ySGF0XG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+options(digits = 2)
 
 # obtain the loading coefficients
 f.loading &lt;- crime.fa$loadings[,1:3]
@@ -2090,388 +2105,533 @@ corHat &lt;- f.loading %*% t(f.loading) + diag(crime.fa$uniquenesses)
 
 # the estimate of the correlation matrix
 corHat</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgTVVSREVSIFJBUEUgUk9CQkVSWSBBU1NBVUxUIEJVUkdMQVJZIExBUkNFTlkgIEFVVE9cbk1VUkRFUiAgICAxLjAwMCAwLjYwICAgIDAuNDYgICAgMC42NyAgICAgMC4zOSAgICAwLjEwIDAuMDcxXG5SQVBFICAgICAgMC41OTggMS4wMCAgICAwLjYxICAgIDAuNzIgICAgIDAuNzMgICAgMC42MSAwLjM0NlxuUk9CQkVSWSAgIDAuNDU1IDAuNjEgICAgMS4wMCAgICAwLjU4ICAgICAwLjYzICAgIDAuNDUgMC41OTFcbkFTU0FVTFQgICAwLjY2NiAwLjcyICAgIDAuNTggICAgMS4wMCAgICAgMC42MSAgICAwLjQwIDAuMjc2XG5CVVJHTEFSWSAgMC4zODUgMC43MyAgICAwLjYzICAgIDAuNjEgICAgIDEuMDAgICAgMC43OSAwLjU1OVxuTEFSQ0VOWSAgIDAuMTAyIDAuNjEgICAgMC40NSAgICAwLjQwICAgICAwLjc5ICAgIDEuMDAgMC40NDRcbkFVVE8gICAgICAwLjA3MSAwLjM1ICAgIDAuNTkgICAgMC4yOCAgICAgMC41NiAgICAwLjQ0IDEuMDAwXG4ifQ== -->
-<pre><code>         MURDER RAPE ROBBERY ASSAULT BURGLARY LARCENY  AUTO
-MURDER    1.000 0.60    0.46    0.67     0.39    0.10 0.071
-RAPE      0.598 1.00    0.61    0.72     0.73    0.61 0.346
-ROBBERY   0.455 0.61    1.00    0.58     0.63    0.45 0.591
-ASSAULT   0.666 0.72    0.58    1.00     0.61    0.40 0.276
-BURGLARY  0.385 0.73    0.63    0.61     1.00    0.79 0.559
-LARCENY   0.102 0.61    0.45    0.40     0.79    1.00 0.444
-AUTO      0.071 0.35    0.59    0.28     0.56    0.44 1.000</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="2" style="list-style-type: decimal">
-<li>Compare the estimate to the actual correlation matrix by finding the discrepancy with root-mean-square error (RMSE)</li>
-</ol>
-<ul>
-<li>An RMSE below 0.05 is acceptable</li>
-<li>This is acceptable, you did great darling</li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBvcmlnaW5hbCBjb3JyZWxhdGlvblxuY29yciA8LSBjb3IoY3JpbWUpXG5cbiMgUm9vdC1tZWFuLXNxdWFyZSBlcnJvclxucm1zZSA9IHNxcnQobWVhbigoY29ySGF0LWNvcnIpXjIpKVxucm1zZVxuYGBgIn0= -->
-<pre class="r"><code># original correlation
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgTVVSREVSIFJBUEUgUk9CQkVSWSBBU1NBVUxUIEJVUkdMQVJZIExBUkNFTlkgIEFVVE9cbk1VUkRFUiAgICAxLjAwMCAwLjYwICAgIDAuNDYgICAgMC42NyAgICAgMC4zOSAgICAwLjEwIDAuMDcxXG5SQVBFICAgICAgMC41OTggMS4wMCAgICAwLjYxICAgIDAuNzIgICAgIDAuNzMgICAgMC42MSAwLjM0NlxuUk9CQkVSWSAgIDAuNDU1IDAuNjEgICAgMS4wMCAgICAwLjU4ICAgICAwLjYzICAgIDAuNDUgMC41OTFcbkFTU0FVTFQgICAwLjY2NiAwLjcyICAgIDAuNTggICAgMS4wMCAgICAgMC42MSAgICAwLjQwIDAuMjc2XG5CVVJHTEFSWSAgMC4zODUgMC43MyAgICAwLjYzICAgIDAuNjEgICAgIDEuMDAgICAgMC43OSAwLjU1OVxuTEFSQ0VOWSAgIDAuMTAyIDAuNjEgICAgMC40NSAgICAwLjQwICAgICAwLjc5ICAgIDEuMDAgMC40NDRcbkFVVE8gICAgICAwLjA3MSAwLjM1ICAgIDAuNTkgICAgMC4yOCAgICAgMC41NiAgICAwLjQ0IDEuMDAwXG4ifQ== --&gt;
+</code></pre>
+<pre><code>     MURDER RAPE ROBBERY ASSAULT BURGLARY LARCENY  AUTO</code></pre>
+<p>MURDER 1.000 0.60 0.46 0.67 0.39 0.10 0.071 RAPE 0.598 1.00 0.61 0.72 0.73 0.61 0.346 ROBBERY 0.455 0.61 1.00 0.58 0.63 0.45 0.591 ASSAULT 0.666 0.72 0.58 1.00 0.61 0.40 0.276 BURGLARY 0.385 0.73 0.63 0.61 1.00 0.79 0.559 LARCENY 0.102 0.61 0.45 0.40 0.79 1.00 0.444 AUTO 0.071 0.35 0.59 0.28 0.56 0.44 1.000</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+2. Compare the estimate to the actual correlation matrix by finding the discrepancy with root-mean-square error (RMSE)
+- An RMSE below 0.05 is acceptable
+- This is acceptable, you did great darling
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuIyBvcmlnaW5hbCBjb3JyZWxhdGlvblxuY29yciA8LSBjb3IoY3JpbWUpXG5cbiMgUm9vdC1tZWFuLXNxdWFyZSBlcnJvclxucm1zZSA9IHNxcnQobWVhbigoY29ySGF0LWNvcnIpXjIpKVxucm1zZVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+# original correlation
 corr &lt;- cor(crime)
 
 # Root-mean-square error
 rmse = sqrt(mean((corHat-corr)^2))
 rmse</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMDExXG4ifQ== -->
-<pre><code>[1] 0.011</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-</div>
-<div id="efa-application-and-cut" class="section level3">
-<h3>EFA Application and Cut</h3>
-<ol style="list-style-type: decimal">
-<li>Load evaluation data</li>
-</ol>
-<ul>
-<li>P-value is not &gt;0.05 so we should say the model isn’t valid
-<ul>
-<li>Here we ignore that since the data sample size is large so small discrepancies between <span class="math inline">\(\hatΣ\)</span> and Σ will be detected as significant</li>
-<li>If we redid this with a sample of the data we would see a much larger p-value</li>
-</ul></li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXZhbHMgPC0gcmVhZC5jc3YoXCJodHRwczovL2JpdC5seS8zZWQ1QmlhXCIpXG5cbiMgdmFyaWFibGVzIHJlbGF0ZWQgdG8gMTYgZXZhbHVhdGlvbiBxdWVzdGlvbnNcbmV2YWxzID0gbmEub21pdChldmFsc1ssMzoxOF0pIFxuZXZhbHMuZmEgPC0gZmFjdGFuYWwoZXZhbHMsIGZhY3RvcnMgPSAzKVxuZXZhbHMuZmFcbmBgYCJ9 -->
-<pre class="r"><code>evals &lt;- read.csv(&quot;https://bit.ly/3ed5Bia&quot;)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMDExXG4ifQ== --&gt;
+</code></pre>
+<p>[1] 0.011</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+### EFA Application and Cut
+
+1. Load evaluation data
+- P-value is not &gt;0.05 so we should say the model isn&#39;t valid
+  - Here we ignore that since the data sample size is large so small discrepancies between $\hatΣ$ and Σ will be detected as significant
+  - If we redid this with a sample of the data we would see a much larger p-value
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZXZhbHMgPC0gcmVhZC5jc3YoXFxodHRwczovL2JpdC5seS8zZWQ1QmlhXFwpXG5cbiMgdmFyaWFibGVzIHJlbGF0ZWQgdG8gMTYgZXZhbHVhdGlvbiBxdWVzdGlvbnNcbmV2YWxzID0gbmEub21pdChldmFsc1ssMzoxOF0pIFxuZXZhbHMuZmEgPC0gZmFjdGFuYWwoZXZhbHMsIGZhY3RvcnMgPSAzKVxuZXZhbHMuZmFcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+evals &lt;- read.csv(\https://bit.ly/3ed5Bia\)
 
 # variables related to 16 evaluation questions
 evals = na.omit(evals[,3:18]) 
 evals.fa &lt;- factanal(evals, factors = 3)
 evals.fa</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZmFjdGFuYWwoeCA9IGV2YWxzLCBmYWN0b3JzID0gMylcblxuVW5pcXVlbmVzc2VzOlxuIFJFU1BfMSAgUkVTUF8yICBSRVNQXzMgIFJFU1BfNCAgUkVTUF81ICBSRVNQXzYgIFJFU1BfNyAgUkVTUF84ICBSRVNQXzkgUkVTUF8xMCBSRVNQXzExIFJFU1BfMTIgUkVTUF8xMyBSRVNQXzE0IFJFU1BfMTUgUkVTUF8xNiBcbiAgIDAuMTkgICAgMC41MyAgICAwLjIxICAgIDAuMTUgICAgMC4xNCAgICAwLjMxICAgIDAuMjQgICAgMC4yMyAgICAwLjI2ICAgIDAuMzYgICAgMC4yNCAgICAwLjE0ICAgIDAuMTcgICAgMC4zNiAgICAwLjM2ICAgIDAuMzkgXG5cbkxvYWRpbmdzOlxuICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuUkVTUF8xICAwLjQ0ICAgIDAuNjkgICAgMC4zOCAgIFxuUkVTUF8yICAwLjM3ICAgIDAuNDAgICAgMC40MiAgIFxuUkVTUF8zICAwLjQyICAgIDAuNjcgICAgMC40MiAgIFxuUkVTUF80ICAwLjMyICAgIDAuMzMgICAgMC44MCAgIFxuUkVTUF81ICAwLjI5ICAgIDAuMzIgICAgMC44MiAgIFxuUkVTUF82ICAwLjMxICAgIDAuNDggICAgMC42MCAgIFxuUkVTUF83ICAwLjM5ICAgIDAuNzAgICAgMC4zNSAgIFxuUkVTUF84ICAwLjQzICAgIDAuNjggICAgMC4zNSAgIFxuUkVTUF85ICAwLjQwICAgIDAuNjggICAgMC4zNCAgIFxuUkVTUF8xMCAwLjM5ICAgIDAuNTQgICAgMC40NCAgIFxuUkVTUF8xMSAwLjY2ICAgIDAuNTAgICAgMC4yOCAgIFxuUkVTUF8xMiAwLjgyICAgIDAuMzQgICAgMC4yNyAgIFxuUkVTUF8xMyAwLjgwICAgIDAuMzMgICAgMC4yNyAgIFxuUkVTUF8xNCAwLjU4ICAgIDAuNDAgICAgMC4zOSAgIFxuUkVTUF8xNSAwLjU4ICAgIDAuNDAgICAgMC4zOCAgIFxuUkVTUF8xNiAwLjU4ICAgIDAuMzYgICAgMC4zOCAgIFxuXG4gICAgICAgICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuU1MgbG9hZGluZ3MgICAgICAgNC4yMSAgICA0LjEzICAgIDMuNDBcblByb3BvcnRpb24gVmFyICAgIDAuMjYgICAgMC4yNiAgICAwLjIxXG5DdW11bGF0aXZlIFZhciAgICAwLjI2ICAgIDAuNTIgICAgMC43M1xuXG5UZXN0IG9mIHRoZSBoeXBvdGhlc2lzIHRoYXQgMyBmYWN0b3JzIGFyZSBzdWZmaWNpZW50LlxuVGhlIGNoaSBzcXVhcmUgc3RhdGlzdGljIGlzIDM0MDggb24gNzUgZGVncmVlcyBvZiBmcmVlZG9tLlxuVGhlIHAtdmFsdWUgaXMgMCBcbiJ9 -->
 <pre><code>
-Call:
-factanal(x = evals, factors = 3)
+&lt;!-- rnb-source-end --&gt;
 
-Uniquenesses:
- RESP_1  RESP_2  RESP_3  RESP_4  RESP_5  RESP_6  RESP_7  RESP_8  RESP_9 RESP_10 RESP_11 RESP_12 RESP_13 RESP_14 RESP_15 RESP_16 
-   0.19    0.53    0.21    0.15    0.14    0.31    0.24    0.23    0.26    0.36    0.24    0.14    0.17    0.36    0.36    0.39 
-
-Loadings:
-        Factor1 Factor2 Factor3
-RESP_1  0.44    0.69    0.38   
-RESP_2  0.37    0.40    0.42   
-RESP_3  0.42    0.67    0.42   
-RESP_4  0.32    0.33    0.80   
-RESP_5  0.29    0.32    0.82   
-RESP_6  0.31    0.48    0.60   
-RESP_7  0.39    0.70    0.35   
-RESP_8  0.43    0.68    0.35   
-RESP_9  0.40    0.68    0.34   
-RESP_10 0.39    0.54    0.44   
-RESP_11 0.66    0.50    0.28   
-RESP_12 0.82    0.34    0.27   
-RESP_13 0.80    0.33    0.27   
-RESP_14 0.58    0.40    0.39   
-RESP_15 0.58    0.40    0.38   
-RESP_16 0.58    0.36    0.38   
-
-               Factor1 Factor2 Factor3
-SS loadings       4.21    4.13    3.40
-Proportion Var    0.26    0.26    0.21
-Cumulative Var    0.26    0.52    0.73
-
-Test of the hypothesis that 3 factors are sufficient.
-The chi square statistic is 3408 on 75 degrees of freedom.
-The p-value is 0 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="2" style="list-style-type: decimal">
-<li>Pass in <code>cut = 0.5</code> to drop all loadings below that level</li>
-</ol>
-<ul>
-<li>This allows us to easily view the higher correlations</li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZXZhbHMuZmEkbG9hZGluZ3MsIGN1dCA9IDAuNSlcbmBgYCJ9 -->
-<pre class="r"><code>print(evals.fa$loadings, cut = 0.5)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5Mb2FkaW5nczpcbiAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblJFU1BfMSAgICAgICAgICAwLjY5ICAgICAgICAgICBcblJFU1BfMiAgICAgICAgICAgICAgICAgICAgICAgICBcblJFU1BfMyAgICAgICAgICAwLjY3ICAgICAgICAgICBcblJFU1BfNCAgICAgICAgICAgICAgICAgIDAuODAgICBcblJFU1BfNSAgICAgICAgICAgICAgICAgIDAuODIgICBcblJFU1BfNiAgICAgICAgICAgICAgICAgIDAuNjAgICBcblJFU1BfNyAgICAgICAgICAwLjcwICAgICAgICAgICBcblJFU1BfOCAgICAgICAgICAwLjY4ICAgICAgICAgICBcblJFU1BfOSAgICAgICAgICAwLjY4ICAgICAgICAgICBcblJFU1BfMTAgICAgICAgICAwLjU0ICAgICAgICAgICBcblJFU1BfMTEgMC42NiAgICAwLjUwICAgICAgICAgICBcblJFU1BfMTIgMC44MiAgICAgICAgICAgICAgICAgICBcblJFU1BfMTMgMC44MCAgICAgICAgICAgICAgICAgICBcblJFU1BfMTQgMC41OCAgICAgICAgICAgICAgICAgICBcblJFU1BfMTUgMC41OCAgICAgICAgICAgICAgICAgICBcblJFU1BfMTYgMC41OCAgICAgICAgICAgICAgICAgICBcblxuICAgICAgICAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblNTIGxvYWRpbmdzICAgICAgIDQuMjEgICAgNC4xMyAgICAzLjQwXG5Qcm9wb3J0aW9uIFZhciAgICAwLjI2ICAgIDAuMjYgICAgMC4yMVxuQ3VtdWxhdGl2ZSBWYXIgICAgMC4yNiAgICAwLjUyICAgIDAuNzNcbiJ9 -->
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZmFjdGFuYWwoeCA9IGV2YWxzLCBmYWN0b3JzID0gMylcblxuVW5pcXVlbmVzc2VzOlxuIFJFU1BfMSAgUkVTUF8yICBSRVNQXzMgIFJFU1BfNCAgUkVTUF81ICBSRVNQXzYgIFJFU1BfNyAgUkVTUF84ICBSRVNQXzkgUkVTUF8xMCBSRVNQXzExIFJFU1BfMTIgUkVTUF8xMyBSRVNQXzE0IFJFU1BfMTUgUkVTUF8xNiBcbiAgIDAuMTkgICAgMC41MyAgICAwLjIxICAgIDAuMTUgICAgMC4xNCAgICAwLjMxICAgIDAuMjQgICAgMC4yMyAgICAwLjI2ICAgIDAuMzYgICAgMC4yNCAgICAwLjE0ICAgIDAuMTcgICAgMC4zNiAgICAwLjM2ICAgIDAuMzkgXG5cbkxvYWRpbmdzOlxuICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuUkVTUF8xICAwLjQ0ICAgIDAuNjkgICAgMC4zOCAgIFxuUkVTUF8yICAwLjM3ICAgIDAuNDAgICAgMC40MiAgIFxuUkVTUF8zICAwLjQyICAgIDAuNjcgICAgMC40MiAgIFxuUkVTUF80ICAwLjMyICAgIDAuMzMgICAgMC44MCAgIFxuUkVTUF81ICAwLjI5ICAgIDAuMzIgICAgMC44MiAgIFxuUkVTUF82ICAwLjMxICAgIDAuNDggICAgMC42MCAgIFxuUkVTUF83ICAwLjM5ICAgIDAuNzAgICAgMC4zNSAgIFxuUkVTUF84ICAwLjQzICAgIDAuNjggICAgMC4zNSAgIFxuUkVTUF85ICAwLjQwICAgIDAuNjggICAgMC4zNCAgIFxuUkVTUF8xMCAwLjM5ICAgIDAuNTQgICAgMC40NCAgIFxuUkVTUF8xMSAwLjY2ICAgIDAuNTAgICAgMC4yOCAgIFxuUkVTUF8xMiAwLjgyICAgIDAuMzQgICAgMC4yNyAgIFxuUkVTUF8xMyAwLjgwICAgIDAuMzMgICAgMC4yNyAgIFxuUkVTUF8xNCAwLjU4ICAgIDAuNDAgICAgMC4zOSAgIFxuUkVTUF8xNSAwLjU4ICAgIDAuNDAgICAgMC4zOCAgIFxuUkVTUF8xNiAwLjU4ICAgIDAuMzYgICAgMC4zOCAgIFxuXG4gICAgICAgICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuU1MgbG9hZGluZ3MgICAgICAgNC4yMSAgICA0LjEzICAgIDMuNDBcblByb3BvcnRpb24gVmFyICAgIDAuMjYgICAgMC4yNiAgICAwLjIxXG5DdW11bGF0aXZlIFZhciAgICAwLjI2ICAgIDAuNTIgICAgMC43M1xuXG5UZXN0IG9mIHRoZSBoeXBvdGhlc2lzIHRoYXQgMyBmYWN0b3JzIGFyZSBzdWZmaWNpZW50LlxuVGhlIGNoaSBzcXVhcmUgc3RhdGlzdGljIGlzIDM0MDggb24gNzUgZGVncmVlcyBvZiBmcmVlZG9tLlxuVGhlIHAtdmFsdWUgaXMgMCBcbiJ9 --&gt;
+</code></pre>
+<p>Call: factanal(x = evals, factors = 3)</p>
+<p>Uniquenesses: RESP_1 RESP_2 RESP_3 RESP_4 RESP_5 RESP_6 RESP_7 RESP_8 RESP_9 RESP_10 RESP_11 RESP_12 RESP_13 RESP_14 RESP_15 RESP_16 0.19 0.53 0.21 0.15 0.14 0.31 0.24 0.23 0.26 0.36 0.24 0.14 0.17 0.36 0.36 0.39</p>
+<p>Loadings: Factor1 Factor2 Factor3 RESP_1 0.44 0.69 0.38<br />
+RESP_2 0.37 0.40 0.42<br />
+RESP_3 0.42 0.67 0.42<br />
+RESP_4 0.32 0.33 0.80<br />
+RESP_5 0.29 0.32 0.82<br />
+RESP_6 0.31 0.48 0.60<br />
+RESP_7 0.39 0.70 0.35<br />
+RESP_8 0.43 0.68 0.35<br />
+RESP_9 0.40 0.68 0.34<br />
+RESP_10 0.39 0.54 0.44<br />
+RESP_11 0.66 0.50 0.28<br />
+RESP_12 0.82 0.34 0.27<br />
+RESP_13 0.80 0.33 0.27<br />
+RESP_14 0.58 0.40 0.39<br />
+RESP_15 0.58 0.40 0.38<br />
+RESP_16 0.58 0.36 0.38</p>
+<pre><code>           Factor1 Factor2 Factor3</code></pre>
+<p>SS loadings 4.21 4.13 3.40 Proportion Var 0.26 0.26 0.21 Cumulative Var 0.26 0.52 0.73</p>
+<p>Test of the hypothesis that 3 factors are sufficient. The chi square statistic is 3408 on 75 degrees of freedom. The p-value is 0</p>
 <pre><code>
-Loadings:
-        Factor1 Factor2 Factor3
-RESP_1          0.69           
-RESP_2                         
-RESP_3          0.67           
-RESP_4                  0.80   
-RESP_5                  0.82   
-RESP_6                  0.60   
-RESP_7          0.70           
-RESP_8          0.68           
-RESP_9          0.68           
-RESP_10         0.54           
-RESP_11 0.66    0.50           
-RESP_12 0.82                   
-RESP_13 0.80                   
-RESP_14 0.58                   
-RESP_15 0.58                   
-RESP_16 0.58                   
 
-               Factor1 Factor2 Factor3
-SS loadings       4.21    4.13    3.40
-Proportion Var    0.26    0.26    0.21
-Cumulative Var    0.26    0.52    0.73</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-</div>
-<div id="rotation" class="section level2">
-<h2>Rotation</h2>
-<ul>
-<li>In the model <span class="math inline">\(\hatΣ = ΛΛ^T + Ψ\)</span> we don’t have a single solution for the factor loading matrix Λ
-<ul>
-<li>Remember that in PCA we do have single solutions for loadings: the eigenvectors</li>
-</ul></li>
-<li>We can perform a rotation which changes the factor loadings for easier interpretation
-<ul>
-<li>Underlying math isn’t changed, the outputs are just easier to interpret</li>
-</ul></li>
-<li><code>factanal()</code> uses <em>varimax</em> rotation, the most common technique</li>
-</ul>
-<div id="factor-analysis-without-rotation" class="section level3">
-<h3>Factor Analysis Without Rotation</h3>
-<ul>
-<li>Since <code>factanal()</code> has a default rotation of varimax, we need to specify <code>rotation = &quot;none&quot;</code> for this example</li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmFOUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMsIHJvdGF0aW9uID0gXCJub25lXCIpXG5mYU5SXG5gYGAifQ== -->
-<pre class="r"><code>faNR &lt;- factanal(evals, factors = 3, rotation = &quot;none&quot;)
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+2. Pass in `cut = 0.5` to drop all loadings below that level
+- This allows us to easily view the higher correlations
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucHJpbnQoZXZhbHMuZmEkbG9hZGluZ3MsIGN1dCA9IDAuNSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+print(evals.fa$loadings, cut = 0.5)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG5Mb2FkaW5nczpcbiAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblJFU1BfMSAgICAgICAgICAwLjY5ICAgICAgICAgICBcblJFU1BfMiAgICAgICAgICAgICAgICAgICAgICAgICBcblJFU1BfMyAgICAgICAgICAwLjY3ICAgICAgICAgICBcblJFU1BfNCAgICAgICAgICAgICAgICAgIDAuODAgICBcblJFU1BfNSAgICAgICAgICAgICAgICAgIDAuODIgICBcblJFU1BfNiAgICAgICAgICAgICAgICAgIDAuNjAgICBcblJFU1BfNyAgICAgICAgICAwLjcwICAgICAgICAgICBcblJFU1BfOCAgICAgICAgICAwLjY4ICAgICAgICAgICBcblJFU1BfOSAgICAgICAgICAwLjY4ICAgICAgICAgICBcblJFU1BfMTAgICAgICAgICAwLjU0ICAgICAgICAgICBcblJFU1BfMTEgMC42NiAgICAwLjUwICAgICAgICAgICBcblJFU1BfMTIgMC44MiAgICAgICAgICAgICAgICAgICBcblJFU1BfMTMgMC44MCAgICAgICAgICAgICAgICAgICBcblJFU1BfMTQgMC41OCAgICAgICAgICAgICAgICAgICBcblJFU1BfMTUgMC41OCAgICAgICAgICAgICAgICAgICBcblJFU1BfMTYgMC41OCAgICAgICAgICAgICAgICAgICBcblxuICAgICAgICAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblNTIGxvYWRpbmdzICAgICAgIDQuMjEgICAgNC4xMyAgICAzLjQwXG5Qcm9wb3J0aW9uIFZhciAgICAwLjI2ICAgIDAuMjYgICAgMC4yMVxuQ3VtdWxhdGl2ZSBWYXIgICAgMC4yNiAgICAwLjUyICAgIDAuNzNcbiJ9 --&gt;
+</code></pre>
+<p>Loadings: Factor1 Factor2 Factor3 RESP_1 0.69<br />
+RESP_2<br />
+RESP_3 0.67<br />
+RESP_4 0.80<br />
+RESP_5 0.82<br />
+RESP_6 0.60<br />
+RESP_7 0.70<br />
+RESP_8 0.68<br />
+RESP_9 0.68<br />
+RESP_10 0.54<br />
+RESP_11 0.66 0.50<br />
+RESP_12 0.82<br />
+RESP_13 0.80<br />
+RESP_14 0.58<br />
+RESP_15 0.58<br />
+RESP_16 0.58</p>
+<pre><code>           Factor1 Factor2 Factor3</code></pre>
+<p>SS loadings 4.21 4.13 3.40 Proportion Var 0.26 0.26 0.21 Cumulative Var 0.26 0.52 0.73</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+## Rotation
+- In the model $\hatΣ = ΛΛ^T + Ψ$ we don&#39;t have a single solution for the factor loading matrix Λ
+  - Remember that in PCA we do have single solutions for loadings: the eigenvectors
+- We can perform a rotation which changes the factor loadings for easier interpretation
+  - Underlying math isn&#39;t changed, the outputs are just easier to interpret
+- `factanal()` uses *varimax* rotation, the most common technique
+
+### Factor Analysis Without Rotation
+- Since `factanal()` has a default rotation of varimax, we need to specify `rotation = &quot;none&quot;` for this example
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZmFOUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMsIHJvdGF0aW9uID0gXFxub25lXFwpXG5mYU5SXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+faNR &lt;- factanal(evals, factors = 3, rotation = \none\)
 faNR</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZmFjdGFuYWwoeCA9IGV2YWxzLCBmYWN0b3JzID0gMywgcm90YXRpb24gPSBcIm5vbmVcIilcblxuVW5pcXVlbmVzc2VzOlxuIFJFU1BfMSAgUkVTUF8yICBSRVNQXzMgIFJFU1BfNCAgUkVTUF81ICBSRVNQXzYgIFJFU1BfNyAgUkVTUF84ICBSRVNQXzkgUkVTUF8xMCBSRVNQXzExIFJFU1BfMTIgUkVTUF8xMyBSRVNQXzE0IFJFU1BfMTUgUkVTUF8xNiBcbiAgIDAuMTkgICAgMC41MyAgICAwLjIxICAgIDAuMTUgICAgMC4xNCAgICAwLjMxICAgIDAuMjQgICAgMC4yMyAgICAwLjI2ICAgIDAuMzYgICAgMC4yNCAgICAwLjE0ICAgIDAuMTcgICAgMC4zNiAgICAwLjM2ICAgIDAuMzkgXG5cbkxvYWRpbmdzOlxuICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuUkVTUF8xICAgMC44NzUgICAgICAgICAgIDAuMjE3IFxuUkVTUF8yICAgMC42ODYgICAgICAgICAgICAgICAgIFxuUkVTUF8zICAgMC44NjggICAgICAgICAgIDAuMTk5IFxuUkVTUF80ICAgMC44MTcgIC0wLjM5MyAgLTAuMTYwIFxuUkVTUF81ICAgMC44MDggIC0wLjQzMSAgLTAuMTU3IFxuUkVTUF82ICAgMC43OTcgIC0wLjIzNSAgICAgICAgIFxuUkVTUF83ICAgMC44MzUgICAgICAgICAgIDAuMjU3IFxuUkVTUF84ICAgMC44NDYgICAgICAgICAgIDAuMjI3IFxuUkVTUF85ICAgMC44MjQgICAgICAgICAgIDAuMjM3IFxuUkVTUF8xMCAgMC43OTIgICAgICAgICAgICAgICAgIFxuUkVTUF8xMSAgMC44NDAgICAwLjIzNSAgICAgICAgIFxuUkVTUF8xMiAgMC44MzkgICAwLjMzOSAgLTAuMjAzIFxuUkVTUF8xMyAgMC44MjUgICAwLjMyNSAgLTAuMjA5IFxuUkVTUF8xNCAgMC43OTIgICAgICAgICAgICAgICAgIFxuUkVTUF8xNSAgMC43ODggICAwLjEwMyAgICAgICAgIFxuUkVTUF8xNiAgMC43NjcgICAwLjEwNSAgLTAuMTE0IFxuXG4gICAgICAgICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuU1MgbG9hZGluZ3MgICAgICAxMC41OSAgIDAuNzEzICAgMC40MzNcblByb3BvcnRpb24gVmFyICAgIDAuNjYgICAwLjA0NSAgIDAuMDI3XG5DdW11bGF0aXZlIFZhciAgICAwLjY2ICAgMC43MDcgICAwLjczNFxuXG5UZXN0IG9mIHRoZSBoeXBvdGhlc2lzIHRoYXQgMyBmYWN0b3JzIGFyZSBzdWZmaWNpZW50LlxuVGhlIGNoaSBzcXVhcmUgc3RhdGlzdGljIGlzIDM0MDggb24gNzUgZGVncmVlcyBvZiBmcmVlZG9tLlxuVGhlIHAtdmFsdWUgaXMgMCBcbiJ9 -->
 <pre><code>
-Call:
-factanal(x = evals, factors = 3, rotation = &quot;none&quot;)
+&lt;!-- rnb-source-end --&gt;
 
-Uniquenesses:
- RESP_1  RESP_2  RESP_3  RESP_4  RESP_5  RESP_6  RESP_7  RESP_8  RESP_9 RESP_10 RESP_11 RESP_12 RESP_13 RESP_14 RESP_15 RESP_16 
-   0.19    0.53    0.21    0.15    0.14    0.31    0.24    0.23    0.26    0.36    0.24    0.14    0.17    0.36    0.36    0.39 
-
-Loadings:
-        Factor1 Factor2 Factor3
-RESP_1   0.875           0.217 
-RESP_2   0.686                 
-RESP_3   0.868           0.199 
-RESP_4   0.817  -0.393  -0.160 
-RESP_5   0.808  -0.431  -0.157 
-RESP_6   0.797  -0.235         
-RESP_7   0.835           0.257 
-RESP_8   0.846           0.227 
-RESP_9   0.824           0.237 
-RESP_10  0.792                 
-RESP_11  0.840   0.235         
-RESP_12  0.839   0.339  -0.203 
-RESP_13  0.825   0.325  -0.209 
-RESP_14  0.792                 
-RESP_15  0.788   0.103         
-RESP_16  0.767   0.105  -0.114 
-
-               Factor1 Factor2 Factor3
-SS loadings      10.59   0.713   0.433
-Proportion Var    0.66   0.045   0.027
-Cumulative Var    0.66   0.707   0.734
-
-Test of the hypothesis that 3 factors are sufficient.
-The chi square statistic is 3408 on 75 degrees of freedom.
-The p-value is 0 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="2" style="list-style-type: decimal">
-<li>Perform our cut and notice that we can’t find mutually exclusive characteristics for the factors</li>
-</ol>
-<ul>
-<li>In this loading we only see a single factor with correlations</li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZmFOUiRsb2FkaW5ncywgY3V0ID0gMC41KVxuYGBgIn0= -->
-<pre class="r"><code>print(faNR$loadings, cut = 0.5)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5Mb2FkaW5nczpcbiAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblJFU1BfMSAgIDAuODc1ICAgICAgICAgICAgICAgICBcblJFU1BfMiAgIDAuNjg2ICAgICAgICAgICAgICAgICBcblJFU1BfMyAgIDAuODY4ICAgICAgICAgICAgICAgICBcblJFU1BfNCAgIDAuODE3ICAgICAgICAgICAgICAgICBcblJFU1BfNSAgIDAuODA4ICAgICAgICAgICAgICAgICBcblJFU1BfNiAgIDAuNzk3ICAgICAgICAgICAgICAgICBcblJFU1BfNyAgIDAuODM1ICAgICAgICAgICAgICAgICBcblJFU1BfOCAgIDAuODQ2ICAgICAgICAgICAgICAgICBcblJFU1BfOSAgIDAuODI0ICAgICAgICAgICAgICAgICBcblJFU1BfMTAgIDAuNzkyICAgICAgICAgICAgICAgICBcblJFU1BfMTEgIDAuODQwICAgICAgICAgICAgICAgICBcblJFU1BfMTIgIDAuODM5ICAgICAgICAgICAgICAgICBcblJFU1BfMTMgIDAuODI1ICAgICAgICAgICAgICAgICBcblJFU1BfMTQgIDAuNzkyICAgICAgICAgICAgICAgICBcblJFU1BfMTUgIDAuNzg4ICAgICAgICAgICAgICAgICBcblJFU1BfMTYgIDAuNzY3ICAgICAgICAgICAgICAgICBcblxuICAgICAgICAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblNTIGxvYWRpbmdzICAgICAgMTAuNTkgICAwLjcxMyAgIDAuNDMzXG5Qcm9wb3J0aW9uIFZhciAgICAwLjY2ICAgMC4wNDUgICAwLjAyN1xuQ3VtdWxhdGl2ZSBWYXIgICAgMC42NiAgIDAuNzA3ICAgMC43MzRcbiJ9 -->
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuZmFjdGFuYWwoeCA9IGV2YWxzLCBmYWN0b3JzID0gMywgcm90YXRpb24gPSBcXG5vbmVcXClcblxuVW5pcXVlbmVzc2VzOlxuIFJFU1BfMSAgUkVTUF8yICBSRVNQXzMgIFJFU1BfNCAgUkVTUF81ICBSRVNQXzYgIFJFU1BfNyAgUkVTUF84ICBSRVNQXzkgUkVTUF8xMCBSRVNQXzExIFJFU1BfMTIgUkVTUF8xMyBSRVNQXzE0IFJFU1BfMTUgUkVTUF8xNiBcbiAgIDAuMTkgICAgMC41MyAgICAwLjIxICAgIDAuMTUgICAgMC4xNCAgICAwLjMxICAgIDAuMjQgICAgMC4yMyAgICAwLjI2ICAgIDAuMzYgICAgMC4yNCAgICAwLjE0ICAgIDAuMTcgICAgMC4zNiAgICAwLjM2ICAgIDAuMzkgXG5cbkxvYWRpbmdzOlxuICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuUkVTUF8xICAgMC44NzUgICAgICAgICAgIDAuMjE3IFxuUkVTUF8yICAgMC42ODYgICAgICAgICAgICAgICAgIFxuUkVTUF8zICAgMC44NjggICAgICAgICAgIDAuMTk5IFxuUkVTUF80ICAgMC44MTcgIC0wLjM5MyAgLTAuMTYwIFxuUkVTUF81ICAgMC44MDggIC0wLjQzMSAgLTAuMTU3IFxuUkVTUF82ICAgMC43OTcgIC0wLjIzNSAgICAgICAgIFxuUkVTUF83ICAgMC44MzUgICAgICAgICAgIDAuMjU3IFxuUkVTUF84ICAgMC44NDYgICAgICAgICAgIDAuMjI3IFxuUkVTUF85ICAgMC44MjQgICAgICAgICAgIDAuMjM3IFxuUkVTUF8xMCAgMC43OTIgICAgICAgICAgICAgICAgIFxuUkVTUF8xMSAgMC44NDAgICAwLjIzNSAgICAgICAgIFxuUkVTUF8xMiAgMC44MzkgICAwLjMzOSAgLTAuMjAzIFxuUkVTUF8xMyAgMC44MjUgICAwLjMyNSAgLTAuMjA5IFxuUkVTUF8xNCAgMC43OTIgICAgICAgICAgICAgICAgIFxuUkVTUF8xNSAgMC43ODggICAwLjEwMyAgICAgICAgIFxuUkVTUF8xNiAgMC43NjcgICAwLjEwNSAgLTAuMTE0IFxuXG4gICAgICAgICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuU1MgbG9hZGluZ3MgICAgICAxMC41OSAgIDAuNzEzICAgMC40MzNcblByb3BvcnRpb24gVmFyICAgIDAuNjYgICAwLjA0NSAgIDAuMDI3XG5DdW11bGF0aXZlIFZhciAgICAwLjY2ICAgMC43MDcgICAwLjczNFxuXG5UZXN0IG9mIHRoZSBoeXBvdGhlc2lzIHRoYXQgMyBmYWN0b3JzIGFyZSBzdWZmaWNpZW50LlxuVGhlIGNoaSBzcXVhcmUgc3RhdGlzdGljIGlzIDM0MDggb24gNzUgZGVncmVlcyBvZiBmcmVlZG9tLlxuVGhlIHAtdmFsdWUgaXMgMCBcbiJ9 --&gt;
+</code></pre>
+<p>Call: factanal(x = evals, factors = 3, rotation = )</p>
+<p>Uniquenesses: RESP_1 RESP_2 RESP_3 RESP_4 RESP_5 RESP_6 RESP_7 RESP_8 RESP_9 RESP_10 RESP_11 RESP_12 RESP_13 RESP_14 RESP_15 RESP_16 0.19 0.53 0.21 0.15 0.14 0.31 0.24 0.23 0.26 0.36 0.24 0.14 0.17 0.36 0.36 0.39</p>
+<p>Loadings: Factor1 Factor2 Factor3 RESP_1 0.875 0.217 RESP_2 0.686<br />
+RESP_3 0.868 0.199 RESP_4 0.817 -0.393 -0.160 RESP_5 0.808 -0.431 -0.157 RESP_6 0.797 -0.235<br />
+RESP_7 0.835 0.257 RESP_8 0.846 0.227 RESP_9 0.824 0.237 RESP_10 0.792<br />
+RESP_11 0.840 0.235<br />
+RESP_12 0.839 0.339 -0.203 RESP_13 0.825 0.325 -0.209 RESP_14 0.792<br />
+RESP_15 0.788 0.103<br />
+RESP_16 0.767 0.105 -0.114</p>
+<pre><code>           Factor1 Factor2 Factor3</code></pre>
+<p>SS loadings 10.59 0.713 0.433 Proportion Var 0.66 0.045 0.027 Cumulative Var 0.66 0.707 0.734</p>
+<p>Test of the hypothesis that 3 factors are sufficient. The chi square statistic is 3408 on 75 degrees of freedom. The p-value is 0</p>
 <pre><code>
-Loadings:
-        Factor1 Factor2 Factor3
-RESP_1   0.875                 
-RESP_2   0.686                 
-RESP_3   0.868                 
-RESP_4   0.817                 
-RESP_5   0.808                 
-RESP_6   0.797                 
-RESP_7   0.835                 
-RESP_8   0.846                 
-RESP_9   0.824                 
-RESP_10  0.792                 
-RESP_11  0.840                 
-RESP_12  0.839                 
-RESP_13  0.825                 
-RESP_14  0.792                 
-RESP_15  0.788                 
-RESP_16  0.767                 
 
-               Factor1 Factor2 Factor3
-SS loadings      10.59   0.713   0.433
-Proportion Var    0.66   0.045   0.027
-Cumulative Var    0.66   0.707   0.734</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="varimax-rotation" class="section level3">
-<h3>Varimax Rotation</h3>
-<ul>
-<li>The goal is to find high loadings for some factors and low loadings for others
-<ul>
-<li>Improves interpretation</li>
-</ul></li>
-<li>An orthogonal factor rotation that assumes factor j interpretation can be measured by the variance of squares of its factors loadings
-<ul>
-<li>i.e. the variance of <span class="math inline">\(λ^2_{1j} + λ^2_{2j} +...+λ^2_{qj}\)</span></li>
-</ul></li>
-<li>A large variance the <span class="math inline">\(Λ_{ij}\)</span> values are closer to zero or one
-<ul>
-<li>Varimax rotation maximizes the sum of those variances for all factors</li>
-</ul></li>
-</ul>
-<ol style="list-style-type: decimal">
-<li>Factor analysis without rotation</li>
-</ol>
-<ul>
-<li>fa: factor analysis</li>
-<li>L: loadings</li>
-<li>NR: no rotation</li>
-<li>var: variance</li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmFOUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMsIHJvdGF0aW9uID0gXCJub25lXCIpXG5mYUxOUiA8LSBmYU5SJGxvYWRpbmdzWywxOjNdXG52YXJMTlIgPSB2YXIoZmFMTlJbLDFdXjIpICsgdmFyKGZhTE5SWywyXV4yKSArIHZhcihmYUxOUlssM11eMilcbnZhckxOUlxuYGBgIn0= -->
-<pre class="r"><code>faNR &lt;- factanal(evals, factors = 3, rotation = &quot;none&quot;)
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+2. Perform our cut and notice that we can&#39;t find mutually exclusive characteristics for the factors
+- In this loading we only see a single factor with correlations
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucHJpbnQoZmFOUiRsb2FkaW5ncywgY3V0ID0gMC41KVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+print(faNR$loadings, cut = 0.5)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiXG5Mb2FkaW5nczpcbiAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblJFU1BfMSAgIDAuODc1ICAgICAgICAgICAgICAgICBcblJFU1BfMiAgIDAuNjg2ICAgICAgICAgICAgICAgICBcblJFU1BfMyAgIDAuODY4ICAgICAgICAgICAgICAgICBcblJFU1BfNCAgIDAuODE3ICAgICAgICAgICAgICAgICBcblJFU1BfNSAgIDAuODA4ICAgICAgICAgICAgICAgICBcblJFU1BfNiAgIDAuNzk3ICAgICAgICAgICAgICAgICBcblJFU1BfNyAgIDAuODM1ICAgICAgICAgICAgICAgICBcblJFU1BfOCAgIDAuODQ2ICAgICAgICAgICAgICAgICBcblJFU1BfOSAgIDAuODI0ICAgICAgICAgICAgICAgICBcblJFU1BfMTAgIDAuNzkyICAgICAgICAgICAgICAgICBcblJFU1BfMTEgIDAuODQwICAgICAgICAgICAgICAgICBcblJFU1BfMTIgIDAuODM5ICAgICAgICAgICAgICAgICBcblJFU1BfMTMgIDAuODI1ICAgICAgICAgICAgICAgICBcblJFU1BfMTQgIDAuNzkyICAgICAgICAgICAgICAgICBcblJFU1BfMTUgIDAuNzg4ICAgICAgICAgICAgICAgICBcblJFU1BfMTYgIDAuNzY3ICAgICAgICAgICAgICAgICBcblxuICAgICAgICAgICAgICAgRmFjdG9yMSBGYWN0b3IyIEZhY3RvcjNcblNTIGxvYWRpbmdzICAgICAgMTAuNTkgICAwLjcxMyAgIDAuNDMzXG5Qcm9wb3J0aW9uIFZhciAgICAwLjY2ICAgMC4wNDUgICAwLjAyN1xuQ3VtdWxhdGl2ZSBWYXIgICAgMC42NiAgIDAuNzA3ICAgMC43MzRcbiJ9 --&gt;
+</code></pre>
+<p>Loadings: Factor1 Factor2 Factor3 RESP_1 0.875<br />
+RESP_2 0.686<br />
+RESP_3 0.868<br />
+RESP_4 0.817<br />
+RESP_5 0.808<br />
+RESP_6 0.797<br />
+RESP_7 0.835<br />
+RESP_8 0.846<br />
+RESP_9 0.824<br />
+RESP_10 0.792<br />
+RESP_11 0.840<br />
+RESP_12 0.839<br />
+RESP_13 0.825<br />
+RESP_14 0.792<br />
+RESP_15 0.788<br />
+RESP_16 0.767</p>
+<pre><code>           Factor1 Factor2 Factor3</code></pre>
+<p>SS loadings 10.59 0.713 0.433 Proportion Var 0.66 0.045 0.027 Cumulative Var 0.66 0.707 0.734</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+### Varimax Rotation
+- The goal is to find high loadings for some factors and low loadings for others
+  - Improves interpretation 
+- An orthogonal factor rotation that assumes factor j interpretation can be measured by the variance of squares of its factors loadings
+  - i.e. the variance of $λ^2_{1j} + λ^2_{2j} +...+λ^2_{qj}$
+- A large variance the $Λ_{ij}$ values are closer to zero or one
+  - Varimax rotation maximizes the sum of those variances for all factors
+
+1. Factor analysis without rotation
+- fa: factor analysis
+- L: loadings
+- NR: no rotation
+- var: variance
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZmFOUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMsIHJvdGF0aW9uID0gXFxub25lXFwpXG5mYUxOUiA8LSBmYU5SJGxvYWRpbmdzWywxOjNdXG52YXJMTlIgPSB2YXIoZmFMTlJbLDFdXjIpICsgdmFyKGZhTE5SWywyXV4yKSArIHZhcihmYUxOUlssM11eMilcbnZhckxOUlxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+faNR &lt;- factanal(evals, factors = 3, rotation = \none\)
 faLNR &lt;- faNR$loadings[,1:3]
 varLNR = var(faLNR[,1]^2) + var(faLNR[,2]^2) + var(faLNR[,3]^2)
 varLNR</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMDA5M1xuIn0= -->
-<pre><code>[1] 0.0093</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="2" style="list-style-type: decimal">
-<li>Factor analysis with rotation (by default, the varimax rotation)</li>
-</ol>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmFSIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMylcbmZhTFIgPC0gZmFSJGxvYWRpbmdzWywxOjNdXG5mYUxSXG5gYGAifQ== -->
-<pre class="r"><code>faR &lt;- factanal(evals, factors = 3)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMDA5M1xuIn0= --&gt;
+</code></pre>
+<p>[1] 0.0093</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+2. Factor analysis with rotation (by default, the varimax rotation)
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZmFSIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMylcbmZhTFIgPC0gZmFSJGxvYWRpbmdzWywxOjNdXG5mYUxSXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+faR &lt;- factanal(evals, factors = 3)
 faLR &lt;- faR$loadings[,1:3]
 faLR</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuUkVTUF8xICAgICAwLjQ0ICAgIDAuNjkgICAgMC4zOFxuUkVTUF8yICAgICAwLjM3ICAgIDAuNDAgICAgMC40MlxuUkVTUF8zICAgICAwLjQyICAgIDAuNjcgICAgMC40MlxuUkVTUF80ICAgICAwLjMyICAgIDAuMzMgICAgMC44MFxuUkVTUF81ICAgICAwLjI5ICAgIDAuMzIgICAgMC44MlxuUkVTUF82ICAgICAwLjMxICAgIDAuNDggICAgMC42MFxuUkVTUF83ICAgICAwLjM5ICAgIDAuNzAgICAgMC4zNVxuUkVTUF84ICAgICAwLjQzICAgIDAuNjggICAgMC4zNVxuUkVTUF85ICAgICAwLjQwICAgIDAuNjcgICAgMC4zNVxuUkVTUF8xMCAgICAwLjM5ICAgIDAuNTQgICAgMC40NFxuUkVTUF8xMSAgICAwLjY2ICAgIDAuNTAgICAgMC4yOFxuUkVTUF8xMiAgICAwLjgyICAgIDAuMzQgICAgMC4yN1xuUkVTUF8xMyAgICAwLjgwICAgIDAuMzMgICAgMC4yN1xuUkVTUF8xNCAgICAwLjU4ICAgIDAuNDAgICAgMC4zOVxuUkVTUF8xNSAgICAwLjU4ICAgIDAuNDAgICAgMC4zOFxuUkVTUF8xNiAgICAwLjU4ICAgIDAuMzYgICAgMC4zOFxuIn0= -->
-<pre><code>        Factor1 Factor2 Factor3
-RESP_1     0.44    0.69    0.38
-RESP_2     0.37    0.40    0.42
-RESP_3     0.42    0.67    0.42
-RESP_4     0.32    0.33    0.80
-RESP_5     0.29    0.32    0.82
-RESP_6     0.31    0.48    0.60
-RESP_7     0.39    0.70    0.35
-RESP_8     0.43    0.68    0.35
-RESP_9     0.40    0.67    0.35
-RESP_10    0.39    0.54    0.44
-RESP_11    0.66    0.50    0.28
-RESP_12    0.82    0.34    0.27
-RESP_13    0.80    0.33    0.27
-RESP_14    0.58    0.40    0.39
-RESP_15    0.58    0.40    0.38
-RESP_16    0.58    0.36    0.38</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="3" style="list-style-type: decimal">
-<li>Varimax rotation maximizes the sum squared variance of loading</li>
-</ol>
-<ul>
-<li>About 9% here versus less than 1% with rotation disabled</li>
-</ul>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFyTFIgPSB2YXIoZmFMUlssMV1eMikgKyB2YXIoZmFMUlssMl1eMikgKyB2YXIoZmFMUlssM11eMikgXG52YXJMUlxuYGBgIn0= -->
-<pre class="r"><code>varLR = var(faLR[,1]^2) + var(faLR[,2]^2) + var(faLR[,3]^2) 
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuUkVTUF8xICAgICAwLjQ0ICAgIDAuNjkgICAgMC4zOFxuUkVTUF8yICAgICAwLjM3ICAgIDAuNDAgICAgMC40MlxuUkVTUF8zICAgICAwLjQyICAgIDAuNjcgICAgMC40MlxuUkVTUF80ICAgICAwLjMyICAgIDAuMzMgICAgMC44MFxuUkVTUF81ICAgICAwLjI5ICAgIDAuMzIgICAgMC44MlxuUkVTUF82ICAgICAwLjMxICAgIDAuNDggICAgMC42MFxuUkVTUF83ICAgICAwLjM5ICAgIDAuNzAgICAgMC4zNVxuUkVTUF84ICAgICAwLjQzICAgIDAuNjggICAgMC4zNVxuUkVTUF85ICAgICAwLjQwICAgIDAuNjcgICAgMC4zNVxuUkVTUF8xMCAgICAwLjM5ICAgIDAuNTQgICAgMC40NFxuUkVTUF8xMSAgICAwLjY2ICAgIDAuNTAgICAgMC4yOFxuUkVTUF8xMiAgICAwLjgyICAgIDAuMzQgICAgMC4yN1xuUkVTUF8xMyAgICAwLjgwICAgIDAuMzMgICAgMC4yN1xuUkVTUF8xNCAgICAwLjU4ICAgIDAuNDAgICAgMC4zOVxuUkVTUF8xNSAgICAwLjU4ICAgIDAuNDAgICAgMC4zOFxuUkVTUF8xNiAgICAwLjU4ICAgIDAuMzYgICAgMC4zOFxuIn0= --&gt;
+</code></pre>
+<pre><code>    Factor1 Factor2 Factor3</code></pre>
+<p>RESP_1 0.44 0.69 0.38 RESP_2 0.37 0.40 0.42 RESP_3 0.42 0.67 0.42 RESP_4 0.32 0.33 0.80 RESP_5 0.29 0.32 0.82 RESP_6 0.31 0.48 0.60 RESP_7 0.39 0.70 0.35 RESP_8 0.43 0.68 0.35 RESP_9 0.40 0.67 0.35 RESP_10 0.39 0.54 0.44 RESP_11 0.66 0.50 0.28 RESP_12 0.82 0.34 0.27 RESP_13 0.80 0.33 0.27 RESP_14 0.58 0.40 0.39 RESP_15 0.58 0.40 0.38 RESP_16 0.58 0.36 0.38</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+3. Varimax rotation maximizes the sum squared variance of loading
+- About 9% here versus less than 1% with rotation disabled
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxudmFyTFIgPSB2YXIoZmFMUlssMV1eMikgKyB2YXIoZmFMUlssMl1eMikgKyB2YXIoZmFMUlssM11eMikgXG52YXJMUlxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+varLR = var(faLR[,1]^2) + var(faLR[,2]^2) + var(faLR[,3]^2) 
 varLR</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMDkzXG4ifQ== -->
-<pre><code>[1] 0.093</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="factor-scores" class="section level3">
-<h3>Factor Scores</h3>
-<ul>
-<li>We can also approximate the measure of latent variables (factor scores) by regression
-<ul>
-<li>Similar to PCA scores</li>
-<li>The factor loadings are the approximate correlation of the manifest variables and factors</li>
-</ul></li>
-<li>Final point: both PCA and factor analysis require observed (manifest) variables to be correlated
-<ul>
-<li>Otherwise FA has nothing to explain and PCA will just give us components similar to the original variables</li>
-</ul></li>
-</ul>
-<p>Use <code>scores = regression</code> to get scaled scores</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmFSIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMywgc2NvcmVzID0gXCJyZWdyZXNzaW9uXCIsIHJvdGF0aW9uID0gXCJub25lXCIpXG5cbiMgc2NvcmUgYmVmb3JlIHJvdGF0aW9uIGFyZSBpbmRlcGVuZGVudCBvZiBlYWNoIG90aGVyXG5yb3VuZChjb3IoZmFSJHNjb3JlcyksIDEwKVxuYGBgIn0= -->
-<pre class="r"><code>faR &lt;- factanal(evals, factors = 3, scores = &quot;regression&quot;, rotation = &quot;none&quot;)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuMDkzXG4ifQ== --&gt;
+</code></pre>
+<p>[1] 0.093</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Factor Scores
+- We can also approximate the measure of latent variables (factor scores) by regression 
+  - Similar to PCA scores
+  - The factor loadings are the approximate correlation of the manifest variables and factors
+- Final point: both PCA and factor analysis require observed (manifest) variables to be correlated
+  - Otherwise FA has nothing to explain and PCA will just give us components similar to the original variables
+  
+Use `scores = regression` to get scaled scores 
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZmFSIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMywgc2NvcmVzID0gXFxyZWdyZXNzaW9uXFwsIHJvdGF0aW9uID0gXFxub25lXFwpXG5cbiMgc2NvcmUgYmVmb3JlIHJvdGF0aW9uIGFyZSBpbmRlcGVuZGVudCBvZiBlYWNoIG90aGVyXG5yb3VuZChjb3IoZmFSJHNjb3JlcyksIDEwKVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+faR &lt;- factanal(evals, factors = 3, scores = \regression\, rotation = \none\)
 
 # score before rotation are independent of each other
 round(cor(faR$scores), 10)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuRmFjdG9yMSAgICAgICAxICAgICAgIDAgICAgICAgMFxuRmFjdG9yMiAgICAgICAwICAgICAgIDEgICAgICAgMFxuRmFjdG9yMyAgICAgICAwICAgICAgIDAgICAgICAgMVxuIn0= -->
-<pre><code>        Factor1 Factor2 Factor3
-Factor1       1       0       0
-Factor2       0       1       0
-Factor3       0       0       1</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Calculate approximate correlations of manifest and latent variables:</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuczAgPC0gcm93U3VtcyhldmFscylcbnMxIDwtIHJvd1N1bXMoZXZhbHNbLDExOjE2XSlcbnMyIDwtIHJvd1N1bXMoZXZhbHNbLDE6MTBdKVxuY29yKHMwLCBmYVIkc2NvcmVzWywxXSlcbmBgYCJ9 -->
-<pre class="r"><code>s0 &lt;- rowSums(evals)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICBGYWN0b3IxIEZhY3RvcjIgRmFjdG9yM1xuRmFjdG9yMSAgICAgICAxICAgICAgIDAgICAgICAgMFxuRmFjdG9yMiAgICAgICAwICAgICAgIDEgICAgICAgMFxuRmFjdG9yMyAgICAgICAwICAgICAgIDAgICAgICAgMVxuIn0= --&gt;
+</code></pre>
+<pre><code>    Factor1 Factor2 Factor3</code></pre>
+<p>Factor1 1 0 0 Factor2 0 1 0 Factor3 0 0 1</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+Calculate approximate correlations of manifest and latent variables:
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuczAgPC0gcm93U3VtcyhldmFscylcbnMxIDwtIHJvd1N1bXMoZXZhbHNbLDExOjE2XSlcbnMyIDwtIHJvd1N1bXMoZXZhbHNbLDE6MTBdKVxuY29yKHMwLCBmYVIkc2NvcmVzWywxXSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+s0 &lt;- rowSums(evals)
 s1 &lt;- rowSums(evals[,11:16])
 s2 &lt;- rowSums(evals[,1:10])
 cor(s0, faR$scores[,1])</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDFcbiJ9 --&gt;
+</code></pre>
+<p>[1] 1</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY29yKHMxLCBmYVIkc2NvcmVzWywxXSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+cor(s1, faR$scores[,1])</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuOTRcbiJ9 --&gt;
+</code></pre>
+<p>[1] 0.94</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY29yKHMyLCBmYVIkc2NvcmVzWywxXSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+cor(s2, faR$scores[,1])</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuOThcbiJ9 --&gt;
+</code></pre>
+<p>[1] 0.98</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+## Canonical Correlation Analysis (CCA)
+- PCA analyzes interrelationships between a single set of variables, but CCA assesses relationships between **two whole sets of variables**
+- The objective is finding the linear functions of the variables of one set that maximally correlate with the functions of the other set 
+- Comparison to multiple regression
+  - In multiple regression you relate one Y variable to several X variables
+  - CCA is a multiple regression where several Y variables are related to several X variables
+  
+### CCA Math
+*AKA the section where I punish myself by using LaTeX*
+
+
+If we have $q$ variables $X_1, X_2,...,X_q$ and p variables $Y_1, Y_2,...,Y_p$ then CCA finds the minimization of $(q,p)$ pairs of variables
+
+$U_1 = a_{11}X_1 + a_{12}X_2 +...+ a_{1q}X_q$
+
+$U_2 = a_{21}X_1 + a_{22}X_2 +...+ a_{2q}X_q$
+
+...
+
+$U_q = a_{q1}X_1 + a_{q2}X_2 +...+ a_{qq}X_q$
+
+and
+
+$V_1 = b_{11}Y_1 + b_{12}Y_2 +...+ b_{1q}Y_p$
+
+$V_2 = b_{21}Y_1 + b_{22}Y_2 +...+ b_{2q}Y_p$
+
+...
+
+$V_q = b_{p1}Y_1 + b_{p2}Y_2 +...+ b_{pp}Y_p$
+
+We choose pairs of canonical variables so the correlation between $U_1$ and $V_1$ is maximum
+  - As is $U_2$ and $V_2$ if they are uncorrelated (orthagonal) to the first pair
+  - Same with $U_3$ and $V_3$ and so on
+  
+### CCA in R
+- This example uses a Texas Tech Student class evaluation dataset
+- The first ten variables are associated with instructor performance
+- The next six are related to course evaluation
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YSA8LSByZWFkLmNzdihcImh0dHA6Ly90aW55LmNjL2lzcXM2MzUwX2V2YWxzXCIpXG5gYGAifQ== --&gt;
+
+```r
+data &lt;- read.csv(&quot;http://tiny.cc/isqs6350_evals&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDFcbiJ9 -->
-<pre><code>[1] 1</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29yKHMxLCBmYVIkc2NvcmVzWywxXSlcbmBgYCJ9 -->
-<pre class="r"><code>cor(s1, faR$scores[,1])</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuOTRcbiJ9 -->
-<pre><code>[1] 0.94</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29yKHMyLCBmYVIkc2NvcmVzWywxXSlcbmBgYCJ9 -->
-<pre class="r"><code>cor(s2, faR$scores[,1])</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuOThcbiJ9 -->
-<pre><code>[1] 0.98</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiY2Fubm90IG9wZW4gVVJMICdodHRwczovL3RpbnkuY2MvaXNxczYzNTBfZXZhbHMnOiBIVFRQIHN0YXR1cyB3YXMgJzQwNCBOb3QgRm91bmQnRXJyb3IgaW4gZmlsZShmaWxlLCBcInJ0XCIpIDogXG4gIGNhbm5vdCBvcGVuIHRoZSBjb25uZWN0aW9uIHRvICdodHRwOi8vdGlueS5jYy9pc3FzNjM1MF9ldmFscydcbiJ9 -->
+<pre><code>cannot open URL &#39;https://tiny.cc/isqs6350_evals&#39;: HTTP status was &#39;404 Not Found&#39;Error in file(file, &quot;rt&quot;) : 
+  cannot open the connection to &#39;http://tiny.cc/isqs6350_evals&#39;</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2479,7 +2639,7 @@ cor(s0, faR$scores[,1])</code></pre>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiNC4wIE11bHRpZGltZW5zaW9uYWwgU2NhbGluZyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQojIyBNdWx0aWRpbWVuc2lvbmFsIFNjYWxpbmcKLSBNRFMgaXMgZGVzaWduZWQgdG8gY29uc3RydWN0IGEgbWFwIG9mIHJlbGF0aW9uc2hpcHMgYmV0d2VlbiB2YXJpYWJsZXMgdXNpbmcgdGhlIGRpc3RhbmNlIG1hdHJpeAogIC0gRGlzdGFuY2UgbWF0cml4CiAgICAtIFRhYmxlIG9mIGRpc3RhbmNlcyBiZXR3ZWVuIG9iamVjdHMgCi0gVGhlIGdvYWwgaXMgdG8gZmluZCBwb2ludHMgaW4gbG93IGRpbWVuc2lvbnMgdGhhdCBhcHByb3hpbWF0ZSB0aGUgaGlnaC1kaW1lbnNpb25hbCBjb25maWd1cmF0aW9uIG9mIHRoZSBvcmlnaW5hbCBkaXN0YW5jZSBtYXRyaXgKICAtIFRyaWVzIHRvIHJlcHJlc2VudCB0aGlzIHdpdGggYSBnZW9tZXRyaWMgbWFwCi0gVXNlZnVsIHdoZW4gdGhlIHVuZGVybHlpbmcgcmVsYXRpb25zaGlwcyBiZXR3ZWVuIHZhcmlhYmxlcyBpc24ndCBrbm93biBidXQgYSBkaXN0YW5jZSBtYXRyaXggY2FuIGJlIGVzdGltYXRlZAoKIyMjIENsYXNzaWNhbCBNdWx0aWRpbWVuc2lvbmFsIFNjYWxpbmcgT3ZlcnZpZXcKLSBPbmx5IHVzZXMgdGhlIGRpc3RhbmNlcywgbm90IHRoZSBvcmlnaW5hbCBkYXRhCi0gRGlzdGFuY2UgbWF0cml4IHB0LiBpaSBlbGVjdHJpYyBib29nYWxvCiAgLSBNYXRyaXggb2YgRXVjbGlkZWFuIGRpc3RhbmNlcyBmcm9tIG9iamVjdCBpIHRvIG9iamVjdCBqICRkX3tpan0kCi0gVGhlIGRpc3RhbmNlIG1hdHJpeCBpcyBjb252ZXJ0ZWQgdG8gWCBhbmQgWSBjb29yZGluYXRlcyAoaW4gMkQpIHRvIGJlIHVzZWQgZm9yIHBsb3RzCiAgLSBUaGUgZ3JhcGhpY2FsIHJlcHJlc2VudGF0aW9uIGlzIGJ1aWx0IHNvIHRoYXQgdGhlIEV1Y2xpZGVhbiBkaXN0YW5jZXMgbWF0Y2ggdGhlIHByb3ZpZGVkIGRpc3RhbmNlIG1hdHJpeAogIC0gT3IgdHJpZXMgdG8gbWF0Y2ggaXQgYW55d2F5LCB0aGUgZ29hbCBpcyB0byBiZSBhcyBjbG9zZSBhcyBwb3NzaWJsZQotIFRoZSBjb29yZGluYXRlcyBzaG91bGQgbWF0Y2ggdGhlIHByaW5jaXBhbCBjb21wb25lbnRzIGZyb20gUENBCi0gV29ya3Mgb24gYW55IHBvc2l0aXZlIHplcm8tZGlhZ29uYWwgc3ltbWV0cmljIG1hdHJpeAoKIyMjIENsYXNzaWNhbCBEaW1lbnNpb25hbCBTY2FsaW5nIGluIFIKCjEuIENyZWF0ZSBhIHNhbXBsZSBtYXRyaXggd2l0aCAxMCByb3dzIGFuZCA1IGNvbHVtbnMKCmBgYHtyfQpkYXRhIDwtIG1hdHJpeChjKAozLCA1LCA2LCAxLCA0LCAyLCAwLCAwLCA3LCAyLAo0LCAxLCAyLCAxLCA3LCAyLCA0LCA2LCA2LCAxLAo0LCAxLCAwLCAxLCAzLCA1LCAxLCA0LCA1LCA0LAo2LCA3LCAyLCAwLCA2LCAxLCAxLCAzLCAxLCAzLAogMSwgMywgNiwgMywgMiwgMCwgMSwgNSwgNCwgMSksIG5jb2wgPSA1KQpgYGAKCgojIyBDb3JyZXNwb25kZW5jZSBBbmFseXNpcwoKIyMgRXhwbG9yYXRvcnkgRmFjdG9yIEFuYWx5c2lzIChFRkEpCiMjIyBGYWN0b3IgQW5hbHlzaXMgT3ZlcnZpZXcKLSBGYWN0b3IgYW5hbHlzaXMgaXMgYSByZWdyZXNzaW9uIG1vZGVsIHRoYXQgbGlua3MgdHdvIHR5cGVzIG9mIHZhcmlhYmxlczogbWFuaWZlc3QgYW5kIGxhdGVudAotIE1hbmlmZXN0IHZhcmlhYmxlcwogIC0gVmFyaWFibGVzIHRoYXQgY2FuIGJlIGRpcmVjdGx5IG1lYXN1cmVkIG9yIG9ic2VydmVkCi0gTGF0ZW50IHZhcmlhYmxlcyAoRmFjdG9ycykKICAtIENhbm5vdCBiZSBkaXJlY3RseSBvYnNlcnZlZAogIC0gV2UgbmVlZCBtYW5pZmVzdCB2YXJpYWJsZXMgdG8gdGVzdCBmb3IgdGhlaXIgcHJlc2VuY2UKLSBUd28gdHlwZXMgb2YgZmFjdG9yIGFuYWx5c2lzCiAgLSBFeHBsb3JhdG9yeQogICAgLSBJbnZlc3RpZ2F0ZXMgcmVsYXRpb25zaGlwcyBiZXR3ZWVuIG1hbmlmZXN0IGFuZCBsYXRlbnQgdmFyaWFibGVzIHdpdGhvdXQgbWFraW5nIGFzc3VtcHRpb25zIGFib3V0IHdoaWNoIG9uZXMgYXJlIHJlbGF0ZWQKICAtIENvbmZpcm1hdG9yeQogICAgLSBUZXN0cyB3aGV0aGVyIHNwZWNpZmljIGZhY3RvcnMgZml0IHRoZSBjb3ZhcmlhbmNlcyBvciBjb3JyZWxhdGlvbnMgYmV0d2VlbiBtYW5pZmVzdCB2YXJpYWJsZXMKICAgIAojIyMgVGhlIEstRmFjdG9yIEFuYWx5c2lzIE1vZGVsCi0gRmFjdG9yIGFuYWx5c2lzIGlzIHNpbWlsYXIgdG8gYSByZWdyZXNzaW9uIG1vZGVscyBleGFtaW5pbmcgdGhlIGxpbmsgYmV0d2VlbiBtYW5pZmVzdCBhbmQgbGF0ZW50IHZhcmlhYmxlcyAKJFpfaSA9IM67X3tpMX1mXzEgKyDOu19pMmZfMisuLi4rzrtfe2lrfWZfayArIHVfaSwgaSA9IDEsMiwuLi4scSQKICAtIGk6IHRoZSBtYW5pZmVzdCB2YXJpYWJsZSBpbmRleCwgdGhlcmUgYXJlIHEgdmFyaWFibGVzIChjb2x1bW5zKSBpID0gMSwyLC4uLixxCiAgLSAkWl9pJDogei1zY29yZSBvZiB0aGUgaS10aCBtYW5pZmVzdCB2YXJpYWJsZSAoJHhfaSQpCiAgICA9IE1lYW4gb2YgemVybyBhbmQgdW5pdCB2YXJpYW5jZQogIC0gJM67X3tpMX0sLi4uLM67X3tpa30kOiBmYWN0b3IgbG9hZGluZ3MgZm9yIFpfaQogICAgLUNvZWZmaWNpZW50cyBvZiB0aGUgcmVncmVzc2lvbiBtb2RlbAogICAgLSBIZWxwIGludGVycHJldCB0aGUgZmFjdG9ycwogICAgLSBMYXJnZXIgdmFsdWVzIHJlbGF0ZSBmYWN0b3JzIG1vcmUgY2xvc2UgdG8gY29ycmVzcG9uZGluZyBvYnNlcnZlZCB2YXJpYWJsZXMgdGhhdCBzb21ldGltZXMgZ2l2ZSB1cyBhIG1lYW5pbmdmdWwgZGVzY3JpcHRpb24gb2YgdGhlIGZhY3RvcgogIC0kZl8xLC4uLixmX2skOiBVbmNvcnJlbGF0ZWQgY29tbW9uIGZhY3RvcnMgd2l0aCBtZWFucyBvZiB6ZXJvIGFuZCB1bml0IHZhcmlhbmNlCiAgLSAkdV9pJDogZXJyb3IgdGVybQogICAgLSBPbmx5IGFwcGxpZXMgdG8gJFpfaSQKICAgIC0gVW5jb3JyZWxhdGVkIHdpdGggb3RoZXIgZGlzdHVyYmFuY2UgdGVybXMgYW5kIGZhY3RvcnMKICAgIAojIyMgRmFjdG9yIEFuYWx5c2lzIGluIFIKLSBVc2UgYGZhY3RhbmFsKClgIGZ1bmN0aW9uIGFuZCBwYXNzIGluIHRoZSBtYXRyaXggYXMgd2VsbCBhcyB0aGUgbnVtYmVyIG9mIGZhY3RvcnMKICAtIEZ1bmN0aW9uIHBlcmZvcm1zIG1heGltdW0tbGlrZWxpaG9vZCBmYWN0b3IgYW5hbHlzaXMgb24gYSBjb3ZhcmlhbmNlIG1hdHJpeCBvciBkYXRhIG1hdHJpeAotIE51bGwgaHlwb3RoZXNpczogdGhlIGsgZmFjdG9ycyBhcmUgc3VmZmljaWVudCBmb3IgcHJlc2VudGluZyB0aGUgZGF0YQogIC0gSW4gdGhpcyBleGFtcGxlIHdlIGFzc3VtZSBrID0gMyBpcyBzdWZmaWNpZW50CiAgICAtIFRoZSBwLXZhbHVlID4gMC4wNSBzbyB3ZSBmYWlsIHRvIHJlamVjdCB0aGUgbnVsbAogICAgLSBUaGUgYXBwcm9wcmlhdGUgbnVtYmVyIG9mIGZhY3RvcnMgKGxhdGVudCB2YXJpYWJsZXMpIGlzIDMKCkV4YW1wbGU6IENyaW1lIGRhdGEKYGBge3J9CmNyaW1lIDwtIHJlYWQuY3N2KCJodHRwczovL3JiLmd5L3d1OGt2byIsIHJvdy5uYW1lcyA9ICJTVEFURSIpCgpkaW0oY3JpbWUpCmBgYAoKYGBge3J9CmNyaW1lLmZhIDwtIGZhY3RhbmFsKGNyaW1lLCBmYWN0b3JzID0gMykKY3JpbWUuZmEKYGBgCldlIGNhbiBleGFtaW5lIHRoZSBsb2FkaW5ncyBieSBwdWxsaW5ncyB0aGVtIGZyb20gdGhlIGZhY3RvciBhbmFseXNpczoKYGBge3J9CmNyaW1lLmZhJGxvYWRpbmdzCmBgYAoKIyMjIFVuaXF1ZW5lc3MKCiRWYXIoWl9pKSA9IM67XjJfe2kxfVZhcihmXzEpICsgzrteMl97aTJ9VmFyKGZfMikrLi4uK867XjJfe2lrfVZhcihmX2spICsgVmFyKHVfaSkkCgokPSDOu14yX3tpMX0gKyDOu14yX3tpMn0gKy4uLivOu14yX3tpa30gKyBWYXIodV9pKSQKCiAtIFRoZSByaWdodCBoYWxmIGlzIHRoZSBjb21tb25hbGl0eSBvZiB2YXJpYWJsZSAkWl9pJAogIC0gUmVwcmVzZW50cyB0aGUgdmFyaWFuY2Ugc2hhcmVkIHdpdGggb3RoZXIgdmFyaWFibGVzIHRocm91Z2ggdGhlIGNvbW1vbiBmYWN0b3JzCiAgCi0gJFZhcih1X2kpJCB0aGUgc3BlY2lmaWNpdHkgb3IgdW5pcXVlbmVzcyBvZiBaX2kKICAtIFRoZSB2YXJpYWJpbGl0eSBpbiBaX2kgbm90IHNoYXJlZCB3aXRoIG90aGVyIHZhcmlhYmxlcwogIC0gU21hbGxlciB1bmlxdWVuZXNzOiB0aGUgZmFjdG9ycyBleHBsYWluIG1vcmUgdmFyaWFuY2UKICAgIC0gSXQncyAibGVzcyB1bmlxdWUiCiAgICAKLSBXZSBrbm93IFZhcmlhbmNlIG9mICRaX2kkIGlzIHVuaXQsIHRoZXJlZm9yZSAkVmFyKFpfaSkgPSAxJAogIC0gV2Ugc29sdmUgZm9yIHVuaXF1ZW5lc3Mgb2YgdmFyaWFibGUgaToKICAKICAkVmFyKHVfaSkgPSAxIC0gKM67XjJfe2kxfSArIM67XjJfe2kyfSArLi4uK867XjJfe2lrfSkkCiAgCiMjIyMgVW5pcXVlbmVzcyBpbiBSCi0gVG8gcGVyZm9ybSB0aGlzIGluIFIsIHdlIGRvIDEgLSB0aGUgc3VtIG9mIHRoZSBmYWN0b3IgYW5hbHlzaXMgbG9hZGluZ3Mgc3F1YXJlZAotIEluIHRoaXMgZXhhbXBsZSB3ZSBncmFiIHRoZSB1bmlxdWVuZXNzIG9mIG11cmRlciBieSBjYWxsaW5nIGl0J3MgbG9jYXRpb24gYFsxLDE6XWAgd2l0aCB0aGUgdGhyZWUgZmFjdG9yIGNvbHVtbnMgYFs6M11gCmBgYHtyfQoxIC0gc3VtKGNyaW1lLmZhJGxvYWRpbmdzWzEsMTozXV4yKQpgYGAKCiMjIyBFeHBsb3JhdG9yeSBGYWN0b3IgQW5hbHlzaXMKLSBXZSd2ZSByZWFjaGVkIHRoZSB0aXRsZSBvZiB0aGUgc29uZwotIExldCdzIGRvIHNvbWUgbWF0aCAKCiMjIyMgRUZBIE1vZGVsCgokXGhhdM6jID0gzpvOm15UICsgzqgkCgotIM6jOiB0aGUgY292YXJpYW5jZSBtYXRyaXggb2Ygc2NhbGVkIGRhdGEgKFotc2NvcmVzKQogIC0gRXF1YWwgdG8gdGhlIGNvcnJlbGF0aW9uIG9mIG5vbi1zY2FsZWQgZGF0YQogIC0gSW4gdGhpcyBmb3JtdWxhLCBpdCBoYXMgYSBoYXQgYmVjYXVzZSBpdCdzIHRoZSAqZXN0aW1hdGUqIG9mIG91ciBvcmlnaW5hbCBjb3JyZWxhdGlvbiBtYXRyaXgKICAgIC0gU2hvdWxkIGJlIGNsb3NlIHRvIHRoZSBvcmlnaW5hbCBjb3JyZWxhdGlvbiBtYXRyaXggaXMgd2UgZGlkIGdvb2QgCi0gzps6IFRoZSBsb2FkaW5nIG1hdHJpeAogIC0gV2UgcHVsbGVkIHRoaXMgd2l0aCBgJExvYWRpbmdzYAogIC0gSW4gdGhlIGVxdWF0aW9uIHdlIG11bHRpcGx5IGl0IGJ5IGl0cyBvd24gdHJhbnBvc2UKLSDOqDogVGhlIGNvdmFyaWFuY2UgbWF0cml4IG9mIHRoZSBlcnJvciB0ZXJtIAogIC0gQ292KFUpCiAgLSBUaGUgdW5pcXVlbmVzcyBtYXRyaXgKICAtIE1hdHJpeCBvZiB0aGUgdmFyaWFuY2Ugb2YgZGlzdHVyYmFuY2UgdGVybXMgKCR1X2kkKSBvbiB0aGUgZGlhZ29uYWwgYW5kIHplcm8gZXZlcnl3aGVyZSBlbHNlIGJlY2F1c2UgdGggdGhlIHRlcm1zIG11c3QgYmUgaW5kZXBlbmRlbnQgb2YgZWFjaCBvdGhlcgoKIyMjIyBFRkEgaW4gUgoKLSBgZmFjdGFuYWwoKWAgdXNlcyBtYXhpbXVtIGxpa2VsaWhvb2QgZXN0aW1hdGlvbiAoTUxFKSBieSBkZWZhdWx0CiAgLSBNTEUgaXMgZm9yIGVzdGltYXRpbmcgbW9kZWwgcGFyYW1ldGVycyBhbmQgd2UgaGF2ZSBzb21lIG1vZGVsIHBhcmFtZXRlcnMgdG8gZXN0aW1hdGUhCiAgICAtIFRoZSBwYXJhbWV0ZXJzIGFyZSB0aGUgbG9hZGluZyBjb2VmZmljaWVudHMgYW5kIHRoZSB1IHRlcm0gKGVycm9yKSBidXQgb2YgY291cnNlIHlvdSBhbHJlYWR5IGtuZXcgdGhhdCAKLSBSIFByb2Nlc3MKMS4gTWFudWFsbHkgcGVyZm9ybSB0aGUgRUZBIG1vZGVsIHdpdGggbWF0cml4IG9wZXJhdGlvbnMgdG8gZ2V0IHRoZSBlc3RpbWF0ZSBvZiB0aGUgY29ycmVsYXRpb24gbWF0cml4CgpgYGB7cn0Kb3B0aW9ucyhkaWdpdHMgPSAyKQoKIyBvYnRhaW4gdGhlIGxvYWRpbmcgY29lZmZpY2llbnRzCmYubG9hZGluZyA8LSBjcmltZS5mYSRsb2FkaW5nc1ssMTozXQoKIyBtdWx0aXBseSBsb2FkaW5ncyBieSB0aGUgdHJhbnNwb3NlIG9mIGl0c2VsZgojIGFkZCB0aGUgZGlhZ29uYWwgb2YgZXJyb3IgY292YXJpYW5jZSBtYXRyaXggKHVuaXF1ZW5lc3MpCmNvckhhdCA8LSBmLmxvYWRpbmcgJSolIHQoZi5sb2FkaW5nKSArIGRpYWcoY3JpbWUuZmEkdW5pcXVlbmVzc2VzKQoKIyB0aGUgZXN0aW1hdGUgb2YgdGhlIGNvcnJlbGF0aW9uIG1hdHJpeApjb3JIYXQKYGBgCjIuIENvbXBhcmUgdGhlIGVzdGltYXRlIHRvIHRoZSBhY3R1YWwgY29ycmVsYXRpb24gbWF0cml4IGJ5IGZpbmRpbmcgdGhlIGRpc2NyZXBhbmN5IHdpdGggcm9vdC1tZWFuLXNxdWFyZSBlcnJvciAoUk1TRSkKLSBBbiBSTVNFIGJlbG93IDAuMDUgaXMgYWNjZXB0YWJsZQotIFRoaXMgaXMgYWNjZXB0YWJsZSwgeW91IGRpZCBncmVhdCBkYXJsaW5nCmBgYHtyfQojIG9yaWdpbmFsIGNvcnJlbGF0aW9uCmNvcnIgPC0gY29yKGNyaW1lKQoKIyBSb290LW1lYW4tc3F1YXJlIGVycm9yCnJtc2UgPSBzcXJ0KG1lYW4oKGNvckhhdC1jb3JyKV4yKSkKcm1zZQpgYGAKIyMjIEVGQSBBcHBsaWNhdGlvbiBhbmQgQ3V0CgoxLiBMb2FkIGV2YWx1YXRpb24gZGF0YQotIFAtdmFsdWUgaXMgbm90ID4wLjA1IHNvIHdlIHNob3VsZCBzYXkgdGhlIG1vZGVsIGlzbid0IHZhbGlkCiAgLSBIZXJlIHdlIGlnbm9yZSB0aGF0IHNpbmNlIHRoZSBkYXRhIHNhbXBsZSBzaXplIGlzIGxhcmdlIHNvIHNtYWxsIGRpc2NyZXBhbmNpZXMgYmV0d2VlbiAkXGhhdM6jJCBhbmQgzqMgd2lsbCBiZSBkZXRlY3RlZCBhcyBzaWduaWZpY2FudAogIC0gSWYgd2UgcmVkaWQgdGhpcyB3aXRoIGEgc2FtcGxlIG9mIHRoZSBkYXRhIHdlIHdvdWxkIHNlZSBhIG11Y2ggbGFyZ2VyIHAtdmFsdWUKYGBge3J9CmV2YWxzIDwtIHJlYWQuY3N2KCJodHRwczovL2JpdC5seS8zZWQ1QmlhIikKCiMgdmFyaWFibGVzIHJlbGF0ZWQgdG8gMTYgZXZhbHVhdGlvbiBxdWVzdGlvbnMKZXZhbHMgPSBuYS5vbWl0KGV2YWxzWywzOjE4XSkgCmV2YWxzLmZhIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMykKZXZhbHMuZmEKYGBgCjIuIFBhc3MgaW4gYGN1dCA9IDAuNWAgdG8gZHJvcCBhbGwgbG9hZGluZ3MgYmVsb3cgdGhhdCBsZXZlbAotIFRoaXMgYWxsb3dzIHVzIHRvIGVhc2lseSB2aWV3IHRoZSBoaWdoZXIgY29ycmVsYXRpb25zCgpgYGB7cn0KcHJpbnQoZXZhbHMuZmEkbG9hZGluZ3MsIGN1dCA9IDAuNSkKYGBgCgojIyBSb3RhdGlvbgotIEluIHRoZSBtb2RlbCAkXGhhdM6jID0gzpvOm15UICsgzqgkIHdlIGRvbid0IGhhdmUgYSBzaW5nbGUgc29sdXRpb24gZm9yIHRoZSBmYWN0b3IgbG9hZGluZyBtYXRyaXggzpsKICAtIFJlbWVtYmVyIHRoYXQgaW4gUENBIHdlIGRvIGhhdmUgc2luZ2xlIHNvbHV0aW9ucyBmb3IgbG9hZGluZ3M6IHRoZSBlaWdlbnZlY3RvcnMKLSBXZSBjYW4gcGVyZm9ybSBhIHJvdGF0aW9uIHdoaWNoIGNoYW5nZXMgdGhlIGZhY3RvciBsb2FkaW5ncyBmb3IgZWFzaWVyIGludGVycHJldGF0aW9uCiAgLSBVbmRlcmx5aW5nIG1hdGggaXNuJ3QgY2hhbmdlZCwgdGhlIG91dHB1dHMgYXJlIGp1c3QgZWFzaWVyIHRvIGludGVycHJldAotIGBmYWN0YW5hbCgpYCB1c2VzICp2YXJpbWF4KiByb3RhdGlvbiwgdGhlIG1vc3QgY29tbW9uIHRlY2huaXF1ZQoKIyMjIEZhY3RvciBBbmFseXNpcyBXaXRob3V0IFJvdGF0aW9uCi0gU2luY2UgYGZhY3RhbmFsKClgIGhhcyBhIGRlZmF1bHQgcm90YXRpb24gb2YgdmFyaW1heCwgd2UgbmVlZCB0byBzcGVjaWZ5IGByb3RhdGlvbiA9ICJub25lImAgZm9yIHRoaXMgZXhhbXBsZQpgYGB7cn0KZmFOUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMsIHJvdGF0aW9uID0gIm5vbmUiKQpmYU5SCmBgYAoyLiBQZXJmb3JtIG91ciBjdXQgYW5kIG5vdGljZSB0aGF0IHdlIGNhbid0IGZpbmQgbXV0dWFsbHkgZXhjbHVzaXZlIGNoYXJhY3RlcmlzdGljcyBmb3IgdGhlIGZhY3RvcnMKLSBJbiB0aGlzIGxvYWRpbmcgd2Ugb25seSBzZWUgYSBzaW5nbGUgZmFjdG9yIHdpdGggY29ycmVsYXRpb25zCmBgYHtyfQpwcmludChmYU5SJGxvYWRpbmdzLCBjdXQgPSAwLjUpCmBgYAojIyMgVmFyaW1heCBSb3RhdGlvbgotIFRoZSBnb2FsIGlzIHRvIGZpbmQgaGlnaCBsb2FkaW5ncyBmb3Igc29tZSBmYWN0b3JzIGFuZCBsb3cgbG9hZGluZ3MgZm9yIG90aGVycwogIC0gSW1wcm92ZXMgaW50ZXJwcmV0YXRpb24gCi0gQW4gb3J0aG9nb25hbCBmYWN0b3Igcm90YXRpb24gdGhhdCBhc3N1bWVzIGZhY3RvciBqIGludGVycHJldGF0aW9uIGNhbiBiZSBtZWFzdXJlZCBieSB0aGUgdmFyaWFuY2Ugb2Ygc3F1YXJlcyBvZiBpdHMgZmFjdG9ycyBsb2FkaW5ncwogIC0gaS5lLiB0aGUgdmFyaWFuY2Ugb2YgJM67XjJfezFqfSArIM67XjJfezJqfSArLi4uK867XjJfe3FqfSQKLSBBIGxhcmdlIHZhcmlhbmNlIHRoZSAkzptfe2lqfSQgdmFsdWVzIGFyZSBjbG9zZXIgdG8gemVybyBvciBvbmUKICAtIFZhcmltYXggcm90YXRpb24gbWF4aW1pemVzIHRoZSBzdW0gb2YgdGhvc2UgdmFyaWFuY2VzIGZvciBhbGwgZmFjdG9ycwoKMS4gRmFjdG9yIGFuYWx5c2lzIHdpdGhvdXQgcm90YXRpb24KLSBmYTogZmFjdG9yIGFuYWx5c2lzCi0gTDogbG9hZGluZ3MKLSBOUjogbm8gcm90YXRpb24KLSB2YXI6IHZhcmlhbmNlCmBgYHtyfQpmYU5SIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMywgcm90YXRpb24gPSAibm9uZSIpCmZhTE5SIDwtIGZhTlIkbG9hZGluZ3NbLDE6M10KdmFyTE5SID0gdmFyKGZhTE5SWywxXV4yKSArIHZhcihmYUxOUlssMl1eMikgKyB2YXIoZmFMTlJbLDNdXjIpCnZhckxOUgpgYGAKCjIuIEZhY3RvciBhbmFseXNpcyB3aXRoIHJvdGF0aW9uIChieSBkZWZhdWx0LCB0aGUgdmFyaW1heCByb3RhdGlvbikKYGBge3J9CmZhUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMpCmZhTFIgPC0gZmFSJGxvYWRpbmdzWywxOjNdCmZhTFIKYGBgCgozLiBWYXJpbWF4IHJvdGF0aW9uIG1heGltaXplcyB0aGUgc3VtIHNxdWFyZWQgdmFyaWFuY2Ugb2YgbG9hZGluZwotIEFib3V0IDklIGhlcmUgdmVyc3VzIGxlc3MgdGhhbiAxJSB3aXRoIHJvdGF0aW9uIGRpc2FibGVkCmBgYHtyfQp2YXJMUiA9IHZhcihmYUxSWywxXV4yKSArIHZhcihmYUxSWywyXV4yKSArIHZhcihmYUxSWywzXV4yKSAKdmFyTFIKYGBgCgojIyMgRmFjdG9yIFNjb3JlcwotIFdlIGNhbiBhbHNvIGFwcHJveGltYXRlIHRoZSBtZWFzdXJlIG9mIGxhdGVudCB2YXJpYWJsZXMgKGZhY3RvciBzY29yZXMpIGJ5IHJlZ3Jlc3Npb24gCiAgLSBTaW1pbGFyIHRvIFBDQSBzY29yZXMKICAtIFRoZSBmYWN0b3IgbG9hZGluZ3MgYXJlIHRoZSBhcHByb3hpbWF0ZSBjb3JyZWxhdGlvbiBvZiB0aGUgbWFuaWZlc3QgdmFyaWFibGVzIGFuZCBmYWN0b3JzCi0gRmluYWwgcG9pbnQ6IGJvdGggUENBIGFuZCBmYWN0b3IgYW5hbHlzaXMgcmVxdWlyZSBvYnNlcnZlZCAobWFuaWZlc3QpIHZhcmlhYmxlcyB0byBiZSBjb3JyZWxhdGVkCiAgLSBPdGhlcndpc2UgRkEgaGFzIG5vdGhpbmcgdG8gZXhwbGFpbiBhbmQgUENBIHdpbGwganVzdCBnaXZlIHVzIGNvbXBvbmVudHMgc2ltaWxhciB0byB0aGUgb3JpZ2luYWwgdmFyaWFibGVzCiAgClVzZSBgc2NvcmVzID0gcmVncmVzc2lvbmAgdG8gZ2V0IHNjYWxlZCBzY29yZXMgCmBgYHtyfQpmYVIgPC0gZmFjdGFuYWwoZXZhbHMsIGZhY3RvcnMgPSAzLCBzY29yZXMgPSAicmVncmVzc2lvbiIsIHJvdGF0aW9uID0gIm5vbmUiKQoKIyBzY29yZSBiZWZvcmUgcm90YXRpb24gYXJlIGluZGVwZW5kZW50IG9mIGVhY2ggb3RoZXIKcm91bmQoY29yKGZhUiRzY29yZXMpLCAxMCkKYGBgCkNhbGN1bGF0ZSBhcHByb3hpbWF0ZSBjb3JyZWxhdGlvbnMgb2YgbWFuaWZlc3QgYW5kIGxhdGVudCB2YXJpYWJsZXM6CmBgYHtyfQpzMCA8LSByb3dTdW1zKGV2YWxzKQpzMSA8LSByb3dTdW1zKGV2YWxzWywxMToxNl0pCnMyIDwtIHJvd1N1bXMoZXZhbHNbLDE6MTBdKQpjb3IoczAsIGZhUiRzY29yZXNbLDFdKQpjb3IoczEsIGZhUiRzY29yZXNbLDFdKQpjb3IoczIsIGZhUiRzY29yZXNbLDFdKQpgYGAKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiNC4wIE11bHRpZGltZW5zaW9uYWwgU2NhbGluZyIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQojIyBNdWx0aWRpbWVuc2lvbmFsIFNjYWxpbmcKLSBNRFMgaXMgZGVzaWduZWQgdG8gY29uc3RydWN0IGEgbWFwIG9mIHJlbGF0aW9uc2hpcHMgYmV0d2VlbiB2YXJpYWJsZXMgdXNpbmcgdGhlIGRpc3RhbmNlIG1hdHJpeAogIC0gRGlzdGFuY2UgbWF0cml4CiAgICAtIFRhYmxlIG9mIGRpc3RhbmNlcyBiZXR3ZWVuIG9iamVjdHMgCi0gVGhlIGdvYWwgaXMgdG8gZmluZCBwb2ludHMgaW4gbG93IGRpbWVuc2lvbnMgdGhhdCBhcHByb3hpbWF0ZSB0aGUgaGlnaC1kaW1lbnNpb25hbCBjb25maWd1cmF0aW9uIG9mIHRoZSBvcmlnaW5hbCBkaXN0YW5jZSBtYXRyaXgKICAtIFRyaWVzIHRvIHJlcHJlc2VudCB0aGlzIHdpdGggYSBnZW9tZXRyaWMgbWFwCi0gVXNlZnVsIHdoZW4gdGhlIHVuZGVybHlpbmcgcmVsYXRpb25zaGlwcyBiZXR3ZWVuIHZhcmlhYmxlcyBpc24ndCBrbm93biBidXQgYSBkaXN0YW5jZSBtYXRyaXggY2FuIGJlIGVzdGltYXRlZAoKIyMjIENsYXNzaWNhbCBNdWx0aWRpbWVuc2lvbmFsIFNjYWxpbmcgT3ZlcnZpZXcKLSBPbmx5IHVzZXMgdGhlIGRpc3RhbmNlcywgbm90IHRoZSBvcmlnaW5hbCBkYXRhCi0gRGlzdGFuY2UgbWF0cml4IHB0LiBpaSBlbGVjdHJpYyBib29nYWxvCiAgLSBNYXRyaXggb2YgRXVjbGlkZWFuIGRpc3RhbmNlcyBmcm9tIG9iamVjdCBpIHRvIG9iamVjdCBqICRkX3tpan0kCi0gVGhlIGRpc3RhbmNlIG1hdHJpeCBpcyBjb252ZXJ0ZWQgdG8gWCBhbmQgWSBjb29yZGluYXRlcyAoaW4gMkQpIHRvIGJlIHVzZWQgZm9yIHBsb3RzCiAgLSBUaGUgZ3JhcGhpY2FsIHJlcHJlc2VudGF0aW9uIGlzIGJ1aWx0IHNvIHRoYXQgdGhlIEV1Y2xpZGVhbiBkaXN0YW5jZXMgbWF0Y2ggdGhlIHByb3ZpZGVkIGRpc3RhbmNlIG1hdHJpeAogIC0gT3IgdHJpZXMgdG8gbWF0Y2ggaXQgYW55d2F5LCB0aGUgZ29hbCBpcyB0byBiZSBhcyBjbG9zZSBhcyBwb3NzaWJsZQotIFRoZSBjb29yZGluYXRlcyBzaG91bGQgbWF0Y2ggdGhlIHByaW5jaXBhbCBjb21wb25lbnRzIGZyb20gUENBCi0gV29ya3Mgb24gYW55IHBvc2l0aXZlIHplcm8tZGlhZ29uYWwgc3ltbWV0cmljIG1hdHJpeAoKIyMjIENsYXNzaWNhbCBEaW1lbnNpb25hbCBTY2FsaW5nIGluIFIKCjEuIENyZWF0ZSBhIHNhbXBsZSBtYXRyaXggd2l0aCAxMCByb3dzIGFuZCA1IGNvbHVtbnMKCmBgYHtyfQpkYXRhIDwtIG1hdHJpeChjKAozLCA1LCA2LCAxLCA0LCAyLCAwLCAwLCA3LCAyLAo0LCAxLCAyLCAxLCA3LCAyLCA0LCA2LCA2LCAxLAo0LCAxLCAwLCAxLCAzLCA1LCAxLCA0LCA1LCA0LAo2LCA3LCAyLCAwLCA2LCAxLCAxLCAzLCAxLCAzLAogMSwgMywgNiwgMywgMiwgMCwgMSwgNSwgNCwgMSksIG5jb2wgPSA1KQpgYGAKCgojIyBDb3JyZXNwb25kZW5jZSBBbmFseXNpcwoKIyMgRXhwbG9yYXRvcnkgRmFjdG9yIEFuYWx5c2lzIChFRkEpCiMjIyBGYWN0b3IgQW5hbHlzaXMgT3ZlcnZpZXcKLSBGYWN0b3IgYW5hbHlzaXMgaXMgYSByZWdyZXNzaW9uIG1vZGVsIHRoYXQgbGlua3MgdHdvIHR5cGVzIG9mIHZhcmlhYmxlczogbWFuaWZlc3QgYW5kIGxhdGVudAotIE1hbmlmZXN0IHZhcmlhYmxlcwogIC0gVmFyaWFibGVzIHRoYXQgY2FuIGJlIGRpcmVjdGx5IG1lYXN1cmVkIG9yIG9ic2VydmVkCi0gTGF0ZW50IHZhcmlhYmxlcyAoRmFjdG9ycykKICAtIENhbm5vdCBiZSBkaXJlY3RseSBvYnNlcnZlZAogIC0gV2UgbmVlZCBtYW5pZmVzdCB2YXJpYWJsZXMgdG8gdGVzdCBmb3IgdGhlaXIgcHJlc2VuY2UKLSBUd28gdHlwZXMgb2YgZmFjdG9yIGFuYWx5c2lzCiAgLSBFeHBsb3JhdG9yeQogICAgLSBJbnZlc3RpZ2F0ZXMgcmVsYXRpb25zaGlwcyBiZXR3ZWVuIG1hbmlmZXN0IGFuZCBsYXRlbnQgdmFyaWFibGVzIHdpdGhvdXQgbWFraW5nIGFzc3VtcHRpb25zIGFib3V0IHdoaWNoIG9uZXMgYXJlIHJlbGF0ZWQKICAtIENvbmZpcm1hdG9yeQogICAgLSBUZXN0cyB3aGV0aGVyIHNwZWNpZmljIGZhY3RvcnMgZml0IHRoZSBjb3ZhcmlhbmNlcyBvciBjb3JyZWxhdGlvbnMgYmV0d2VlbiBtYW5pZmVzdCB2YXJpYWJsZXMKICAgIAojIyMgVGhlIEstRmFjdG9yIEFuYWx5c2lzIE1vZGVsCi0gRmFjdG9yIGFuYWx5c2lzIGlzIHNpbWlsYXIgdG8gYSByZWdyZXNzaW9uIG1vZGVscyBleGFtaW5pbmcgdGhlIGxpbmsgYmV0d2VlbiBtYW5pZmVzdCBhbmQgbGF0ZW50IHZhcmlhYmxlcyAKJFpfaSA9IM67X3tpMX1mXzEgKyDOu19pMmZfMisuLi4rzrtfe2lrfWZfayArIHVfaSwgaSA9IDEsMiwuLi4scSQKICAtIGk6IHRoZSBtYW5pZmVzdCB2YXJpYWJsZSBpbmRleCwgdGhlcmUgYXJlIHEgdmFyaWFibGVzIChjb2x1bW5zKSBpID0gMSwyLC4uLixxCiAgLSAkWl9pJDogei1zY29yZSBvZiB0aGUgaS10aCBtYW5pZmVzdCB2YXJpYWJsZSAoJHhfaSQpCiAgICA9IE1lYW4gb2YgemVybyBhbmQgdW5pdCB2YXJpYW5jZQogIC0gJM67X3tpMX0sLi4uLM67X3tpa30kOiBmYWN0b3IgbG9hZGluZ3MgZm9yIFpfaQogICAgLUNvZWZmaWNpZW50cyBvZiB0aGUgcmVncmVzc2lvbiBtb2RlbAogICAgLSBIZWxwIGludGVycHJldCB0aGUgZmFjdG9ycwogICAgLSBMYXJnZXIgdmFsdWVzIHJlbGF0ZSBmYWN0b3JzIG1vcmUgY2xvc2UgdG8gY29ycmVzcG9uZGluZyBvYnNlcnZlZCB2YXJpYWJsZXMgdGhhdCBzb21ldGltZXMgZ2l2ZSB1cyBhIG1lYW5pbmdmdWwgZGVzY3JpcHRpb24gb2YgdGhlIGZhY3RvcgogIC0kZl8xLC4uLixmX2skOiBVbmNvcnJlbGF0ZWQgY29tbW9uIGZhY3RvcnMgd2l0aCBtZWFucyBvZiB6ZXJvIGFuZCB1bml0IHZhcmlhbmNlCiAgLSAkdV9pJDogZXJyb3IgdGVybQogICAgLSBPbmx5IGFwcGxpZXMgdG8gJFpfaSQKICAgIC0gVW5jb3JyZWxhdGVkIHdpdGggb3RoZXIgZGlzdHVyYmFuY2UgdGVybXMgYW5kIGZhY3RvcnMKICAgIAojIyMgRmFjdG9yIEFuYWx5c2lzIGluIFIKLSBVc2UgYGZhY3RhbmFsKClgIGZ1bmN0aW9uIGFuZCBwYXNzIGluIHRoZSBtYXRyaXggYXMgd2VsbCBhcyB0aGUgbnVtYmVyIG9mIGZhY3RvcnMKICAtIEZ1bmN0aW9uIHBlcmZvcm1zIG1heGltdW0tbGlrZWxpaG9vZCBmYWN0b3IgYW5hbHlzaXMgb24gYSBjb3ZhcmlhbmNlIG1hdHJpeCBvciBkYXRhIG1hdHJpeAotIE51bGwgaHlwb3RoZXNpczogdGhlIGsgZmFjdG9ycyBhcmUgc3VmZmljaWVudCBmb3IgcHJlc2VudGluZyB0aGUgZGF0YQogIC0gSW4gdGhpcyBleGFtcGxlIHdlIGFzc3VtZSBrID0gMyBpcyBzdWZmaWNpZW50CiAgICAtIFRoZSBwLXZhbHVlID4gMC4wNSBzbyB3ZSBmYWlsIHRvIHJlamVjdCB0aGUgbnVsbAogICAgLSBUaGUgYXBwcm9wcmlhdGUgbnVtYmVyIG9mIGZhY3RvcnMgKGxhdGVudCB2YXJpYWJsZXMpIGlzIDMKCkV4YW1wbGU6IENyaW1lIGRhdGEKYGBge3J9CmNyaW1lIDwtIHJlYWQuY3N2KCJodHRwczovL3JiLmd5L3d1OGt2byIsIHJvdy5uYW1lcyA9ICJTVEFURSIpCgpkaW0oY3JpbWUpCmBgYAoKYGBge3J9CmNyaW1lLmZhIDwtIGZhY3RhbmFsKGNyaW1lLCBmYWN0b3JzID0gMykKY3JpbWUuZmEKYGBgCldlIGNhbiBleGFtaW5lIHRoZSBsb2FkaW5ncyBieSBwdWxsaW5ncyB0aGVtIGZyb20gdGhlIGZhY3RvciBhbmFseXNpczoKYGBge3J9CmNyaW1lLmZhJGxvYWRpbmdzCmBgYAoKIyMjIFVuaXF1ZW5lc3MKCiRWYXIoWl9pKSA9IM67XjJfe2kxfVZhcihmXzEpICsgzrteMl97aTJ9VmFyKGZfMikrLi4uK867XjJfe2lrfVZhcihmX2spICsgVmFyKHVfaSkkCgokPSDOu14yX3tpMX0gKyDOu14yX3tpMn0gKy4uLivOu14yX3tpa30gKyBWYXIodV9pKSQKCiAtIFRoZSByaWdodCBoYWxmIGlzIHRoZSBjb21tb25hbGl0eSBvZiB2YXJpYWJsZSAkWl9pJAogIC0gUmVwcmVzZW50cyB0aGUgdmFyaWFuY2Ugc2hhcmVkIHdpdGggb3RoZXIgdmFyaWFibGVzIHRocm91Z2ggdGhlIGNvbW1vbiBmYWN0b3JzCiAgCi0gJFZhcih1X2kpJCB0aGUgc3BlY2lmaWNpdHkgb3IgdW5pcXVlbmVzcyBvZiBaX2kKICAtIFRoZSB2YXJpYWJpbGl0eSBpbiBaX2kgbm90IHNoYXJlZCB3aXRoIG90aGVyIHZhcmlhYmxlcwogIC0gU21hbGxlciB1bmlxdWVuZXNzOiB0aGUgZmFjdG9ycyBleHBsYWluIG1vcmUgdmFyaWFuY2UKICAgIC0gSXQncyAibGVzcyB1bmlxdWUiCiAgICAKLSBXZSBrbm93IFZhcmlhbmNlIG9mICRaX2kkIGlzIHVuaXQsIHRoZXJlZm9yZSAkVmFyKFpfaSkgPSAxJAogIC0gV2Ugc29sdmUgZm9yIHVuaXF1ZW5lc3Mgb2YgdmFyaWFibGUgaToKICAKICAkVmFyKHVfaSkgPSAxIC0gKM67XjJfe2kxfSArIM67XjJfe2kyfSArLi4uK867XjJfe2lrfSkkCiAgCiMjIyMgVW5pcXVlbmVzcyBpbiBSCi0gVG8gcGVyZm9ybSB0aGlzIGluIFIsIHdlIGRvIDEgLSB0aGUgc3VtIG9mIHRoZSBmYWN0b3IgYW5hbHlzaXMgbG9hZGluZ3Mgc3F1YXJlZAotIEluIHRoaXMgZXhhbXBsZSB3ZSBncmFiIHRoZSB1bmlxdWVuZXNzIG9mIG11cmRlciBieSBjYWxsaW5nIGl0J3MgbG9jYXRpb24gYFsxLDE6XWAgd2l0aCB0aGUgdGhyZWUgZmFjdG9yIGNvbHVtbnMgYFs6M11gCmBgYHtyfQoxIC0gc3VtKGNyaW1lLmZhJGxvYWRpbmdzWzEsMTozXV4yKQpgYGAKCiMjIyBFeHBsb3JhdG9yeSBGYWN0b3IgQW5hbHlzaXMKLSBXZSd2ZSByZWFjaGVkIHRoZSB0aXRsZSBvZiB0aGUgc29uZwotIExldCdzIGRvIHNvbWUgbWF0aCAKCiMjIyMgRUZBIE1vZGVsCgokXGhhdM6jID0gzpvOm15UICsgzqgkCgotIM6jOiB0aGUgY292YXJpYW5jZSBtYXRyaXggb2Ygc2NhbGVkIGRhdGEgKFotc2NvcmVzKQogIC0gRXF1YWwgdG8gdGhlIGNvcnJlbGF0aW9uIG9mIG5vbi1zY2FsZWQgZGF0YQogIC0gSW4gdGhpcyBmb3JtdWxhLCBpdCBoYXMgYSBoYXQgYmVjYXVzZSBpdCdzIHRoZSAqZXN0aW1hdGUqIG9mIG91ciBvcmlnaW5hbCBjb3JyZWxhdGlvbiBtYXRyaXgKICAgIC0gU2hvdWxkIGJlIGNsb3NlIHRvIHRoZSBvcmlnaW5hbCBjb3JyZWxhdGlvbiBtYXRyaXggaXMgd2UgZGlkIGdvb2QgCi0gzps6IFRoZSBsb2FkaW5nIG1hdHJpeAogIC0gV2UgcHVsbGVkIHRoaXMgd2l0aCBgJExvYWRpbmdzYAogIC0gSW4gdGhlIGVxdWF0aW9uIHdlIG11bHRpcGx5IGl0IGJ5IGl0cyBvd24gdHJhbnBvc2UKLSDOqDogVGhlIGNvdmFyaWFuY2UgbWF0cml4IG9mIHRoZSBlcnJvciB0ZXJtIAogIC0gQ292KFUpCiAgLSBUaGUgdW5pcXVlbmVzcyBtYXRyaXgKICAtIE1hdHJpeCBvZiB0aGUgdmFyaWFuY2Ugb2YgZGlzdHVyYmFuY2UgdGVybXMgKCR1X2kkKSBvbiB0aGUgZGlhZ29uYWwgYW5kIHplcm8gZXZlcnl3aGVyZSBlbHNlIGJlY2F1c2UgdGggdGhlIHRlcm1zIG11c3QgYmUgaW5kZXBlbmRlbnQgb2YgZWFjaCBvdGhlcgoKIyMjIyBFRkEgaW4gUgoKLSBgZmFjdGFuYWwoKWAgdXNlcyBtYXhpbXVtIGxpa2VsaWhvb2QgZXN0aW1hdGlvbiAoTUxFKSBieSBkZWZhdWx0CiAgLSBNTEUgaXMgZm9yIGVzdGltYXRpbmcgbW9kZWwgcGFyYW1ldGVycyBhbmQgd2UgaGF2ZSBzb21lIG1vZGVsIHBhcmFtZXRlcnMgdG8gZXN0aW1hdGUhCiAgICAtIFRoZSBwYXJhbWV0ZXJzIGFyZSB0aGUgbG9hZGluZyBjb2VmZmljaWVudHMgYW5kIHRoZSB1IHRlcm0gKGVycm9yKSBidXQgb2YgY291cnNlIHlvdSBhbHJlYWR5IGtuZXcgdGhhdCAKLSBSIFByb2Nlc3MKMS4gTWFudWFsbHkgcGVyZm9ybSB0aGUgRUZBIG1vZGVsIHdpdGggbWF0cml4IG9wZXJhdGlvbnMgdG8gZ2V0IHRoZSBlc3RpbWF0ZSBvZiB0aGUgY29ycmVsYXRpb24gbWF0cml4CgpgYGB7cn0Kb3B0aW9ucyhkaWdpdHMgPSAyKQoKIyBvYnRhaW4gdGhlIGxvYWRpbmcgY29lZmZpY2llbnRzCmYubG9hZGluZyA8LSBjcmltZS5mYSRsb2FkaW5nc1ssMTozXQoKIyBtdWx0aXBseSBsb2FkaW5ncyBieSB0aGUgdHJhbnNwb3NlIG9mIGl0c2VsZgojIGFkZCB0aGUgZGlhZ29uYWwgb2YgZXJyb3IgY292YXJpYW5jZSBtYXRyaXggKHVuaXF1ZW5lc3MpCmNvckhhdCA8LSBmLmxvYWRpbmcgJSolIHQoZi5sb2FkaW5nKSArIGRpYWcoY3JpbWUuZmEkdW5pcXVlbmVzc2VzKQoKIyB0aGUgZXN0aW1hdGUgb2YgdGhlIGNvcnJlbGF0aW9uIG1hdHJpeApjb3JIYXQKYGBgCjIuIENvbXBhcmUgdGhlIGVzdGltYXRlIHRvIHRoZSBhY3R1YWwgY29ycmVsYXRpb24gbWF0cml4IGJ5IGZpbmRpbmcgdGhlIGRpc2NyZXBhbmN5IHdpdGggcm9vdC1tZWFuLXNxdWFyZSBlcnJvciAoUk1TRSkKLSBBbiBSTVNFIGJlbG93IDAuMDUgaXMgYWNjZXB0YWJsZQotIFRoaXMgaXMgYWNjZXB0YWJsZSwgeW91IGRpZCBncmVhdCBkYXJsaW5nCmBgYHtyfQojIG9yaWdpbmFsIGNvcnJlbGF0aW9uCmNvcnIgPC0gY29yKGNyaW1lKQoKIyBSb290LW1lYW4tc3F1YXJlIGVycm9yCnJtc2UgPSBzcXJ0KG1lYW4oKGNvckhhdC1jb3JyKV4yKSkKcm1zZQpgYGAKIyMjIEVGQSBBcHBsaWNhdGlvbiBhbmQgQ3V0CgoxLiBMb2FkIGV2YWx1YXRpb24gZGF0YQotIFAtdmFsdWUgaXMgbm90ID4wLjA1IHNvIHdlIHNob3VsZCBzYXkgdGhlIG1vZGVsIGlzbid0IHZhbGlkCiAgLSBIZXJlIHdlIGlnbm9yZSB0aGF0IHNpbmNlIHRoZSBkYXRhIHNhbXBsZSBzaXplIGlzIGxhcmdlIHNvIHNtYWxsIGRpc2NyZXBhbmNpZXMgYmV0d2VlbiAkXGhhdM6jJCBhbmQgzqMgd2lsbCBiZSBkZXRlY3RlZCBhcyBzaWduaWZpY2FudAogIC0gSWYgd2UgcmVkaWQgdGhpcyB3aXRoIGEgc2FtcGxlIG9mIHRoZSBkYXRhIHdlIHdvdWxkIHNlZSBhIG11Y2ggbGFyZ2VyIHAtdmFsdWUKYGBge3J9CmV2YWxzIDwtIHJlYWQuY3N2KCJodHRwczovL2JpdC5seS8zZWQ1QmlhIikKCiMgdmFyaWFibGVzIHJlbGF0ZWQgdG8gMTYgZXZhbHVhdGlvbiBxdWVzdGlvbnMKZXZhbHMgPSBuYS5vbWl0KGV2YWxzWywzOjE4XSkgCmV2YWxzLmZhIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMykKZXZhbHMuZmEKYGBgCjIuIFBhc3MgaW4gYGN1dCA9IDAuNWAgdG8gZHJvcCBhbGwgbG9hZGluZ3MgYmVsb3cgdGhhdCBsZXZlbAotIFRoaXMgYWxsb3dzIHVzIHRvIGVhc2lseSB2aWV3IHRoZSBoaWdoZXIgY29ycmVsYXRpb25zCgpgYGB7cn0KcHJpbnQoZXZhbHMuZmEkbG9hZGluZ3MsIGN1dCA9IDAuNSkKYGBgCgojIyBSb3RhdGlvbgotIEluIHRoZSBtb2RlbCAkXGhhdM6jID0gzpvOm15UICsgzqgkIHdlIGRvbid0IGhhdmUgYSBzaW5nbGUgc29sdXRpb24gZm9yIHRoZSBmYWN0b3IgbG9hZGluZyBtYXRyaXggzpsKICAtIFJlbWVtYmVyIHRoYXQgaW4gUENBIHdlIGRvIGhhdmUgc2luZ2xlIHNvbHV0aW9ucyBmb3IgbG9hZGluZ3M6IHRoZSBlaWdlbnZlY3RvcnMKLSBXZSBjYW4gcGVyZm9ybSBhIHJvdGF0aW9uIHdoaWNoIGNoYW5nZXMgdGhlIGZhY3RvciBsb2FkaW5ncyBmb3IgZWFzaWVyIGludGVycHJldGF0aW9uCiAgLSBVbmRlcmx5aW5nIG1hdGggaXNuJ3QgY2hhbmdlZCwgdGhlIG91dHB1dHMgYXJlIGp1c3QgZWFzaWVyIHRvIGludGVycHJldAotIGBmYWN0YW5hbCgpYCB1c2VzICp2YXJpbWF4KiByb3RhdGlvbiwgdGhlIG1vc3QgY29tbW9uIHRlY2huaXF1ZQoKIyMjIEZhY3RvciBBbmFseXNpcyBXaXRob3V0IFJvdGF0aW9uCi0gU2luY2UgYGZhY3RhbmFsKClgIGhhcyBhIGRlZmF1bHQgcm90YXRpb24gb2YgdmFyaW1heCwgd2UgbmVlZCB0byBzcGVjaWZ5IGByb3RhdGlvbiA9ICJub25lImAgZm9yIHRoaXMgZXhhbXBsZQpgYGB7cn0KZmFOUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMsIHJvdGF0aW9uID0gIm5vbmUiKQpmYU5SCmBgYAoyLiBQZXJmb3JtIG91ciBjdXQgYW5kIG5vdGljZSB0aGF0IHdlIGNhbid0IGZpbmQgbXV0dWFsbHkgZXhjbHVzaXZlIGNoYXJhY3RlcmlzdGljcyBmb3IgdGhlIGZhY3RvcnMKLSBJbiB0aGlzIGxvYWRpbmcgd2Ugb25seSBzZWUgYSBzaW5nbGUgZmFjdG9yIHdpdGggY29ycmVsYXRpb25zCmBgYHtyfQpwcmludChmYU5SJGxvYWRpbmdzLCBjdXQgPSAwLjUpCmBgYAojIyMgVmFyaW1heCBSb3RhdGlvbgotIFRoZSBnb2FsIGlzIHRvIGZpbmQgaGlnaCBsb2FkaW5ncyBmb3Igc29tZSBmYWN0b3JzIGFuZCBsb3cgbG9hZGluZ3MgZm9yIG90aGVycwogIC0gSW1wcm92ZXMgaW50ZXJwcmV0YXRpb24gCi0gQW4gb3J0aG9nb25hbCBmYWN0b3Igcm90YXRpb24gdGhhdCBhc3N1bWVzIGZhY3RvciBqIGludGVycHJldGF0aW9uIGNhbiBiZSBtZWFzdXJlZCBieSB0aGUgdmFyaWFuY2Ugb2Ygc3F1YXJlcyBvZiBpdHMgZmFjdG9ycyBsb2FkaW5ncwogIC0gaS5lLiB0aGUgdmFyaWFuY2Ugb2YgJM67XjJfezFqfSArIM67XjJfezJqfSArLi4uK867XjJfe3FqfSQKLSBBIGxhcmdlIHZhcmlhbmNlIHRoZSAkzptfe2lqfSQgdmFsdWVzIGFyZSBjbG9zZXIgdG8gemVybyBvciBvbmUKICAtIFZhcmltYXggcm90YXRpb24gbWF4aW1pemVzIHRoZSBzdW0gb2YgdGhvc2UgdmFyaWFuY2VzIGZvciBhbGwgZmFjdG9ycwoKMS4gRmFjdG9yIGFuYWx5c2lzIHdpdGhvdXQgcm90YXRpb24KLSBmYTogZmFjdG9yIGFuYWx5c2lzCi0gTDogbG9hZGluZ3MKLSBOUjogbm8gcm90YXRpb24KLSB2YXI6IHZhcmlhbmNlCmBgYHtyfQpmYU5SIDwtIGZhY3RhbmFsKGV2YWxzLCBmYWN0b3JzID0gMywgcm90YXRpb24gPSAibm9uZSIpCmZhTE5SIDwtIGZhTlIkbG9hZGluZ3NbLDE6M10KdmFyTE5SID0gdmFyKGZhTE5SWywxXV4yKSArIHZhcihmYUxOUlssMl1eMikgKyB2YXIoZmFMTlJbLDNdXjIpCnZhckxOUgpgYGAKCjIuIEZhY3RvciBhbmFseXNpcyB3aXRoIHJvdGF0aW9uIChieSBkZWZhdWx0LCB0aGUgdmFyaW1heCByb3RhdGlvbikKYGBge3J9CmZhUiA8LSBmYWN0YW5hbChldmFscywgZmFjdG9ycyA9IDMpCmZhTFIgPC0gZmFSJGxvYWRpbmdzWywxOjNdCmZhTFIKYGBgCgozLiBWYXJpbWF4IHJvdGF0aW9uIG1heGltaXplcyB0aGUgc3VtIHNxdWFyZWQgdmFyaWFuY2Ugb2YgbG9hZGluZwotIEFib3V0IDklIGhlcmUgdmVyc3VzIGxlc3MgdGhhbiAxJSB3aXRoIHJvdGF0aW9uIGRpc2FibGVkCmBgYHtyfQp2YXJMUiA9IHZhcihmYUxSWywxXV4yKSArIHZhcihmYUxSWywyXV4yKSArIHZhcihmYUxSWywzXV4yKSAKdmFyTFIKYGBgCgojIyMgRmFjdG9yIFNjb3JlcwotIFdlIGNhbiBhbHNvIGFwcHJveGltYXRlIHRoZSBtZWFzdXJlIG9mIGxhdGVudCB2YXJpYWJsZXMgKGZhY3RvciBzY29yZXMpIGJ5IHJlZ3Jlc3Npb24gCiAgLSBTaW1pbGFyIHRvIFBDQSBzY29yZXMKICAtIFRoZSBmYWN0b3IgbG9hZGluZ3MgYXJlIHRoZSBhcHByb3hpbWF0ZSBjb3JyZWxhdGlvbiBvZiB0aGUgbWFuaWZlc3QgdmFyaWFibGVzIGFuZCBmYWN0b3JzCi0gRmluYWwgcG9pbnQ6IGJvdGggUENBIGFuZCBmYWN0b3IgYW5hbHlzaXMgcmVxdWlyZSBvYnNlcnZlZCAobWFuaWZlc3QpIHZhcmlhYmxlcyB0byBiZSBjb3JyZWxhdGVkCiAgLSBPdGhlcndpc2UgRkEgaGFzIG5vdGhpbmcgdG8gZXhwbGFpbiBhbmQgUENBIHdpbGwganVzdCBnaXZlIHVzIGNvbXBvbmVudHMgc2ltaWxhciB0byB0aGUgb3JpZ2luYWwgdmFyaWFibGVzCiAgClVzZSBgc2NvcmVzID0gcmVncmVzc2lvbmAgdG8gZ2V0IHNjYWxlZCBzY29yZXMgCmBgYHtyfQpmYVIgPC0gZmFjdGFuYWwoZXZhbHMsIGZhY3RvcnMgPSAzLCBzY29yZXMgPSAicmVncmVzc2lvbiIsIHJvdGF0aW9uID0gIm5vbmUiKQoKIyBzY29yZSBiZWZvcmUgcm90YXRpb24gYXJlIGluZGVwZW5kZW50IG9mIGVhY2ggb3RoZXIKcm91bmQoY29yKGZhUiRzY29yZXMpLCAxMCkKYGBgCkNhbGN1bGF0ZSBhcHByb3hpbWF0ZSBjb3JyZWxhdGlvbnMgb2YgbWFuaWZlc3QgYW5kIGxhdGVudCB2YXJpYWJsZXM6CmBgYHtyfQpzMCA8LSByb3dTdW1zKGV2YWxzKQpzMSA8LSByb3dTdW1zKGV2YWxzWywxMToxNl0pCnMyIDwtIHJvd1N1bXMoZXZhbHNbLDE6MTBdKQpjb3IoczAsIGZhUiRzY29yZXNbLDFdKQpjb3IoczEsIGZhUiRzY29yZXNbLDFdKQpjb3IoczIsIGZhUiRzY29yZXNbLDFdKQpgYGAKCiMjIENhbm9uaWNhbCBDb3JyZWxhdGlvbiBBbmFseXNpcyAoQ0NBKQotIFBDQSBhbmFseXplcyBpbnRlcnJlbGF0aW9uc2hpcHMgYmV0d2VlbiBhIHNpbmdsZSBzZXQgb2YgdmFyaWFibGVzLCBidXQgQ0NBIGFzc2Vzc2VzIHJlbGF0aW9uc2hpcHMgYmV0d2VlbiAqKnR3byB3aG9sZSBzZXRzIG9mIHZhcmlhYmxlcyoqCi0gVGhlIG9iamVjdGl2ZSBpcyBmaW5kaW5nIHRoZSBsaW5lYXIgZnVuY3Rpb25zIG9mIHRoZSB2YXJpYWJsZXMgb2Ygb25lIHNldCB0aGF0IG1heGltYWxseSBjb3JyZWxhdGUgd2l0aCB0aGUgZnVuY3Rpb25zIG9mIHRoZSBvdGhlciBzZXQgCi0gQ29tcGFyaXNvbiB0byBtdWx0aXBsZSByZWdyZXNzaW9uCiAgLSBJbiBtdWx0aXBsZSByZWdyZXNzaW9uIHlvdSByZWxhdGUgb25lIFkgdmFyaWFibGUgdG8gc2V2ZXJhbCBYIHZhcmlhYmxlcwogIC0gQ0NBIGlzIGEgbXVsdGlwbGUgcmVncmVzc2lvbiB3aGVyZSBzZXZlcmFsIFkgdmFyaWFibGVzIGFyZSByZWxhdGVkIHRvIHNldmVyYWwgWCB2YXJpYWJsZXMKICAKIyMjIENDQSBNYXRoCipBS0EgdGhlIHNlY3Rpb24gd2hlcmUgSSBwdW5pc2ggbXlzZWxmIGJ5IHVzaW5nIExhVGVYKgoKCklmIHdlIGhhdmUgJHEkIHZhcmlhYmxlcyAkWF8xLCBYXzIsLi4uLFhfcSQgYW5kIHAgdmFyaWFibGVzICRZXzEsIFlfMiwuLi4sWV9wJCB0aGVuIENDQSBmaW5kcyB0aGUgbWluaW1pemF0aW9uIG9mICQocSxwKSQgcGFpcnMgb2YgdmFyaWFibGVzCgokVV8xID0gYV97MTF9WF8xICsgYV97MTJ9WF8yICsuLi4rIGFfezFxfVhfcSQKCiRVXzIgPSBhX3syMX1YXzEgKyBhX3syMn1YXzIgKy4uLisgYV97MnF9WF9xJAoKLi4uCgokVV9xID0gYV97cTF9WF8xICsgYV97cTJ9WF8yICsuLi4rIGFfe3FxfVhfcSQKCmFuZAoKJFZfMSA9IGJfezExfVlfMSArIGJfezEyfVlfMiArLi4uKyBiX3sxcX1ZX3AkCgokVl8yID0gYl97MjF9WV8xICsgYl97MjJ9WV8yICsuLi4rIGJfezJxfVlfcCQKCi4uLgoKJFZfcSA9IGJfe3AxfVlfMSArIGJfe3AyfVlfMiArLi4uKyBiX3twcH1ZX3AkCgpXZSBjaG9vc2UgcGFpcnMgb2YgY2Fub25pY2FsIHZhcmlhYmxlcyBzbyB0aGUgY29ycmVsYXRpb24gYmV0d2VlbiAkVV8xJCBhbmQgJFZfMSQgaXMgbWF4aW11bQogIC0gQXMgaXMgJFVfMiQgYW5kICRWXzIkIGlmIHRoZXkgYXJlIHVuY29ycmVsYXRlZCAob3J0aGFnb25hbCkgdG8gdGhlIGZpcnN0IHBhaXIKICAtIFNhbWUgd2l0aCAkVV8zJCBhbmQgJFZfMyQgYW5kIHNvIG9uCiAgCiMjIyBDQ0EgaW4gUgotIFRoaXMgZXhhbXBsZSB1c2VzIGEgVGV4YXMgVGVjaCBTdHVkZW50IGNsYXNzIGV2YWx1YXRpb24gZGF0YXNldAotIFRoZSBmaXJzdCB0ZW4gdmFyaWFibGVzIGFyZSBhc3NvY2lhdGVkIHdpdGggaW5zdHJ1Y3RvciBwZXJmb3JtYW5jZQotIFRoZSBuZXh0IHNpeCBhcmUgcmVsYXRlZCB0byBjb3Vyc2UgZXZhbHVhdGlvbgoKYGBge3J9CmRhdGEgPC0gcmVhZC5jc3YoImh0dHA6Ly90aW55LmNjL2lzcXM2MzUwX2V2YWxzIikKZXZhbHMgPC0gZGF0YVssMzoxOF0gIyBzZWxlY3QgdmFyaWFibGVzIHRvIHVzZQpldmFscyA8LSBuYS5vbWl0KGV2YWxzKSAjIGRvIGxpc3R3aXNlIGNsZWFuaW5nIGZvciBtaXNzaW5nIHZhbHVlcwpgYGAKCg==</div>
 
 
 
