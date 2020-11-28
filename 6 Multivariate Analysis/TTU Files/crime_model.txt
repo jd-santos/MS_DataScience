@@ -1,0 +1,17 @@
+Personal     -> MURDER, lambda1, NA
+Personal     -> RAPE, lambda2, NA
+Personal     -> ROBBERY, lambda3, NA
+Personal     -> ASSAULT, lambda4, NA
+Property     -> BURGLARY, lambda5, NA
+Property     -> LARCENY, lambda6, NA
+Property     -> AUTO, lambda7, NA
+Personal    <-> Property, rho, NA
+MURDER      <-> MURDER, theta1, NA
+RAPE        <-> RAPE, theta2, NA
+ROBBERY     <-> ROBBERY, theta3, NA
+ASSAULT     <-> ASSAULT, theta4, NA
+BURGLARY    <-> BURGLARY, theta5, NA
+LARCENY     <-> LARCENY, theta6, NA
+AUTO        <-> AUTO, theta7, NA
+Personal <-> Personal, NA, 1
+Property <-> Property, NA, 1

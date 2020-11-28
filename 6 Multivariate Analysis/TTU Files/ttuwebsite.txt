@@ -1,0 +1,54 @@
+TTU Website survey
+
+Legend:
+
+Q1  - Q9  purport to measure "ease of finding information"
+Q10 - Q21 purport to measure "web design"
+Q22 - Q29 purport to measure "attitude toward TTU"
+Q30 - Q35 purport to measure "attitude toward web site"
+
+
+Questions:
+
+Q1	Finding information on athletics
+Q2	Finding information on on-campus housing
+Q3	Finding information on extracurricular activities (clubs)
+Q4	Finding information on admissions (fees, general, etc.)
+Q5	Finding information on financial aid and scholarship programs
+Q6	Finding information on majors/minors
+Q7	Finding information on student life (social life)
+Q8	Finding information on directions (maps)
+Q9	Finding information on admissions criteria
+Q10	The use of graphics and pictures was favorable.
+Q11	The download speed frustrated me.
+Q12	The color coordination was pleasant. 
+Q13	The virtual tour was valuable. (If applicable).
+Q14	I was unable to clearly read the web site's text.
+Q15	The search function was worthless. 
+Q16	I did not think this web site was unique in appearance and content. 
+Q17	I liked the design of the home page. 
+Q18	Do you believe this web site provided entertainment value? 
+Q19	Do you believe this web site has a friendly tone? 
+Q20	I am attracted to web sites that have a friendly tone. 
+Q21	I prefer for a college/university website to be entertaining. 
+Q22	Ordinary:Exceptional Product
+Q23	Not at all high quality:Extremely high quality
+Q24	Poor value:Excellent Value
+Q25	Boring:Exciting
+Q26	Not a worthwhile university:A worthwhile university
+Q27	Unappealing university:Appealing university
+Q28	I would not recommend this university:I would recommend this university
+Q29	I would not apply to this university:I would apply to this university
+Q30	This website makes it easy for me to build a relationship with this university.
+Q31	I would like to visit this website again in the future.
+Q32	I'm satisfied with the information provided by this web site.
+Q33	I feel comfortable in surfing this web site.
+Q34	I feel surfing this web site is a good way for me to spend my time.
+Q35	Compared with other university web sites, I would rate this one as -One of the best:One of the worst
+Q36	Would you apply to this university?
+Q37	Would you recommend a friend, family member, or peer to apply to this university?
+Q38	Please indicate your gender.
+Q39	Please indicate your ethnicity.
+Q40	Are you currently enrolled at a university, college, trade school, etc.?
+Q41	If you answered yes, please indicate your classification
+Q42	If you are a student, are you considering to transfer?

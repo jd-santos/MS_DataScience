@@ -1,0 +1,291 @@
+---
+title: "Final project"
+author: "Yosef Woldeamanuel"
+date: "11/6/2020"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+
+# Introduction
+
+In most households around the world there are at least one or two electrical appliances that consume energy either throughout the day or when used. Modern appliances have the options to be in standby to save energy when they are not used. Some appliances such as refrigerator, internet modems and security cameras have to be powered all the time and consume energy continuously.  
+
+The amount of energy needed to a specific house will depend on many factors such as the number of appliances, frequency of use, geographical location and climate, number of occupants and efficiency of the house itself. 
+The overall energy usage of a house can easily be aggregated but knowing individual factors which contributes in higher usage is not an easy task. 
+
+“Data driven prediction models of energy use of appliances in a low-energy house” is a paper by Luis M.Candanedo, Véronique Feldheim and Dominique Deramaix which presented and discussed data driven prediction models of energy use of appliances.
+Temperature and humidity data collected at different part of house for this paper will be used to apply multivariate analysis, data cleaning techniques, and other data visualization skills we learned in this course. 
+
+We are interested on knowing how the inside and outside temperature, humidity  and parameters affect the energy consumption of appliances in the house and how each variables are related to each other at different location of the house. 
+
+**Attribute Information:**
+
+* date time year-month-day hour:minute:second
+
+* Appliances, energy use in Wh
+
+* lights, energy use of light fixtures in the house in Wh
+
+* T1, Temperature in kitchen area, in Celsius
+
+* RH_1, Humidity in kitchen area, in %
+
+* T2, Temperature in living room area, in Celsius
+
+* RH_2, Humidity in living room area, in %
+
+* T3, Temperature in laundry room area
+
+* RH_3, Humidity in laundry room area, in %
+
+* T4, Temperature in office room, in Celsius
+
+* RH_4, Humidity in office room, in %
+
+* T5, Temperature in bathroom, in Celsius
+
+* RH_5, Humidity in bathroom, in %
+
+* T6, Temperature outside the building (north side), in Celsius
+
+* RH_6, Humidity outside the building (north side), in %
+
+* T7, Temperature in ironing room , in Celsius
+
+* RH_7, Humidity in ironing room, in %
+
+* T8, Temperature in teenager room 2, in Celsius
+
+* RH_8, Humidity in teenager room 2, in %
+
+* T9, Temperature in parents room, in Celsius
+
+* RH_9, Humidity in parents room, in %
+
+* To, Temperature outside (from Chievres weather station), in Celsius
+
+* Pressure (from Chievres weather station), in mm Hg
+
+* RH_out, Humidity outside (from Chievres weather station), in %
+
+* Wind speed (from Chievres weather station), in m/s
+
+* Visibility (from Chievres weather station), in km
+
+* Tdewpoint (from Chievres weather station), Â°C
+
+# Data cleanning and Visualization
+
+Import data 
+```{r}
+options(digits = 2)
+library(readr)
+library(mclust)
+
+#install.packages("CCA")
+
+energydata_complete <- read_csv("energydata_complete.csv")
+head(energydata_complete[,c(1:5,26:29)])
+#dim(energydata_complete)
+```
+
+There are two columns with random values which are not part of the real data, which will be dropped from the data.
+
+```{r}
+randomv =c("rv1","rv2") 
+energydata_complete = energydata_complete[ , !(names(energydata_complete) %in% randomv)]
+head(energydata_complete[,c(1:5,24:27)])
+
+```
+
+
+The energy data have values for every 10 minutes of the hour for over five months with 19735 rows. In order to reduce the number of rows, "Zoo" library will be used to get the aggregate average daily numbers,  
+```{r}
+library(zoo)
+energydata_daily <-aggregate(read.zoo(energydata_complete, header = TRUE, tz = "GMT"), as.Date, mean)
+
+energydata_daily = as.data.frame(energydata_daily)
+#dim(energydata_daily)
+```
+
+Hourly
+```{r}
+energydata_hourly= energydata_complete
+energydata_hourly$datehour <- cut(as.POSIXct(energydata_hourly$date), breaks="hour")
+energydata_hourly= energydata_hourly[-1]
+
+energydata_hourly <- aggregate(.~datehour, energydata_hourly, mean)
+head(energydata_hourly)
+
+rownames(energydata_hourly) <- energydata_hourly[,1]
+energydata_hourly[,1] <- NULL
+
+energydata_hourly = as.data.frame(energydata_hourly)
+head(energydata_hourly[,1:5])
+
+dim(energydata_hourly)
+```
+
+
+Let's use "PerformanceAnalytics" library to check for scatterplots between variables, correlation and histogram of some of the variables which will help to see if there extreme outliers. 
+```{r}
+
+library("PerformanceAnalytics")
+chart.Correlation(energydata_daily[,1:10], histogram=TRUE, pch=19, col="")
+```
+
+
+The only variable with a few outliers is the lights columns. MVA library will be used to check will rows are with exterme outliers and clean them up. 
+```{r}
+#check outliers
+library(MVA)
+plot(energydata_daily$Appliances, energydata_daily$lights)
+text(energydata_daily$Appliances, energydata_daily$lights, cex = 0.6,labels = row.names(energydata_daily))
+```
+
+Scatterplot between appliances and lights show days such as 01/11/2016 looks outliers. Bvbox will be used to confirm the outliers. 
+```{r}
+bvbox(energydata_daily[,c("Appliances","lights")])
+text(energydata_daily[,c("Appliances","lights")]$Appliances, energydata_daily[,c("Appliances","lights")]$lights)
+
+
+```
+
+There are 6 rows outside of the ellipse which will be dropped to reduce the variation on the data analysis. 
+```{r}
+outliers = c(1,28,22,42, 75,85)
+energydata_daily = energydata_daily[-outliers,]
+plot(energydata_daily$Appliances, energydata_daily$lights)
+
+chart.Correlation(energydata_daily[,1:8], histogram=TRUE, pch=19, col="")
+
+daily.s = scale(energydata_daily)
+head(daily.s)
+cor(daily.s)
+```
+
+
+Appliances energy consumption correlation with in house temperature and humidity. T6 and RH_6 are 
+```{r}
+round(cor(energydata_daily[c(1:20)]),3)
+```
+There is a positive correlation between appliances and lights energy consumption. Lights energy consumption usually increases when there is occupant in the house/office, the positive correlation with appliances indicates that more appliances are used when the house is occupied.  
+
+Temperature and humidity at different area of the house has a positive correlation with appliances energy consumption. Kitchen and living area temperatures have a slightly higher correlation with appliances, which indicates occupant's usage of cooking and living room appliances.   
+
+Higher positive correlation numbers between temperature and humidity reading at different part of the house is expected since the overall inside house environment at different part of the house are related.  
+
+
+# 3. Dimension Reduction Analysis
+
+
+Graphical MDA for each day which show days with similar variables closer to each other.
+```{r}
+energy_dist = dist(daily.s[,c(1:20)])
+energy.mds = cmdscale(energy_dist, eig = T)
+
+plot(energy.mds$points[,1:2], pch = ".",col="red", cex= 5) 
+text(energy.mds$points[,1:2], labels = rownames(energydata_daily), cex = 0.6, pos=2)
+```
+
+
+Graphical MDA for the variables show that Temperature and humidity variables grouped together as expected whereas some of the outside variables have their own properties and located on the middle and bottom part of the plot 
+```{r}
+energy_dist.v = 1-cor(energydata_daily)
+energy.v.mds = cmdscale(energy_dist.v, eig=T)
+plot(energy.v.mds$points[,1:2], pch= ".", col="red", cex= 5)
+text(energy.v.mds$points[,1:2], labels= colnames(energydata_daily), pos=4)
+
+```
+
+*Principle component analysis to for dimension reduction*
+
+summary of the PCA shows that the first 2 PCs cover over 72% of the variation in the variables.
+
+The first PC covers the higher in temperature and Tdwepoint. The second PC covers the higher humidity values both inside and outside the house.  
+
+```{r}
+energydata_daily.pca <- princomp(energydata_daily, cor = T) 
+summary(energydata_daily.pca)
+pPC1_2 = energydata_daily.pca$loadings[,c(1:2)]
+pPC1_2
+
+```
+
+
+Below the six days with high PC1 score and another six with lowest PC1 score. comparing the temperature values between the two groups confirms that higher PC1 means higher temperature.  
+```{r}
+#pca scores to data frame
+epcascores= data.frame(energydata_daily.pca$scores)
+#sort by Comp.1 in ascending order
+epcascores = epcascores[order(-epcascores$Comp.1),]
+
+#check the energy data for six of the highest Comp1
+energydata_daily[rownames(head(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,1])>0.2]]
+#check energy data for six of the lowest Comp1
+energydata_daily[rownames(tail(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,1])>0.2]]
+```
+
+Below the six days with high PC2 score and another six with lowest PC2 score. Comparing the humidity values between the two groups confirms that higher PC2 means higher humidity.  
+```{r}
+#sort by Comp.2 in ascending order
+epcascores = epcascores[order(-epcascores$Comp.2),]
+
+#check the energy data for six of the highest Comp2
+energydata_daily[rownames(head(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,2])>0.2]]
+#check energy data for six of the lowest Comp2
+energydata_daily[rownames(tail(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,2])>0.2]]
+```
+
+
+# 4. Cluster Analysis
+
+check the number of cluster appropriate for the energy data for Kmeans clustering. 
+
+```{r}
+plot.wgss = function(mydata, maxc) {
+  wss = numeric(maxc)
+  for (i in 1:maxc) 
+    wss[i] = kmeans(mydata,centers=i, nstart = 10)$tot.withinss 
+  plot(1:maxc, wss, type="b", xlab="Number of Clusters",
+  ylab="Within groups sum of squares", main="Scree Plot") 
+}
+plot.wgss(energydata_daily, 10)
+```
+
+"Elbow Test" suggests that 3 clusters are appropriate for the energy data. The three cluster are identified in the plot below between the two PCs. 
+
+```{r}
+energy_km <- kmeans(energydata_daily[,1:20],3)
+plot(energydata_daily.pca$scores[, 1:2], pch=".", cex= 2.5)
+text(energydata_daily.pca$scores[, 1:2],labels=substr(row.names(energydata_daily),6,10), col = energy_km$cluster)
+
+```
+
+
+Clustering based on only temperature values shows that the three clusters are well aligned with PC1 values.
+```{r}
+tempZone = c("T1","T2", "T3", "T4","T5", "T7","T8","T9")
+energy_km.t <- kmeans(energydata_daily[,tempZone],3)
+plot(energydata_daily.pca$scores[, 1:2], pch=".", cex= 2.5)
+text(energydata_daily.pca$scores[, 1:2],labels= substr(row.names(energydata_daily),6,10), col = energy_km.t$cluster)
+
+```
+Custering based on humidity values shows that the three clusters are well aligned with PC2 values
+
+
+```{r}
+humZone = c("RH_1","RH_2", "RH_3", "RH_4","RH_5","RH_7","RH_8","RH_9")
+energy_km.h <- kmeans(energydata_daily[,humZone],3)
+plot(energydata_daily.pca$scores[, 1:2], pch=".", cex= 2.5)
+text(energydata_daily.pca$scores[, 1:2],labels=substr(row.names(energydata_daily),6,10), col = energy_km.h$cluster)
+
+```
+
+
+
+
