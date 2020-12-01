@@ -1,0 +1,102 @@
+---
+title: "7-Confirmatory-Factor-Analysis-Assignment"
+output:
+  html_document:
+    df_print: paged
+---
+## Setup and Data Prep
+This assignment uses a daily stock return dataset. The fields are companies, with MAN being manufacturing and Serv being service. 
+
+```{r}
+stock <- read.csv("https://bit.ly/3egKiMU")
+# Multiplying by 100 to convert to % scale
+mydata<-stock*100
+head(mydata)
+```
+
+Load the Sem packages:
+
+```{r message=FALSE}
+install.packages("sem", repos = "http://cran.us.r-project.org")
+```
+
+```{r message=FALSE}
+install.packages("semPlot", repos = "http://cran.us.r-project.org")
+```
+
+```{r}
+library(sem)
+```
+
+## a) Perform confirmatory factor analysis base on two factors: manufacturing and service.
+
+To create this model, we specify the factors we are testing for each manifest variable. We also pass in the correlation between the factors to be read out as rho, and the individual variances of each column.
+
+```{r}
+stock_model <- specifyModel(text = "
+                 Manu -> Man1, lambda1, NA
+                 Manu -> Man2, lambda2, NA
+                 Manu -> Man3, lambda3, NA
+                 Serv -> Serv1, lambda4, NA
+                 Serv -> Serv2, lambda5, NA
+                 Serv -> Serv3, lambda6, NA
+                 Serv -> Serv4, lambda7, NA
+                 Manu <-> Serv, rho, NA
+                 Man1 <-> Man1, theta1, NA
+                 Man2 <-> Man2, theta2, NA
+                 Man3 <-> Man3, theta3, NA
+                 Serv1 <-> Serv1, theta4, NA
+                 Serv2 <-> Serv2, theta5, NA
+                 Serv3 <-> Serv3, theta6, NA
+                 Serv4 <-> Serv4, theta7, NA
+                 Manu <-> Manu, NA, 1
+                 Serv <-> Serv, NA, 1
+                ")
+stock_sem <- sem(stock_model, cor(mydata), nrow(mydata))
+summary(stock_sem)
+```
+
+
+## b)	Report the path diagram that shows coefficient estimates. Code: library(semPlot); semPaths(fitted.sem.object, “est”)
+
+The path diagram helps us visualize the model we just created. To build it, we use the semPlot package and call the `semPaths()` function:
+
+```{r}
+library(semPlot)
+```
+
+
+```{r}
+semPaths(stock_sem, "est")
+```
+
+
+## c)	Report SRMR, GFI, and AGFI. What do you conclude? Is the model you made in part (a) approved.
+
+The root-mean-square, goodness-of-fit, and adjusted goodness-of-fit can be pulled from the summary of our CFA analysis. The SRMR (RMSE) is < 0.05 and the goodness-of-fit tests are both > 0.95 which all imply that the data supports the CFA model. 
+
+```{r}
+options(fit.indices = c("GFI", "AGFI", "SRMR")) # Some fit indices
+criteria = summary(stock_sem)
+criteria$SRMR
+criteria$GFI
+criteria$AGFI
+```
+
+
+## d)	Find the 95% confidence interval for the correlation between the two factors: manufacturing and service returns.
+
+The Confidence Interval is found by adding or subtracting the product of 1.96 and the standard error from the correlation estimate to get the upper and lower bounds.
+
+```{r}
+parameters = summary(stock_sem)
+
+# Calculate the lower bound
+conf.L = parameters$coeff[8,]$Estimate - 1.96 * parameters$coeff[8,]$'Std Error'
+conf.L
+
+# Calculate the upper bound
+conf.U = parameters$coeff[8,]$Estimate + 1.96 * parameters$coeff[8,]$'Std Error'
+conf.U
+```
+
