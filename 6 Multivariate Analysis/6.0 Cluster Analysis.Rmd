@@ -1,0 +1,248 @@
+---
+title: "6.0 Cluster Analysis"
+output: html_notebook
+---
+```{r}
+setwd('/Users/jdmini/Documents/MS_DataScience/6 Multivariate Analysis')
+```
+
+
+## Overview
+- Cluster analysis attempts to discover groups, or clusters, of observations that are homogenous in some way and separated from other clusters
+  - Putting observations into distinguishable groups that are dissimilar to each other
+  - Objects in the group should be similar or close together 
+  
+## Hierarchical Clustering
+- This produces a hierarchy of clusters (duh), where observations are split into clusters at different "levels" until each cluster is a single object
+  - I have no idea how to better explain this, just look at the dendograms and it makes more sense 
+- Uses a distance matrix
+  - Suggested to standardize the Euclidean distances if the variable units are different
+  - All original data is used, so there is no error of dimension reduction like MDS
+- Methods for measuring between-group distances
+  - Single linkage
+    - Choose the smallest distance between two groups
+  - Complete linkage
+    - Choose the maximum distance between two groups
+  - Average linkage
+    - Measure the average distance between all pairs
+
+### Plotting Basic H-Clusters
+
+#### Single Linkage Clustering
+- To set up the example, we need to create a distance matrix
+  - We'll assume we have this matrix in advance, but we need to tell R that by changing the class from matrix to distance
+- Use `as.dist()` to change the class from matrix to distance
+- Use `hclust()`to perform the hierarchical cluster
+  - First arg: distance matrix
+  - Second arg: linkage method
+
+1. Insert data, check the class of our new matrix
+```{r}
+d <- matrix(c(0, 1, 2, 8,
+              1, 0, 7, 9,
+              2, 7, 0, 6,
+              8, 9, 6, 0), ncol = 4, byrow = T)
+d
+class(d)
+```
+
+2. Change the class from matrix to distance
+```{r}
+d = as.dist(d)
+class(d)
+```
+
+3. Create the hierarchical cluster with single linkage and plot 
+```{r}
+hc <- hclust(d, "single")
+plot(hc, main = "Single Linkage HC Dendogram")
+```
+
+#### Complete Linkage Clustering
+- Similar to the process above, we just swap out the linkage argument in `hclust()`
+```{r}
+hc <- hclust(d, "complete")
+plot(hc, main = "Complete Linkage HC Dendogram")
+```
+- Query the heights from our hierarchical cluster analysis
+- This responds to the dendogram above:
+  - 1 & 2 are clustered at a hieght of 1
+  - 3 & 4 are clustered at 6
+  - All values are clustered at a height of 9
+```{r}
+hc$height
+```
+
+#### Average Linkage Clustering
+
+```{r}
+hc <- hclust(d, "average")
+plot(hc, main = "Average Linkage HC Dendogram")
+```
+
+### Basic Hierchical Clustering Example
+Perform H-Clustering on Crime Data
+
+```{r}
+crime <- read.csv("./Data Sets/crime.csv", row.names = "STATE")
+crime.s <- scale(crime)
+
+# create distance matrix
+dist <- dist(crime.s) 
+
+# perform h-clustering analysis with complete linkage
+hc1 <- hclust(dist, "complete")
+
+# plot the dendogram
+plot(hc1, cex = 0.5) # dendrogram
+
+# plot a line at specific heights to visually identify clusters more easily
+abline(h=2) 
+```
+
+### How Many Clusters?
+- It can be difficult to determine how many clusters we should examine
+- The more clusters we analyze, the more computing power and time we use
+- There are diminishing returns to analyzing more clusters
+  - We will use a scree plot to decide on the height cutoff
+    - This will be the number of clusters we examine
+  - Looking for the "elbow" of this plot helps identify efficient cluster cutoffs
+
+#### Create Scree Plot
+- In the last example we stored the h-cluster analysis in "hc1" 
+- Use `names(hc1)` to list the information available for us to query
+  - To create the scree plot, we query for the reverse `rev()` of the heights in the h-cluster analysis
+  
+```{r}
+# list the information stored in the h-cluster analysis
+names(hc1)
+
+# plot the reverse heights
+plot(rev(hc1$height))
+```
+
+#### Perform H-Cluster with Specific # of Clusters
+- Based on the scree plot, we can estimate 4 as a useful height cutoff for the number of clusters to use
+- Use `cutree()` to perform the cutoff 
+  - Pass in the h-cluster analysis and the specified height
+  
+```{r}
+ct <- cutree(hc1, 4)
+```
+
+- If you print this, you will see the list of all states and which one of the 4 clusters they were assigned to
+- To save some screen real estate, we'll just summarize the number of states in each cluster
+  - Use `table()` 
+
+```{r}
+table(ct)
+```
+
+#### Find Contents of Each Group
+- Use `subset()`
+  - Pass in the rownames of the data set and the cluster number
+```{r}
+cluster1 = subset(rownames(crime), ct==1)
+cluster1
+```
+
+#### Interpreting Cluster Data 
+- Looking at the scaled values in the data (z-scores) can help identify relationships
+  - Use `scale()` to obtain z-scores
+  - Match the cluster data to their respective row names
+  - Examine the column means of that matched index
+- This can be repeated for all 4 clusters, here I just ran the first one
+  - States in this cluster exhibit high scaled values for murder and assault
+  - Our job is to try to interpret what qualitative groupings are implied by this cluster
+```{r}
+crime.s = scale(crime)
+
+index1 = match(cluster1, rownames(crime))
+
+colMeans(crime.s[index1, ])
+```
+
+### Comparing Linkage Methods
+- This dataset uses the iris data set which gives measurements (in centimeters) of flower sepal dimensions for 3 types of iris
+  - Don't worry I also had to google it, the sepal is the little leafy part directly below the flower that protects it while it grows 
+  - The three species are Iris Setosa, Versicolor, and Virginia because you were dying to know
+
+1. Check out the table
+  - Save the data minus the species column into mydata object
+  - Plot and color with the species from the original data to see the actual "clusters"
+```{r}
+head(iris)
+
+mydata1= iris[,-5]
+plot(mydata1, col = iris$Species)
+```
+2. Start our analysis by scaling the data and performing single linkage clustering
+
+```{r}
+# scale the data
+mydata1.s = scale(mydata1)
+
+# perform single link cluster
+hc1 = hclust(dist(mydata1.s), "single")
+
+# create the scree plot
+plot(rev(hc1$height))
+```
+
+3. Based on the scree plot above and definitely not cheating with our knowledge that we have three actual clusters, we'll attempt the analysis with 3 clusters
+- To check the quality, create a contingency table for the H-clusters and true clusters (the species)
+  - The flowers placed in each cluster by single linkage don't appear as balanced as we'd expect
+```{r}
+ct1 = cutree(hc1, 3)
+
+# summarize single linkage results 
+table(ct1)
+
+# create contingency table
+table(ct1, iris$Species)
+```
+
+4. Try average linkage
+- This actually looks like 4 clusters, but the professor tells us to cheat and use 3 since we know this the truth 
+  - Poor ethics if you ask me, now my notes are meaningless 
+```{r}
+hc2 = hclust(dist(mydata1.s), "average")
+
+plot(rev(hc2$height))
+```
+
+5. Cut the average linkage at 3 clusters because we are liars and scoundrels
+- The resulting contingency table with the original species still isn't good
+  - This is probably punishment for our crimes
+```{r}
+ct2 = cutree(hc2, 3)
+table(ct2)
+table(ct2, iris$Species)
+```
+
+6. Finally we'll try the default of complete linkage
+- This time a clear 3 clusters are visible
+```{r}
+hc3 = hclust(dist(mydata1.s), "complete")
+
+plot(rev(hc3$height))
+```
+
+7. You know the drill, complete linkage contingency table
+- Except this time our clusters look much more acurately distributed
+```{r}
+ct3 = cutree(hc3, 3)
+table(ct3)
+table(ct3, iris$Species)
+```
+
+8. Compare the cluster colorings of the "true" and complete linkage clusters
+
+```{r}
+plot(mydata1, col = iris$Species, main = "True cluster colorings" )
+
+plot(mydata1, col = ct3, main = "HC complete linkage colorings")
+```
+
+### Testing Clusters with Simulation Data
+Under construction :) 

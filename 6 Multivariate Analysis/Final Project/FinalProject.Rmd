@@ -1,26 +1,53 @@
 ---
-title: "Final project"
-author: "Yosef Woldeamanuel"
-date: "11/6/2020"
+title: "Energy Use of Appliances"
+author:
+- Yosef Woldeamanuel
+- Jonathan De Los Santos
+date: "12/2020"
 output:
+  word_document: default
+  html_notebook:
+    df_print: paged
+    fig_caption: yes
   html_document:
     df_print: paged
+    fig_caption: yes
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
+```{r here, message=FALSE, warning=FALSE, echo=FALSE}
+install.packages("here", repos = "http://cran.us.r-project.org")
+```
 
-# Introduction
+```{r readr, message=FALSE, warning=FALSE, echo=FALSE}
+install.packages("readr", repos = "http://cran.us.r-project.org")
+```
 
-In most households around the world there are at least one or two electrical appliances that consume energy either throughout the day or when used. Modern appliances have the options to be in standby to save energy when they are not used. Some appliances such as refrigerator, internet modems and security cameras have to be powered all the time and consume energy continuously.  
+```{r hereSetup, message=FALSE, warning=FALSE, echo=FALSE}
+library(here)
+#set_here(path = "/Users/jdmini/Documents/MS_DataScience/6 Multivariate Analysis/Final Project")
+```
 
-The amount of energy needed to a specific house will depend on many factors such as the number of appliances, frequency of use, geographical location and climate, number of occupants and efficiency of the house itself. 
-The overall energy usage of a house can easily be aggregated but knowing individual factors which contributes in higher usage is not an easy task. 
+## Introduction
 
-“Data driven prediction models of energy use of appliances in a low-energy house” is a paper by Luis M.Candanedo, Véronique Feldheim and Dominique Deramaix which presented and discussed data driven prediction models of energy use of appliances.
-Temperature and humidity data collected at different part of house for this paper will be used to apply multivariate analysis, data cleaning techniques, and other data visualization skills we learned in this course. 
+### Appliances
+In most households around the world, there are multiple electrical appliances that consume energy either throughout the day or when used. Modern appliances have the options to be in standby mode to save energy when they are not used. Some appliances such as refrigerators, modems ,and security cameras are required to be powered all the time and consume energy continuously.
 
-We are interested on knowing how the inside and outside temperature, humidity  and parameters affect the energy consumption of appliances in the house and how each variables are related to each other at different location of the house. 
+In this dataset, we examine a low-energy home outfitted with multiple IoT devices to measure temperature (T) and relative humidity (RH) in multiple rooms along with the energy expended by lights and appliances in watt-hours (Wh). Weather data is also provided from a nearby weather station to improve the prediction modeling.
+
+### Energy Consumption
+The amount of energy needed for a specific house will depend on many factors such as the number of appliances, frequency of use, geographical location and climate, number of occupants and efficiency of the house itself. The overall energy usage of a house can easily be aggregated but knowing individual factors which contributes in higher usage is not an easy task.
+
+“Data driven prediction models of energy use of appliances in a low-energy house” is a paper by Luis M.Candanedo, Véronique Feldheim and Dominique Deramaix which presented and discussed data driven prediction models of energy use of appliances. Temperature and humidity data collected at different part of house for this paper will be used to apply multivariate analysis, data cleaning techniques, and other data visualization skills we learned in this course.
+
+We are interested on knowing how the inside and outside temperature, humidity and other parameters affect the energy consumption of appliances in the house and how variables are related to each other.
+
+### Methodology
+To determine those relationships, we examine the correlations, perform dimension reduction analysis graphically and using principal component analysis, cluster analysis, and confirmatory factor analysis. The correlation matrices reveal that there is a correlation between inside temperature, humidity, and appliance energy use. Additionally, we find that specific rooms have stronger correlations likely due to the specific appliances they contain.
+
+PCA tells us that temperature is responsible for the highest variance of our dataset, followed by humidity. This may be due to the multiple variables for each that represent the temperature and humidity in different rooms. However, the correlation may imply that small differences in appliance and light energy use affect large variations in temperature and humidity. Finally, the cluster analysis performed on the first two principal components shows obvious clusters of temperatures and humidities. This is presented to show the strength of PCA in identifying variable groups, even if they were understood beforehand. Our model for confirmatory factor analysis was unfortunately not supported by the data, but some approaches for future model attempts are discussed below. 
+
 
 **Attribute Information:**
 
@@ -78,147 +105,135 @@ We are interested on knowing how the inside and outside temperature, humidity  a
 
 * Tdewpoint (from Chievres weather station), Â°C
 
-# Data cleanning and Visualization
+## Data Cleaning
 
-Import data 
-```{r}
-options(digits = 2)
+We begin by importing the raw "data energy" csv and examining the first few rows.
+
+```{r load, message=FALSE, warning=FALSE, echo=FALSE}
 library(readr)
 library(mclust)
+options(digits = 2)
+install.packages("CCA", repos = "http://cran.us.r-project.org")
+```
 
-#install.packages("CCA")
-
-energydata_complete <- read_csv("energydata_complete.csv")
+```{r import, message=FALSE, warning=FALSE, echo=FALSE}
+energydata_complete <- read_csv(here("energydata_complete.csv"))
 head(energydata_complete[,c(1:5,26:29)])
-#dim(energydata_complete)
 ```
 
 There are two columns with random values which are not part of the real data, which will be dropped from the data.
 
-```{r}
-randomv =c("rv1","rv2") 
+```{r, drops, echo=FALSE}
+randomv =c("T6","RH_6", "rv1","rv2") 
 energydata_complete = energydata_complete[ , !(names(energydata_complete) %in% randomv)]
-head(energydata_complete[,c(1:5,24:27)])
-
+head(energydata_complete)
 ```
 
 
-The energy data have values for every 10 minutes of the hour for over five months with 19735 rows. In order to reduce the number of rows, "Zoo" library will be used to get the aggregate average daily numbers,  
-```{r}
+The energy data have values for every 10 minutes of the hour for over five months with 19735 rows. In order to reduce the number of rows, "Zoo" library will be used to get the aggregate average daily numbers. Now we can see a single row for each day.
+
+```{r zoo, message=FALSE, warning=FALSE, echo=FALSE}
 library(zoo)
 energydata_daily <-aggregate(read.zoo(energydata_complete, header = TRUE, tz = "GMT"), as.Date, mean)
 
 energydata_daily = as.data.frame(energydata_daily)
-#dim(energydata_daily)
+head(energydata_daily)
 ```
 
-Hourly
-```{r}
-energydata_hourly= energydata_complete
-energydata_hourly$datehour <- cut(as.POSIXct(energydata_hourly$date), breaks="hour")
-energydata_hourly= energydata_hourly[-1]
+Let's use "PerformanceAnalytics" library to check for scatter plots between variables, correlation and histogram of some of the variables which will help to see if there extreme outliers. 
 
-energydata_hourly <- aggregate(.~datehour, energydata_hourly, mean)
-head(energydata_hourly)
-
-rownames(energydata_hourly) <- energydata_hourly[,1]
-energydata_hourly[,1] <- NULL
-
-energydata_hourly = as.data.frame(energydata_hourly)
-head(energydata_hourly[,1:5])
-
-dim(energydata_hourly)
-```
-
-
-Let's use "PerformanceAnalytics" library to check for scatterplots between variables, correlation and histogram of some of the variables which will help to see if there extreme outliers. 
-```{r}
-
+```{r PerfAnal, message=FALSE, warning=FALSE, echo=FALSE, fig.cap="Figure 1: Variable Scatter Plots"}
 library("PerformanceAnalytics")
-chart.Correlation(energydata_daily[,1:10], histogram=TRUE, pch=19, col="")
+chart.Correlation(energydata_daily[,1:9], histogram=TRUE, pch=19, col="")
 ```
 
+The only variable with a few outliers is lights as shown in figure 1. This may reflect a time where lights were left on while the owners were away, or a malfunction in the internet-of-things (IoT) equipment. The MVA library will be used to check which rows are with extreme outliers and clean them up.
 
-The only variable with a few outliers is the lights columns. MVA library will be used to check will rows are with exterme outliers and clean them up. 
-```{r}
+```{r outliers, message=FALSE, warning=FALSE, echo=FALSE, fig.cap="Figure 2: Appliance vs Lights"}
 #check outliers
 library(MVA)
 plot(energydata_daily$Appliances, energydata_daily$lights)
-text(energydata_daily$Appliances, energydata_daily$lights, cex = 0.6,labels = row.names(energydata_daily))
+text(energydata_daily$Appliances, energydata_daily$lights, cex = 0.6)
 ```
 
-Scatterplot between appliances and lights show days such as 01/11/2016 looks outliers. Bvbox will be used to confirm the outliers. 
-```{r}
-bvbox(energydata_daily[,c("Appliances","lights")])
+The scatter plot between appliances and lights show days such as 01/11/2016 that appear to be outliers as shown in figure 2. Bvbox will be used to confirm these as outliers.
+
+```{r, bvbox, echo=FALSE, fig.cap="Figure 3: BV Box"}
+bvbox(energydata_daily[,c("Appliances","lights")], type = "n")
 text(energydata_daily[,c("Appliances","lights")]$Appliances, energydata_daily[,c("Appliances","lights")]$lights)
-
-
 ```
 
 There are 6 rows outside of the ellipse which will be dropped to reduce the variation on the data analysis. 
-```{r}
+
+```{r, dropout, echo=FALSE, fig.cap="Figure 4: Outliers Removed"}
 outliers = c(1,28,22,42, 75,85)
 energydata_daily = energydata_daily[-outliers,]
 plot(energydata_daily$Appliances, energydata_daily$lights)
+```
 
-chart.Correlation(energydata_daily[,1:8], histogram=TRUE, pch=19, col="")
+These are the resulting histograms and correlations of the aggregated energy data after cleaning. 
 
+```{r cleanplot, echo=FALSE, fig.cap="Figure 5: Cleaned Scatter Plots"}
+chart.Correlation(energydata_daily[,1:9], histogram=TRUE, pch=19, col="")
+```
+
+Now the data will be scaled to minimize variation due to the unity measurements difference between the variables.  Since T6 and RH_6 are values measured outside of the house, the two variables have been excluded from the correlation. Scaled appliances energy consumption correlation with all in-house variables is generated below. 
+
+```{r include=FALSE, scale, echo=FALSE}
 daily.s = scale(energydata_daily)
 head(daily.s)
-cor(daily.s)
+daily_corr = cor(daily.s)
+daily_corr[1:9,1:9]
 ```
 
+### Correlation Results
 
-Appliances energy consumption correlation with in house temperature and humidity. T6 and RH_6 are 
-```{r}
-round(cor(energydata_daily[c(1:20)]),3)
-```
 There is a positive correlation between appliances and lights energy consumption. Lights energy consumption usually increases when there is occupant in the house/office, the positive correlation with appliances indicates that more appliances are used when the house is occupied.  
 
 Temperature and humidity at different area of the house has a positive correlation with appliances energy consumption. Kitchen and living area temperatures have a slightly higher correlation with appliances, which indicates occupant's usage of cooking and living room appliances.   
 
 Higher positive correlation numbers between temperature and humidity reading at different part of the house is expected since the overall inside house environment at different part of the house are related.  
 
+## Graphical Dimension Reduction Analysis (MDA)
 
-# 3. Dimension Reduction Analysis
+Graphical MDA is used to check if some days share similar variables. Days with high similarities are located closer to each other in figure 6. Unsurprisingly, we see many clusters of days that are temporally “near” each other such as 2016-05-08 and 2016-05-09.
 
-
-Graphical MDA for each day which show days with similar variables closer to each other.
-```{r}
-energy_dist = dist(daily.s[,c(1:20)])
+```{r, distMDA, echo=FALSE,  fig.cap="Figure 6: Graphical MDA Rows"}
+energy_dist = dist(daily.s[,c(1:18)])
 energy.mds = cmdscale(energy_dist, eig = T)
 
 plot(energy.mds$points[,1:2], pch = ".",col="red", cex= 5) 
 text(energy.mds$points[,1:2], labels = rownames(energydata_daily), cex = 0.6, pos=2)
 ```
 
+In addition to the days, graphical MDA for the variables shows that Temperature and humidity variables are grouped together as expected whereas some of the outside variables have their own properties and located on the middle and bottom part of figure 7.
 
-Graphical MDA for the variables show that Temperature and humidity variables grouped together as expected whereas some of the outside variables have their own properties and located on the middle and bottom part of the plot 
-```{r}
+One interesting note is that dew point, which is a factor of humidity, almost evenly bisects the origin angle between the external temperature and humidity. 
+
+```{r, corMDA, echo=FALSE, fig.cap="Figure 7: Graphical MDA Variables"}
 energy_dist.v = 1-cor(energydata_daily)
 energy.v.mds = cmdscale(energy_dist.v, eig=T)
+
 plot(energy.v.mds$points[,1:2], pch= ".", col="red", cex= 5)
 text(energy.v.mds$points[,1:2], labels= colnames(energydata_daily), pos=4)
-
 ```
 
-*Principle component analysis to for dimension reduction*
+## Principle Component Analysis
 
-summary of the PCA shows that the first 2 PCs cover over 72% of the variation in the variables.
+Principal component analysis is used to reduce the many variables in the energy data and get a few variables that explain most of the variation in the data. 
 
-The first PC covers the higher in temperature and Tdwepoint. The second PC covers the higher humidity values both inside and outside the house.  
+The summary of the PCA shows that the first 2 PCs cover over 72% of the variation in the variables. The first PC covers the higher in temperature and Tdewpoint. The second PC covers the higher humidity values both inside and outside the house.
 
-```{r}
+```{r PCAsetup, echo=FALSE}
 energydata_daily.pca <- princomp(energydata_daily, cor = T) 
 summary(energydata_daily.pca)
 pPC1_2 = energydata_daily.pca$loadings[,c(1:2)]
 pPC1_2
-
 ```
 
+Below are six days with highest PC1 score and another six with lowest PC1 scores. Temperature values comparison between the two groups confirms that higher PC1 means higher temperature.
 
-Below the six days with high PC1 score and another six with lowest PC1 score. comparing the temperature values between the two groups confirms that higher PC1 means higher temperature.  
-```{r}
+```{r, PC1, echo=FALSE}
 #pca scores to data frame
 epcascores= data.frame(energydata_daily.pca$scores)
 #sort by Comp.1 in ascending order
@@ -230,8 +245,9 @@ energydata_daily[rownames(head(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,1])>0.2
 energydata_daily[rownames(tail(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,1])>0.2]]
 ```
 
-Below the six days with high PC2 score and another six with lowest PC2 score. Comparing the humidity values between the two groups confirms that higher PC2 means higher humidity.  
-```{r}
+Below are six days with highest PC2 score and another six with lowest PC2 score. Humidity values comparison between the two groups confirms that higher PC2 means higher humidity.
+
+```{r, PC2, echo=FALSE}
 #sort by Comp.2 in ascending order
 epcascores = epcascores[order(-epcascores$Comp.2),]
 
@@ -242,11 +258,11 @@ energydata_daily[rownames(tail(epcascores)),rownames(pPC1_2)[abs(pPC1_2[,2])>0.2
 ```
 
 
-# 4. Cluster Analysis
+## Cluster Analysis
 
-check the number of cluster appropriate for the energy data for Kmeans clustering. 
+The “plot.wgss” function uses the within-group sum-of-squares to determine the number of clusters appropriate for the energy data for K-means clustering.
 
-```{r}
+```{r, wgss, echo=FALSE, fig.cap="Figure 8: Scree Plot"}
 plot.wgss = function(mydata, maxc) {
   wss = numeric(maxc)
   for (i in 1:maxc) 
@@ -257,28 +273,32 @@ plot.wgss = function(mydata, maxc) {
 plot.wgss(energydata_daily, 10)
 ```
 
-"Elbow Test" suggests that 3 clusters are appropriate for the energy data. The three cluster are identified in the plot below between the two PCs. 
+The “elbow test” suggests that 3 clusters are appropriate for the energy data. The three cluster are identified in the plot below between the two PCs.
 
-```{r}
-energy_km <- kmeans(energydata_daily[,1:20],3)
-plot(energydata_daily.pca$scores[, 1:2], pch=".", cex= 2.5)
-text(energydata_daily.pca$scores[, 1:2],labels=substr(row.names(energydata_daily),6,10), col = energy_km$cluster)
+The three clusters for the whole energy data have overlaps when the two PCs value are used as shown in figure 9. It’s possible that the third cluster would be more apparently along the third dimension.
 
+```{r, kmplot, echo=FALSE, fig.cap="Figure 9: K-Means PC Values"}
+energy_km <- kmeans(energydata_daily[,1:18],3)
+
+plot(energydata_daily$Appliances, energydata_daily$lights, pch=".", cex= 2.5)
+text(energydata_daily$Appliances, energydata_daily$lights,labels=substr(row.names(energydata_daily),6,10), col = energy_km$cluster)
 ```
 
+However, clustering based only on temperature or humidity data shows that the three clusters are well defined.
 
-Clustering based on only temperature values shows that the three clusters are well aligned with PC1 values.
-```{r}
+Temperature values aligned with PC1 fall into distinct low, medium, and high clusters along the x-axis as shown on figure 10. 
+
+```{r, kmtemp, echo=FALSE, fig.cap="Figure 10: K-Means PC1 "}
 tempZone = c("T1","T2", "T3", "T4","T5", "T7","T8","T9")
 energy_km.t <- kmeans(energydata_daily[,tempZone],3)
 plot(energydata_daily.pca$scores[, 1:2], pch=".", cex= 2.5)
 text(energydata_daily.pca$scores[, 1:2],labels= substr(row.names(energydata_daily),6,10), col = energy_km.t$cluster)
 
 ```
-Custering based on humidity values shows that the three clusters are well aligned with PC2 values
 
+Humidity values aligned with PC2 fall into similar categories along the y-axis as showing in Figure 11.
 
-```{r}
+```{r, kmhumidity, echo=FALSE, fig.cap="Figure 11: K-Means PC2"}
 humZone = c("RH_1","RH_2", "RH_3", "RH_4","RH_5","RH_7","RH_8","RH_9")
 energy_km.h <- kmeans(energydata_daily[,humZone],3)
 plot(energydata_daily.pca$scores[, 1:2], pch=".", cex= 2.5)
@@ -286,6 +306,201 @@ text(energydata_daily.pca$scores[, 1:2],labels=substr(row.names(energydata_daily
 
 ```
 
+## Confirmatory Factor Analysis
+In confirmatory factor analysis (CFA), we want to test whether factors correlate to specific manifest variables. Our model tests whether that is the case with the temperature and humidity variables. Remember in our case that we have several instances of both in different locations.
 
 
+```{r sem, message=FALSE, warning=FALSE, echo=FALSE}
+library(sem)
+energy_model <- specifyModel(file="energy_model.txt")
+energy_sem <- sem(energy_model, cor(daily.s), nrow(daily.s))
+#summary(energy_sem)
+```
 
+The plot can help us visualize the model we've created with the corresponding correlations.The result shows extremely high correlations across the board, which we would expect since we have grouped variables that measure the same phenomena in close areas.
+```{r, semPlot, message=FALSE, warning=FALSE, echo=FALSE, fig.cap="Figure 12: CFA Model Plot"}
+library(semPlot)
+semPaths(energy_sem, rotation = 2, 'std', 'est')
+```
+
+This can be inspected more closely in the summary. Additionally, we can add some fit indices to test whether the covariance matrix produced by our model fits the non-retricted covariance matrix of the data.
+
+For the data to support our model, we need a root-mean-square-error (SRMR) of less than 0.05, and both goodness-of-fits to be greater than 0.95. The fits are printed below and we conclude that our data doesn't support our CFA model.
+
+```{r CFAfits, message=FALSE, warning=FALSE, echo=FALSE}
+options(fit.indices = c("GFI", "AGFI", "SRMR"))
+energy.crtr = summary(energy_sem)
+
+#print summary
+#summary(energy_sem)
+```
+
+
+```{r CFAtest, message=FALSE, warning=FALSE, echo=FALSE}
+print(paste0("RMSE: ", energy.crtr$SRMR))
+
+print(paste0("Goodness-of-Fit: ", energy.crtr$GFI))
+
+print(paste0("Adjusted-Goodness-of-Fit: ", energy.crtr$AGFI))
+
+#test case for whether the data supports our model
+if(energy.crtr$SRMR < 0.05 && energy.crtr$GFI > 0.95 && energy.crtr$AGFI > 0.95){
+  print("Data support the designed CFA model. MODEL is CONFIRMED!")
+}else{
+  print("Data does not support the designed CFA model. MODEL IS NOT CONFIRMED!")
+}
+
+```
+
+
+## Conclusion
+From the very first correlation test, we could see that energy use of appliances and lights had a strong relationship with measures of temperature and humidity inside the house. However, this is a difficult data set for the application of multivariate analysis. Not because the data is time series, but because the conceptual variables of "temperature" and "humidity" are actually represented as several variables corresponding to different locations both inside and outside the house. This distorts MVA techniques because the correlation and distance between similar items makes it difficult to read any relationships with the energy-use variables.
+
+The graphical dimensional reduction analysis did show that temperatures from room to room differed in their relationship to appliance energy use. Future analysis should consider aggregating the temperature variables even further, perhaps by section of the house or proximity to specific appliances, so these differences can be examined further.
+
+Both the principal component and cluster analyses demonstrated how useful these tools can be in grouping variables because in our case, we knew which variables should exhibit clusters in the first place. PCA demonstrated this by finding principal components of temperature and humidity as PC1 and PC2 respectively. These were highlighted by K-means clustering when we colored the results separately based on temperature and humidity vectors in the data. 
+
+Finally, our confirmatory factor analysis model did not prove to be supported by our original covariance matrix. This may be due to how close the individual temperature and humidity variables were to each other already, which may create some tight tolerances that aren't useful for CFA. Again, an interesting approach may be to try a model where sections of the house are used as the factors corresponding to the climate readings in specific rooms. 
+
+Ultimately, this was an extremely useful data set for understanding both the strengths and limitations of multivariate analysis. While we may not have been able to find many new relationships, it was informative to see how pre-existing clusters revealed themselves as we learned new tools and techniques. In addition, while there were several rich data points collected from this house, the house itself only represents an n of 1 for any population of households we would want to examine to make conclusive statements about energy use and in-house climate more generally. With a larger sample of homes, the findings of multivariate methods applied here could reveal far more interesting relationships. 
+
+## Appendix
+### Tables
+#### Principal Component Analysis
+```{r PCAsetup, include=T, echo=F}
+```
+
+### Source Code
+#### Data Cleaning
+Library loadings and imports:
+```{r load, echo = T, eval = F}
+```
+
+```{r import, echo = T, eval = F}
+```
+
+Dropping extraneous data:
+```{r drops, echo = T, eval = F}
+```
+
+Aggregation with Zoo:
+```{r zoo, echo = T, eval = F}
+```
+
+PerformanceAnalytics scatter plots to identify outliers:
+```{r PerfAnal, echo = T, eval = F}
+```
+
+
+Checking plot for outliers:
+```{r outliers, echo = T, eval = F}
+```
+
+Confirming with bvbox:
+```{r bvbox, echo = T, eval = F}
+```
+
+Dropping outliers and final plot:
+```{r dropout, echo = T, eval = F}
+```
+
+```{r cleanplot, echo = T, eval = F}
+```
+
+Scaling data:
+```{r scale, echo = T, eval = F}
+```
+
+#### Graphical MDA
+MDA with distance matrix:
+```{r distMDA, echo = T, eval = F}
+```
+
+MDA with correlation matrix:
+```{r corMDA, echo = T, eval = F}
+```
+
+#### Principal Component Analysis
+PCA setup:
+```{r PCAsetup, echo = T, eval = F}
+```
+
+PC1 (temperature):
+```{r PC1, echo = T, eval = F}
+```
+
+PC2 (humidity)
+```{r PC2, echo = T, eval = F}
+```
+
+#### Cluster Analysis
+Using WGSS to find number of kmeans clusters:
+```{r wgss, echo = T, eval = F}
+```
+
+K-means plot:
+```{r kmplot, echo = T, eval = F}
+```
+
+K-means colored for temperature:
+```{r kmtemp, echo = T, eval = F}
+```
+
+K-means colored for humidity:
+```{r kmhumidity, echo = T, eval = F}
+```
+
+#### Confirmatory Factor Analysis
+Setting up CFA model with sem package:
+```{r sem, echo = T, eval = F}
+```
+
+CFA Model (energy_consumption.txt):
+```
+Temp     -> T1, lambda1, NA
+Temp     -> T2, lambda2, NA
+Temp     -> T3, lambda3, NA
+Temp     -> T4, lambda4, NA
+Temp     -> T5, lambda5, NA
+Temp     -> T7, lambda7, NA
+Temp     -> T8, lambda8, NA
+Temp     -> T9, lambda9, NA
+Hum     -> RH_1, lambda11, NA
+Hum     -> RH_2, lambda12, NA
+Hum     -> RH_3, lambda13, NA
+Hum     -> RH_4, lambda14, NA
+Hum     -> RH_5, lambda15, NA
+Hum     -> RH_7, lambda17, NA
+Hum     -> RH_8, lambda18, NA
+Hum     -> RH_9, lambda19, NA
+Temp     <-> Hum, rho, NA
+T1     <-> T1, theta1, NA
+T2     <-> T2, theta2, NA
+T3     <-> T3, theta3, NA
+T4     <-> T4, theta4, NA
+T5     <-> T5, theta5, NA
+T7     <-> T7, theta7, NA
+T8     <-> T8, theta8, NA
+T9     <-> T9, theta9, NA
+RH_1     <-> RH_1, theta11, NA
+RH_2     <-> RH_2, theta12, NA
+RH_3     <-> RH_3, theta13, NA
+RH_4     <-> RH_4, theta14, NA
+RH_5     <-> RH_5, theta15, NA
+RH_7     <-> RH_7, theta17, NA
+RH_8     <-> RH_8, theta18, NA
+RH_9     <-> RH_9, theta19, NA
+Temp <-> Temp, NA, 1
+Hum <-> Hum, NA, 1
+```
+
+Plot of the model:
+```{r semPlot, echo = T, eval = F}
+```
+
+
+Testing if data supports the model:
+```{r CFAfits, echo = T, eval = F}
+```
+```{r CFAtest, echo = T, eval = F}
+```
