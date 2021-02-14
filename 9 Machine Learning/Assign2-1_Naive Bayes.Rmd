@@ -1,0 +1,74 @@
+---
+title: "Assign2-1_Naive Bayes"
+author: "Jonathan De Los Santos"
+date: "2/6/2021"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Prompt
+Calculate the conditional probability of the “Delay” given “Carrier = DL,” “Day of Week=Saturday (7),” “Destination = LGA,” and “Origin = DCA.” (Show your work by writing both equations and computation in R.) 
+
+# Data Prep
+Read in csv, convert attributes to factors
+```{r}
+delay <- read.csv("Data Sets/3.1-Delay.csv")
+str(delay)
+
+# Create column vector for factor conversion
+columns <- c(1:5)
+
+# Apply factor to all columns
+delay[,columns] <- lapply(delay[,columns], factor)
+```
+
+# Naive Bayes Model
+Using the `naiveBayes()` function from the `e1071` package
+```{r}
+library(e1071)
+nb.model <- naiveBayes(Status~ ., data = delay)
+nb.model
+```
+
+# Conditional Probability Calculations
+## Save Probability Values
+
+Calculate probability of “Carrier = DL,” “Day of Week=Saturday (7),” “Destination = LGA,” and “Origin = DCA" given "Status" of both 0 and 1. 
+
+```{r}
+DL.1 = .094 
+DL.0 = .111
+
+Sat.1 = 0.0625
+Sat.0 = 0.1667
+
+LGA.1 = 0.5
+LGA.0 = 0.422
+
+DCA.1 = 0.531
+DCA.0 = 0.515
+
+Status.1 = 0.075
+Status.0 = 0.925
+
+pDelay = DL.1*Sat.1*LGA.1*DCA.1*Status.1
+cat("P(DL,Sat,LGA,DCA | Status = 1) = ", pDelay,"\n")
+pNoDelay = DL.0*Sat.0*LGA.0*DCA.0*Status.0
+cat("P(DL,Sat,LGA,DCA | Status = 0) = ", pNoDelay)
+```
+
+## Calculate Conditional Probability 
+The conditional probability of a delay given the specified carrier, day of week, destination, and origin is: 
+
+```{r}
+cpDelay = pDelay/(pDelay+pNoDelay)
+cpDelay
+```
+
+
+

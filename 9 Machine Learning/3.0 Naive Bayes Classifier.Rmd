@@ -1,0 +1,136 @@
+---
+title: "3.0 Naïve Bayes Classifier"
+author: "Jonathan De Los Santos"
+date: "2/3/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bayes Theorem
+
+
+
+
+
+# Naïve Bayes Classifier
+
+
+
+
+
+# Naïve Bayes Classifier in R
+
+## `e-1071()` Package 
+
+### Data Partioning with `createDataPartition()`
+```
+reateDataPartition(
+  y,
+  times = 1,
+  p = 0.5,
+  list = TRUE,
+  groups = min(5, length(y))
+)
+```
+**Arguments** 
+- y:	a vector of outcomes. For createTimeSlices, these should be in chronological order.
+- times:	the number of partitions to create
+- p:	the percentage of data that goes to training
+- list:	logical - should the results be in a list (TRUE) or a matrix with the number of rows equal to floor(p * length(y)) and times columns.
+- groups:	for numeric y, the number of breaks in the quantiles
+
+- Usage
+  - Input 70% (`p=0.7`) of factored AHD column into `intrain`
+  - List = FALSE for some reason
+  - Add intrain to trainSet
+  - Add all except intrain to testSet
+```{r}
+heart <- read.csv("Data Sets/3.0-Heart.csv")
+
+# Save AHD as factor
+heart$AHD.f <- as.factor(heart$AHD)
+
+
+library(caret)
+set.seed(1234)
+intrain <- createDataPartition(y = heart$AHD.f, p = 0.7, list = FALSE)
+trainSet <- heart[intrain,]
+testSet <- heart[-intrain,]
+#str(trainSet)
+#summary(testSet)
+```
+
+### `naiveBayes()` Model
+> "Computes the conditional a-posterior probabilities of a categorical class variable given independent predictor variables using the Bayes rule."
+
+**Arguments**
+
+- x: A numeric matrix, or a data frame of categorical and/or numeric variables.
+- y:	a class vector.
+- formula: A formula of the form class ~ x1 + x2 + .... Interactions are not allowed.
+- data: Either a data frame of predictors (categorical and/or numeric) or a contingency table.
+
+
+```{r}
+library(e1071)
+nb.model <- naiveBayes(AHD.f~., data = trainSet)
+nb.model
+```
+
+### `predict()` Function
+
+```{r}
+nb.model.pred <- predict(nb.model, testSet, type = 'class')
+nb.model.pred
+```
+
+### Confusion Matrix
+```{r}
+actual <- testSet$AHD.f
+confusionMatrix(actual, nb.model.pred)
+```
+
+## Compute Conditional Probability from R
+From the above data we want to know:
+
+$P(AHD=YES | ChestPain=typical, Thal=fixed)$
+
+### Needed Values
+P(ChestPain=typical | AHD=YES)
+P(Thal=fixed | AHD=YES)
+P(AHD=YES)
+
+P(ChestPain=typical | AHD=NO)
+P(Thal=fixed | AHD=NO)
+P(AHD=NO)
+
+### Finding Probabilities in `nb.model`
+- Find ChestPain
+- Find the probability at the intersection of "typical" and "YES" 
+- Repeat for Thal
+- Probability for AHD = YES can be found under "A-Priori Probabilities" 
+
+### Calculating Probability
+For some reason these values differ from professor's, but I've been troubleshooting for too long. Here are the values from my model:
+
+**P(ChestPain=typical | AHD=YES):** 0.031
+**P(Thal=fixed | AHD=YES):** 0.082
+**P(AHD=YES):** 0.460
+
+AHD = YES
+$0.031 * 0.082 * 0.460 = 0.0012$
+
+AHD = NO
+**P(ChestPain=typical | AHD=NO):** 0.096
+**P(Thal=fixed | AHD=NO):** 0.0263
+**P(AHD=NO):** 0.5399
+
+$0.096* 0.0263 * 0.5399 = 0.001$
+
+**Final Calculation**
+$\frac{P(typical, fixed | AHD=YES)}{P(typical, fixed | AHD=YES)+P(typical, fixed | AHD=NO)}$
+
+$\frac{0.0012}{0.0012+0.001} = 0.55$

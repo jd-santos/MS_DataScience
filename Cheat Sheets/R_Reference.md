@@ -25,3 +25,7 @@ Reference: https://www.amelia.mn/STAT360/slides/17-Filepaths.pdf
 
 ## Reuse Code Chunks
 https://bookdown.org/yihui/rmarkdown-cookbook/reuse-chunks.html#ref-label
+
+## Knit to Word from Console
+In case you get missing object errors
+`rmarkdown::render("Path-to-file.Rmd")`

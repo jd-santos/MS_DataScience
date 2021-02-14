@@ -1,0 +1,28 @@
+---
+title: "3.1 Decision Trees"
+author: "Jonathan De Los Santos"
+date: "2/3/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Decision Tree Structure
+
+
+
+# Tree Induction
+
+
+
+# C5.0 Tree Algorithm
+
+
+
+# Evaluating Classification Tree
+
+
+
+# CART Algorithm

@@ -1,0 +1,22 @@
+---
+title: "Assign2-2_Decision Trees"
+author: "Jonathan De Los Santos"
+date: "2/6/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Prompt
+
+The attached file contains information about 1,972 auctions on eBay.com. The goal is to use these data to build a model that will classify auction as competitive or non-competitive. A competitive auction is defined as an auction with at least two bids placed on the time auctioned. The data include variables that describe the item (auction category), the seller (his/her eBay rating), and the auction terms that the seller selected (auction duration, opening price, currency, day-of-week of auction close). The price at which the auction closed is also included.
+
+Your task is to predict whether or not the auction will be competitive. To complete the task, please convert variable "duration" into a categorical variable, and split the data into training (70%) and testing (30%) datasets. Find the best classification tree (with the avoidance of over fitting), and write down the results in terms of rules.
+
+Change the data type for columns as needed, and split the data in train and test randomly. (10 pts)
+
+Train, test, and plot the tree by using tree package. Provide a detailed explanation of the splitting criteria you used, and provide the accuracy for the results (25 pts).
+
+Explain the output of the confusion matrix. (40 pts)
