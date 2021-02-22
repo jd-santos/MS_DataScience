@@ -1,0 +1,160 @@
+---
+title: "Assign-4 Ensemble Learning"
+author: "Jonathan De Los Santos"
+date: "2/14/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Prompt
+
+The example data in `4.4-UniversalBank.csv` contains 5,000 lines of bank customer data ("Universal Bank").
+
+The bank is interested in growing customers to bring in more loan business. The bank encouraged the marketing department to come up with an idea for better target marketing and to determine what factors make a customer accept a personal loan. The attached dataset includes demographic variables of its customers, “customer response to the personal loan campaign (Personal Loan), etc.
+
+
+Build a decision tree and develop ensemble models including bagging, boosting, and random forests, and compare the outcomes.
+
+# Import and Prepare Data 
+```{r}
+bank <- read.csv("Data Sets/4.4-UniversalBank.csv")
+#str(bank)
+
+train_sample <- sample(5000,4000)
+train <- bank[train_sample,]
+test <- bank[-train_sample,]
+
+str(train)
+```
+
+# Decision Tree
+
+To begin we build a decision tree with training data (80%) and evaluate with the test data.
+
+## Model with C5.0 Algorithm
+
+This model misclassifies roughly 1.6%. It identifies Income, then Education as the first two split variables. 
+
+```{r}
+#install.packages("C50")
+library(C50)
+
+model_bank <- C5.0(train[-7], factor(train$Personal.Loan))
+model_bank
+summary(model_bank)
+```
+
+## Evaluating C5.0 Model
+
+The model based on the 80% training data is evaluated against the 20% test data. We can see the comparisons of the data in both the table and crosstable below. This evaluates to a **97.7% success rate**, or a **2.3% error rate.**
+
+```{r}
+predict_bank <- predict(model_bank, test)
+summary(predict_bank)
+table(test$Personal.Loan)
+library(gmodels)
+CrossTable(test$Personal.Loan, predict_bank, 
+           porp.chisq = FALSE,
+           dnn = c("Actual Loans", "Predicted Loans"))
+```
+
+# Bagging Model
+
+We will build on the single-tree analysis with a 5-tree bagging model.
+
+```{r}
+library(adabag)
+library(rpart)
+library(rpart.plot)
+
+train$Personal.Loan <- factor(train$Personal.Loan)
+bank.bagging <- bagging(Personal.Loan~ ., data = train, mfinal = 5,
+                        control = rpart.control(maxdepth=5, minsplit=1))
+
+# See variable importance
+bank.bagging$importance
+```
+
+## Plot Bagging Model
+```{r}
+rpart.plot(bank.bagging$trees[[1]])
+```
+## Evaluate Bagging Model
+
+By creating a confusion matrix of the bagging model and the test data, we find that our model resulted in a **97.9% success rate**, or a **2.1% error rate.**
+
+```{r}
+library(e1071)
+pred <- predict(bank.bagging, test, type = "class")
+confusionMatrix(factor(pred$class), factor(test$Personal.Loan))
+```
+
+# Boosting Model
+
+We repeat this process with a boosting model which adjusts the weights of incorrect responses between iterations.
+
+```{r}
+bank.boosting <- boosting(Personal.Loan~ ., data = train, mfinal = 5,
+                        control = rpart.control(maxdepth=5, minsplit=1))
+
+# See variable importance
+bank.boosting$importance
+```
+
+## Plot Boosting Model
+
+```{r}
+rpart.plot(bank.boosting$trees[[1]])
+```
+## Evaluate Boosting Model
+
+Like before, we create a confusion matrix of the boosting model and the test data. The boosting model resulted in a **97.9% success rate**, or a **2.1% error rate** which is the same as the bagging model. In this case, the incorrect predictions were weighted slightly more towards false negatives. 
+
+```{r}
+library(e1071)
+pred2 <- predict(bank.boosting, test, type = "class")
+confusionMatrix(factor(pred2$class), factor(test$Personal.Loan))
+```
+
+# Random Forest 
+
+The final model we will perform is a random forest, which extends our bagging model above. The result is given in the confusion matrix below.
+
+```{r}
+library(randomForest)
+
+# Build model
+myForest <- randomForest (Personal.Loan ~., nodesize = 2, mtry = 2, ntree = 10, data = train)
+
+# Observe confusion table 
+myForest$confusion
+```
+
+## Evaluate Random Forest
+
+We evaluate random forest similar to before, with the minor difference of manually calculating the success and error rates. The random forest resulted in a **97.9% success rate**, or a **2.1% error rate** which is the same as the bagging and boosting models.
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Load with test data 
+predict(myForest, test)
+
+# Create confusion matrix
+tt <- table(test$Personal.Loan, predict(myForest, test))
+```
+
+```{r}
+# Success Rate
+sum(tt[row(tt) == col(tt)]) / sum(tt)
+
+# Error Rate (1 - success rate)
+1 - sum(tt[row(tt) == col(tt)]) / sum(tt)
+```
+
+# Conclusion
+
+Unexpectedly, all of the ensemble models ended with the same error rate of 2.1% while the single decision tree yielded 2.3%.
+
+Assuming there are no logical errors, this may be because the relationships between the data are highly predictable and therefore there is little variation between the different models. Given this information, we would recommend that the lease resource intensive of the bagging and boosting models be used to build the decision tree for Universal Bank.

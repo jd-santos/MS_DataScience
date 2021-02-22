@@ -1,0 +1,225 @@
+---
+title: "4.0 Ensemble Learning Overview"
+author: "Jonathan De Los Santos"
+date: "2/13/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ensemble Forms
+- Bagging and random forest
+  - Aggregate pre-determined weak learners
+- Boosting
+  - Gradually connect weak learners
+  
+# Bagging
+- Effectively reduces the variance of an individual base learner
+  - Improves prediction accuracy for high variance
+  - The trees are not independent, called "tree correlation" 
+- Doesn’t always improve upon an individual base learner
+- Works for unstable and high variance learners
+  - Decision trees and kNN
+- Categorical Data
+  - Most predicted values selected as final forecasts
+- Continuous Data
+  - Average of predicted values determines final forecasts
+  
+## Bagging in R
+
+```{r}
+library(adabag)
+library(rpart)
+library(rpart.plot)
+library(caret)
+
+set.seed(123)
+```
+
+```{r}
+
+idx<-sample(1:150,100)
+train<- iris[idx,]
+test<- iris[-idx,]
+
+# Single Tree
+iris.single <- rpart(Species ~ ., data = train, method= 'class')
+
+# Bagging with 5 trees
+iris.bagging <- bagging(Species~ ., data = train, mfinal =5,
+                        control = rpart.control(maxdepth=5, minsplit=5))
+
+iris.bagging$importance
+```
+
+### Bagging Plot
+```{r}
+rpart.plot(iris.bagging$trees[[1]])
+```
+
+### Bagging Barplot
+```{r}
+barplot(iris.bagging$importance[order(iris.bagging$importance, decreasing = TRUE)], ylim = c(0, 100), main = "Variable Relative Importance", col = "blue")
+```
+## Evaluating Bagging Model
+
+```{r}
+library(e1071)
+pred <- predict (iris.single, test, type = "class")
+confusionMatrix(pred, test$Species)
+```
+
+
+```{r}
+pred2 <- predict(iris.bagging, test, type = "class")
+
+# Convert pred2 class to factor before building confusion matrix
+confusionMatrix(factor(pred2$class), test$Species)
+```
+
+# Boosting
+![Boosting]("Images/3-2.1 Boosting Overview.jpg")
+
+## Bagging vs Boosting
+Bagging:
+- Taught in parallel
+- Decreases variance
+- More errors
+- Appropriate when overfit is a problem
+Boosting:
+- Taught sequentially
+- Decreases bias
+- Slow and may overfit
+- Appropriate when low performance is a problem
+
+## Boosting in R Overview
+Uses similar setup as bagging with a few differences
+
+```{r}
+# Single tree setup
+iris.single <- rpart(Species ~ ., data = train, method= 'class')
+
+# Boosting with 5 trees
+# Note change from "bagging" to "boosting" model, otherwise same as bagging
+iris.boosting<- boosting(Species~ ., data = train, mfinal =5,
+                        control = rpart.control(maxdepth=5, minsplit=5))
+
+iris.boosting$importance
+```
+
+### Boosting Plot
+
+```{r}
+rpart.plot(iris.boosting$trees[[1]])
+```
+
+
+### Boosting Barplot
+Note the extremely important difference from bagging: we made it green
+
+```{r}
+barplot(iris.boosting$importance[order(iris.boosting$importance, decreasing = TRUE)], ylim = c(0, 100), main = "Variable Relative Importance", col = "green")
+```
+
+## Evaluating Boosting Model
+
+```{r}
+library(e1071)
+pred3 <- predict(iris.single, test, type = "class")
+confusionMatrix(pred3, test$Species)
+```
+
+```{r}
+pred4 <- predict(iris.boosting, test, type = "class")
+confusionMatrix(factor(pred4$class), test$Species)
+```
+
+# Extensions
+These ensemble forms can be extended with further models:
+
+Bagging $\Rightarrow$ Random Forests
+Boosting $\Rightarrow$ Gradient Boosting
+
+## Random Forest
+### Algorithm Structure
+```
+Given a training data set
+Select number tree to build (n_trees)
+for i=l to n_tree do
+  Generate a bootstrap sample
+  Grow tree
+    for
+    | Select m_try variables at random from all p variables
+    | Pick the best variable
+    | Split the node into two child nodes end
+    end
+  Use tree model stopping criteria to determine when a tree is complete
+
+end
+```
+### Hyperparameters
+- The number of trees in the forest
+  - Start with p x 10 trees and adjust as necessary
+- For each split: m_try
+  - The number of features to consider at any given split
+  - Rule of thumb
+    - Classification: m=Vp
+    - Regression: m=p/3
+- Majority voting
+
+### Random Forests in R
+- `nodesize = 3` Number of nodes at the end of the tree
+- `mtry = 2` Number of variables
+
+The confusion table shows us the error rate of each category
+
+```{r}
+#install.packages("randomForest")
+library(randomForest)
+
+# Create training data
+train <- sample(1:150, 100)
+
+# Build model
+myForest <- randomForest (Species ~., nodesize = 3, mtry = 2, ntree = 15, data = iris)
+
+# Observe confusion table 
+myForest$confusion
+```
+
+### Evaluating Random Forest
+
+```{r}
+# Load with test data 
+predict(myForest, newdata = iris[-train, ])
+
+# Create confusion matrix
+tt <- table(iris$Species[-train], predict(myForest, iris[-train,]))
+```
+
+Calculate success and error rate:
+
+```{r}
+# Success Rate
+sum(tt[row(tt) == col(tt)]) / sum(tt)
+
+# Error Rate (1 - success rate)
+1 - sum(tt[row(tt) == col(tt)]) / sum(tt)
+```
+
+### Evaluation Plotting
+
+```{r}
+library(ggplot2)
+test <- iris[-train,]
+test$pred <- predict(myForest, iris [-train,])
+
+ggplot(test, aes(Species, pred, color = Species)) + 
+  geom_jitter(width = 0.2, height = 0.1, size = 2) + 
+  labs(title = "Confusion Matrix",
+    subtitle = "Predicted vs. Observed from Iris Dataset",
+    y = "Predicted", x = "Truth")
+```
+

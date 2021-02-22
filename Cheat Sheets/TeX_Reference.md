@@ -42,3 +42,21 @@
 	- \sum\limits_{i=1}^n
 	- Use \nolimit to show characters to the right rather than top and bottom
 	- $\sum\limits_{i=1}^n$
+- Max/Min
+	- \max\limits_{i}
+	- $\max\limits_{i}$
+- Arrows
+	- \leftarrow $\leftarrow$
+	- \Leftarrow $\Leftarrow$
+	- \rightarrow
+	- \Rightarrow
+	- \leftrightarrow $\leftrightarrow$
+	- \Leftrightarrow
+	- \longleftarrow $\longleftarrow$
+	- \Longleftarrow
+	- \uparrow $\uparrow$
+	- \Uparrow
+	- \downarrow
+	- \Downarrow
+	- \updownarrow
+	- \Updownarrow
