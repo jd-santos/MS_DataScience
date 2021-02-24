@@ -60,3 +60,9 @@
 	- \Downarrow
 	- \updownarrow
 	- \Updownarrow
+- Union
+	- \cup
+	- $\cup$
+- Intersection
+	- \cap
+	- $\p$

@@ -1,25 +1,106 @@
 ---
-title: "3.0 Naïve Bayes Classifier"
+pdf_document:
+  toc: yes
+  latex_engine: xelatex
+  number_sections: yes
 author: "Jonathan De Los Santos"
 date: "2/3/2021"
 output: pdf_document
+title: "3.0 Naïve Bayes Classifier"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Bayes Theorem
+# Bayes Overview
+18th century mathematician Thomas Bayes developed principles for describing the probability of events and how to revise them based on new information
+- Bayesian classifiers use training data to claculate the probability of each outcome based on the evidence provided by freature values
 
+Important concepts:
+- Event: potential outcome for which we measure the estimated likelihoods
+- Trials: opportunities for events to occur
 
+## Probability
+The probability of an even is estimated by dividing the number of trials in which an even occurred by the total number of trials
+- Notation: $P(A)$ "Probability of event A"
+- Depends on mutually exclusive and exhaustive events, which cannot occur at the same time
+  - They are the only possible outcomes
+  - Events are mutually exclusive and exhaustive with their complement
+- Complement: the event comprising the outcomes in which the event of interest does not happen
+  - Notation: The complement of A is denoted $A^c$ or $A'$ 
 
+### Joint Probability
+- What if we want to monitor non-mutually exclusive events?
+- If some events occur concurrently with the event of interest, we can calculate that (think Venn Diagram)
+- Joint probability: how the probability of one event is related to the probability of the other
+  - Relies on events being dependent to be predictive
+- Independent events: the events are totally unrelated
+  - Impossible to predict one event by observing another
 
+#### Notation
+- Intersection: An event in which two or more events occur
+  - Denoted with $\cap$ symbol
+  - $A \cap B$ = an event where A and B occur
+  - $P(A \cap B)$ = Probability that that both A and B occur
+
+## Bayes Theorem
+The formulation for revising an estimate of the probability of one event given evidence provided by another.
+- Conditional probability: The probability of one event given another occurring 
+- Denoted with a vertical bar | 
+
+The probability of A given B is estimated as the proportion of trials in which A occurred with B, divided by all trials in which B occurred. 
+
+Formulated as:
+
+$P(A|B) = \frac{P(A \cap B)}{P(B)}$
+
+Rearranged algebraically to the more useful form:
+
+$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$
+
+Using an example of trying to predict whether an email is spam given that it contains the word "Viagra" we can replace our letters with the following
+A = spam
+B = Viagra
+
+We are determining the probability of spam, given it contains "Viagra" or $P(spam|Viagra)$
+
+Rewriting our formula:
+
+$P(spam|Viagra) = \frac{P(Viagra|Spam)P(spam)}{P(Viagra)}$
+
+Let's break down this formula into terminology components:
+
+$P(spam|Viagra)$ is the **posterior probability**
+- How likely the message is to be spam
+- If this is greater than 50%, it's more likely to be spam 
+
+$P(Viagra|spam)$ is the **likelihood**
+- The probability that Viagra was used in previous spam messages
+
+$P(spam)$ is the **prior probability** 
+- The probability that any prior message was spam, a starting point of estimating whether an email is spam
+
+$P(Viagra)$ is the **marginal likelihood**
+- The probability that Viagra appeared in any message at all
+
+### Calculating Bayes Theorem
+See example pp. 96 of "Machine Learning with R" by Brett Lantz
+
+- First construct a frequency table that records the number of times Viagra appeared in spam and non=spam messages 
+- Then convert this to a likelihood table to indicate the conditional probabilities for "Viagra" given that the email was spam or not spam 
 
 # Naïve Bayes Classifier
-
-
-
-
+Naive Bayes is a method to apply Bayes' theorem to classification problems
+- So named because it makes "naive" assumption about the data, namely that all of the features are **equally important and independent**
+- These assumptions are rarely true, but even when they're not it still performs well 
+- One reason for this is that estimating probability precisely is not as important as making predictions
+  - The difference between a 51% probability of spam and 99% probability of spam may not be important as long as its filtered
+  
+We perform the Bayes calculation as before, but with several features simultaneously
+- Besides Viagra we may have variables for other words like money, groceries, unsubscribe, or completely different variables like whether the sender is in your address book
+- **Class-conditional independence:** Events are independent so long as they are conditioned on the same class value
+- By making the naive assumption of **class-conditional independence** the math is simplified by multiplying the individual conditional probability rather than computing conditional joint probabilities
 
 # Naïve Bayes Classifier in R
 
@@ -27,7 +108,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Data Partioning with `createDataPartition()`
 ```
-reateDataPartition(
+CreateDataPartition(
   y,
   times = 1,
   p = 0.5,
@@ -47,7 +128,8 @@ reateDataPartition(
   - List = FALSE for some reason
   - Add intrain to trainSet
   - Add all except intrain to testSet
-```{r}
+  
+```{r message=FALSE, warning=FALSE}
 heart <- read.csv("Data Sets/3.0-Heart.csv")
 
 # Save AHD as factor

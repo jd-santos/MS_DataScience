@@ -1,8 +1,12 @@
 ---
-title: "2.1 k-NN Algorithms"
 author: "Jonathan De Los Santos"
 date: "2/1/2021"
-output: pdf_document
+title: "2.1 k-NN Algorithms"
+output:
+  pdf_document:
+    toc: yes
+    latex_engine: xelatex
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}

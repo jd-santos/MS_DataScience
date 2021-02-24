@@ -3,6 +3,7 @@ title: "2.1 Logistic Regression"
 output:
   pdf_document:
     toc: yes
+    number_sections: yes
     latex_engine: xelatex
   html_document:
     number_sections: yes
@@ -17,6 +18,14 @@ knitr::opts_chunk$set(echo = TRUE)
 As opposed to linear regression, logistic regression applies horizontal asymptotes to create boundaries of possible values
 - In our case it allows us to constrict the range between 0 and 1
 - The goal is to find a function of the predictor (X) variables that relates them to a 0 or 1 outcome
+- Predicts whether something is true or false instead of continuous numerical data
+  - Instead of fitting a line to data, we fit an S shaped logistic function from 0 to 1
+  - This means we are calculating a probability
+  - We can still use continuous data, but we don't get a continuous answer
+- Calculated probabilities are used for classification
+  - We are testing to see if the variable's effect on a prediction is significantly different from 0
+  - Variables that don't help the prediciton can be left out
+- As opposed to Least Squares used in linear regression, logistic regression uses **maximum likelihood**
 
 Process:
 - Initialize the coefficient and intercept of all features (X) to zero
@@ -26,17 +35,52 @@ Process:
 Standard Linear Regression
 - $Y = a+bX$
 - Because it's linear, Y could be negative to positive infinity
+- We calculate $R^2$ to determine if variables are correlated
+
+Logistic Regression
+
 
 ## Log-Odds
 - Used to determine logistic regression
-- Odds
-  - $odds(Y=1) = \frac{P}{1-P}$
-  - P is probability of positive event
-  - Therefore odds are the probability of event occurring over the probability that it does not
-- Log-Odds
-  - Now we, get this, take a log of the odds. Specifically the natural log.
-  $log(2.33) = 0.846$
+### Odds Overview
+  - Same as betting odds
+    - E.g. having 1:4 odds of winning means out of 5 games, you expect 1 win and 4 losses totaling 5 games
+    - This is not the same as probability, in this example your probability of winning would be $\frac{1}{5}$ or 0.2
+
+Odds can be calculated from probability as follows:
+$odds = \frac{P(winning)}{1-P(winning)}$ 
   
+  or
+  
+$odds(Y=1) = \frac{P}{1-P}$ 
+  - P is probability of positive event
+  - Therefore odds equal the probability of event occurring over the probability that it does not occur
+  
+### Logit Function
+- In our game example above, consider that your odds of losing will always be below 1
+  - E.g. 1:4
+- However, if your team is good it will be above 1 and sometimes by a large amount
+  - E.g. 4:2 = 2, or 32:3 = 10.7
+- So losing odds are 0 to 1, but winning odds are theoretically 1 to infinity
+  - The magnitude of losing odds will look dramatically smaller than the magnitude of winning odds in a way that is difficult to interpret
+- Taking the log of odds makes the odds of winning and losing symmetrical, thus log-odds
+
+You get your odds, then you take the log of them.
+$log(odds)$
+
+Remembering our calculation for odds, we can calculate log-odds from probability:
+  
+  $log(\frac{P}{1-P})$
+  
+This log of the ratio of the probabilities is the **Logit Function** 
+- The logit function is useful because it generates a normal distribution
+- This makes classification, especially binary classification, a lot easier 
+- In a logistic regression, we are confined to probability values between 0 and 1 
+  - In a linear regression we can theoretically have values from -infinity to infinity
+  - How do we achieve this in a logistic regression?
+  - Log-odds of the probability, or the logit function boiii
+- A probability of 0.5 becomes 0 on the logit y-axis
+
 ## Math
 - Instead of using Y like linear regression, we use $logit(Y)$
 - The logit can be mapped to a probability, which in turn can be mapped to a class
@@ -88,7 +132,13 @@ summary(myLogit)
 Reading the coefficients gives us the function:
 
 $logit(p) = -32.07 + 2.45Breakfast + 3.598Sleep + 2.566Leisure$
-
+- The y-intercept works similarly, if the variables are zero then log(odds of performance) are -32.07
+- z-value is the estimated intercept divided by the standard error
+  - AKA number of standard deviations away from 0 
+  - Small standard deviation or large p-value means this is not statistically significant 
+- Coefficients
+  - E.g. 2.45*Breakfast 
+  - For every unit of breakfast, the log(odds of performance) increases by 2.45
 - If logit(p) > 1 then it is classified as 1, otherwise classified as 0
 
 To get probability can convert logit(P) of 1.85 to P as follows:
@@ -143,6 +193,7 @@ test <- att[-partition,]
 ```
 
 ### Running Regression Models with `glm()`
+- Logistic regression and linear models are both "Generalized Linear Models," which is why we can use this function
 
 > "...used to fit generalized linear models, specified by giving a symbolic description of the linear predictor and a description of the error distribution."
 

@@ -2,7 +2,10 @@
 title: "4.0 Ensemble Learning Overview"
 author: "Jonathan De Los Santos"
 date: "2/13/2021"
-output: pdf_document
+output:
+  pdf_document:
+    number_sections: true
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -29,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
   
 ## Bagging in R
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(adabag)
 library(rpart)
 library(rpart.plot)

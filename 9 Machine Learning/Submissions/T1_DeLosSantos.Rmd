@@ -1,0 +1,340 @@
+---
+title: "Exam 1"
+author: "Jonathan De Los Santos"
+date: "2/22/2021"
+output: word_document
+---
+
+# Question 3
+
+> In this question, you are required to develop a model that predicts if a given car gets high or low gas mileage. In doing so, you are required to use the “Auto” dataset that comes with the ISLR package.
+
+## A
+
+>Please load the dataset and summarize the characteristics of the variables included in the dataset. [5 points]
+
+Begin by installing the ISLR package if not present and saving the "Auto" data into a dataframe. The summary is displayed to give an idea of the variables
+
+```{r}
+#install.packages("ISLR")
+library(ISLR)
+auto <- Auto
+summary(auto)
+```
+
+
+## B
+
+>Create a dummy variable, ‘efficiency,’ that has value of ‘1’ if the value of the ‘mpg’ variable above its median, and a value of ‘0’ otherwise. Create a new data frame to merge ‘efficiency’ with the rest of the “Auto” data. Please display the first six observations of the data frame. [5 points]
+
+To create the dummy variable, we use an ifelse statement to compare mpg with its median. Data frame `eff_auto` is duplicated from `auto` to attach our new dummy variable. The first six observations are displayed.
+```{r}
+efficiency <- ifelse(auto$mpg > median(auto$mpg), 1, 0)
+eff_auto <- auto
+eff_auto$efficiency <- efficiency 
+head(eff_auto, 6)
+```
+
+## C
+
+>Explore the data graphically to investigate the association between "efficiency" and other variables. You can use the paris() function. [5 points]
+
+Using the `pairs()` function, we create scatter plots of efficiency with the other variables. The scatter shows us some possible relationships with variables displacement, horsepower, weight, and acceleration (as well as mpg but that is expected).
+
+```{r}
+pairs(eff_auto$efficiency~., data = eff_auto)
+```
+
+
+## D
+
+>Split the data into training (70%) and testing (30%) datasets. [5 points]
+
+Data is partitioned into test and training sets with `CreateDataPartition()` creating a 70/30 split.
+
+```{r}
+library(caret)
+partition <- createDataPartition(y = eff_auto$efficiency, p = .7, list = FALSE)
+train <- eff_auto[partition,]
+test <- eff_auto[-partition,]
+str(train)
+```
+
+
+## E 
+
+>Perform a logistic regression on the training set in order to predict "efficiency" using the variables that may have some associations in (c). [5 points]
+
+Using the generalized linear model (`glm`) function, we examine four variables for predictive potential of efficiency. Of these, only displacement and horsepower are significant. The coefficient of displacement is -0.0144, meaning for every unit of displacement the log(odds of efficiency) is reduced by 0.0144. The same is true for the coefficient of horsepower, which is also negative.
+
+```{r}
+logr <- glm(eff_auto$efficiency ~ displacement+horsepower+weight+acceleration, family = "binomial", data = eff_auto)
+summary(logr)
+```
+
+
+## F
+
+>Perform KNN on the training data, with several values of k, in order to predict "efficiency." You need to use only the variable used in (e). What are the values of accuracy of different values of K? Which value of K seems to perform the best on this dataset? [10 points]
+
+I have attempted to create this model with columns 3 and 4 trying to predict efficiency (10). I believe I need to carve up my training and test sets differently. I'll return to this time allowing. 
+
+```{r}
+library(gmodels)
+cl <- train[10]
+k.train <- train[-10]
+k.test <- test[-10]
+pred <- knn(train = k.train[,3:4], test = k.test[,3:4], cl = train[,10], k = 3)
+
+summary(pred)
+
+CrossTable(train[,10], pred)
+# Troubleshooting
+#str(train)
+#length(train)
+#dim(test)
+#length(cl)
+```
+
+```{r}
+library(class)
+accuracy.df <- data.frame(k = seq(1, 10, 1), accuracy = rep(0,10))
+
+# Calculate range of k-values to see which validate the best # Loop i-k
+
+for (i in 1:10) {
+  knn.pred <- knn(train[,9], test[,9], cl = train[,10], k = i)
+
+  accuracy.df[i, 2] <- confusionMatrix(knn.pred, factor(test[, 4]))$overall[1]
+
+}
+
+print(accuracy.df)
+```
+
+
+# Question 4
+
+>In this question, you are required to develop a model that categorizes a given ‘Sales” as high or low. In doing so, you are required to use the “Car seats” dataset that comes with the ISLR package.
+
+## A 
+
+>Please load the dataset and summarize the characteristics of the variables included in the dataset. [5 points]
+
+We pull in Carseats from the ISLR package and print a summary of its variables.
+
+```{r}
+seats <- Carseats
+summary(seats)
+```
+
+
+## B 
+
+>In the dataset, ‘Sales’ is a continuous variable, so we begin with recoding the variable to a binary variable. Create a variable named ‘high’ that takes on a value of ‘Yes’ if the value of ‘Sales’ exceeds 8, then it, otherwise ‘No.’ Create your data to merge ‘high’ with the rest of the “Carseats” data. Display the first six row of your data frame. [5 points]
+
+Like before, we use an ifelse to create a dummy variable for Sales being "high" if they are above 8. The first six rows are displayed to observe the new data frame with this column.
+```{r}
+high <- ifelse(seats$Sales > 8, "Yes", "No")
+sale_seats <- seats
+sale_seats$high <- factor(high) 
+head(sale_seats, 6)
+```
+
+
+## C
+
+>Display the tree structure and the node label. Provide your detailed explanation of the tree. [10 points]
+
+
+First we prepare our data by partitioning into test and training sets. Remove the original Sales column or the tree will be one branch deep if we predict based on "high."
+
+```{r}
+nosale_seats <- sale_seats[-1]
+s.partition <- createDataPartition(y = nosale_seats$high, p = 0.5, list = FALSE)
+s.train <- nosale_seats[s.partition,]
+s.test <- nosale_seats[-s.partition,]
+str(s.train)
+```
+
+The decision tree using CART is displayed below, with the first node splitting at ShelveLoc:ac which I presume means the first and third factors of "Good" and "Bad." Then we split on price, and work down from there. 
+
+```{r message=FALSE, warning=FALSE}
+library(tree)
+dtree <- tree(high~., data = s.train)
+plot(dtree)
+text(dtree)
+```
+
+
+## D 
+
+>Properly evaluate the performance of a classification tree on these data. Determine the best tree and prune the tree to examine whether the performance is improved. [10 points]
+
+Our first attempt at a decision tree has an accuracy of 69.5%. We will attempt to refine this by pruning.
+
+```{r}
+library(e1071)
+dtreepred <- predict(dtree, s.test, type = "class")
+confusionMatrix(dtreepred, s.test$high)
+```
+
+Based on this classification, it appears the best trees with the lowest misclasses exist above 12 terminal nodes. To be sure, we will choose 15 as our best for pruning.
+
+```{r}
+cv.dtree <- cv.tree(dtree, FUN = prune.misclass)
+plot(cv.dtree)
+```
+
+Running our tree again pruned to 15 terminal nodes, we now see a split for ShelveLoc:Bad with "No" splitting to the left and the rest of the tree to the right.
+
+```{r}
+prune.trees <- prune.misclass(dtree, best = 15)
+plot(prune.trees)
+text(prune.trees, pretty = 0)
+```
+
+Evaluating our pruned tree, we have increased our accuracy slightly to 71.5%
+
+```{r}
+library(e1071)
+dtreepred <- predict(prune.trees, s.test, type = "class")
+confusionMatrix(dtreepred, s.test$high)
+```
+
+
+# Question 5
+
+>Apply bagging and random forest to the Boston data from MASS library.
+
+## A
+
+>Explore the Boston data. Split the data into training (70%) and testing (30%) datasets. [5 points]
+
+After some weird issues with namespace management, MASS has been loaded and the data has been divided into test and train data sets. These are commented out because I split the data after redefining the variable `medv` below.
+
+```{r}
+#install.packages("MASS")
+library(MASS)
+library(caret)
+
+boston <- Boston
+str(boston)
+
+#b.partition <- createDataPartition(y = boston$medv , p = .7, list = FALSE)
+#b.train <- boston[b.partition,]
+#b.test <- boston[-b.partition,]
+#str(b.train)
+```
+
+
+## B
+
+>Perform bagging, boosting, and random forest to predict the “medv” variable considering all 13 predictors. Before building three models, you should recode the “medv” variable into a categorical variable based on your own criteria, such as the median value, etc. How well do these models perform on the test set? [10 points]
+
+First we create a categorical value `hvalue` calculated from `medv`, the median value of owner-occupied homes (in $1000s). This is done by labeling values below the first quartile as Low, between the 1st and 3rd quartile as Medium, and greater than the 3rd quartile as High.
+
+A head of the data is printed for reference
+
+```{r}
+h.boston <- boston
+h.boston$medv <- ifelse(boston$medv < summary(boston$medv)[2], "Low", ifelse(boston$medv < summary(boston$medv)[5], "Medium", "High"))
+h.boston$medv <- factor(h.boston$medv) 
+head(h.boston, 10)
+```
+The data prep had to be included for part A, but we need our new variable so I will run it again:
+
+```{r}
+b.partition <- createDataPartition(y = h.boston$medv , p = .7, list = FALSE)
+b.train <- h.boston[b.partition,]
+b.test <- h.boston[-b.partition,]
+str(b.train)
+```
+
+
+Package prep:
+
+```{r}
+library(adabag)
+library(rpart)
+library(rpart.plot)
+library(caret)
+
+set.seed(123)
+```
+
+### Bagging
+
+For this example we use 5-tree bagging.
+
+```{r}
+medv.bagging <- bagging(medv~ ., data = b.train, mfinal =5, control = rpart.control(maxdepth=5, minsplit=5))
+medv.bagging$importance
+```
+
+#### Bagging Plot
+
+This isn't strictly rquired by the assignment but I find the visualization to be helpful.
+
+```{r message=FALSE, warning=FALSE}
+rpart.plot(medv.bagging$trees[[1]])
+```
+#### Bagging Evaluation
+
+Our evaluation of bagging shows an accuracy of 84.77%.
+
+```{r}
+library(e1071)
+bagpred <- predict(medv.bagging, b.test, type = "class")
+confusionMatrix(factor(bagpred$class), b.test$medv)
+```
+
+### Boosting
+
+Now we run the model with 5-tree boosting:
+
+```{r}
+medv.boosting <- boosting(medv~ ., data = b.train, mfinal =5, control = rpart.control(maxdepth=5, minsplit=5))
+medv.boosting$importance
+```
+
+#### Boosting Plot
+
+```{r message=FALSE, warning=FALSE}
+rpart.plot(medv.boosting$trees[[1]])
+```
+
+#### Boosting Evaluation 
+
+Our boosting model evaluates to 81.46%, lower than bagging.
+
+```{r}
+library(e1071)
+bagpred2 <- predict(medv.boosting, b.test, type = "class")
+confusionMatrix(factor(bagpred2$class), b.test$medv)
+```
+
+
+### Random Forest
+
+```{r message=FALSE, warning=FALSE}
+library(randomForest)
+bForest <- randomForest(medv ~., nodesize = 3, mtry = 2, ntree = 4, data = h.boston)
+bForest$confusion
+```
+
+#### Evaluating Random Forest
+
+The Random Forest model evaluates to 90.72%, the strongest of all ensemble models
+
+```{r}
+predict(bForest, newdata = b.test)
+```
+
+
+```{r}
+tt <- table(b.test$medv, predict(bForest, b.test))
+sum(tt[row(tt) == col(tt)]) / sum(tt)
+```
+
+
