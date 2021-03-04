@@ -1,0 +1,175 @@
+---
+title: "Assign5-2 Neural Networks"
+author: "Jonathan De Los Santos"
+date: "2/26/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+>The dataset has 1,436 records and different attributes including Price, Age, KM, Fuel Type, and other specifications. The goal in this analysis is to predict the price of a used car based on its attribute using neural network techniques. Preparing the data for a neural network is very important as all the covariates and responses need to be numeric. One of the variables, Fuel Type, is a categorical variable (CNG, Diesel, or Petrol) that needs to be transformed to two numeric variables: FuelType1 and FuelType2. For example, you can assign CNG to a new variable FuelType1 in which a 1 represents that it’s a CNG vehicle and 0 represents that it’s not. Likewise, you can assign Diesel to a new variable FuelType2 in which a 1 represents that it’s a Diesel vehicle and 0 represents that it’s not. The data needs to be divided into training (60%) and testing (40%) datasets.  
+
+>Analyze the data using neural network using with neuralnet function, visualize the output, and interpret the results with an appropriate validation. In this case, you can select ten variables that contribute to predicting a used car's price. Build another neural network using the nnet function, and interpret the outcomes with a validation by applying the correlation concept. Recommend which approach would generate a better outcome with your specifications in terms of the numbers of hidden layers and nodes in each layer.
+
+```{r}
+toyotathon0 <- read.csv("Data Sets/5.1-Toyota.csv")
+toyotathon <- toyotathon0[-1]
+str(toyotathon)
+```
+
+
+# A
+>Appropriately normalize and categorize the variables of interest from the Toyota dataset. Create a data partition of train:test in 6:4. (10 pts)
+
+## Fuel_Type Split
+
+Per the direction, we need to split Fuel_Type into two binary variables representing whether the vehicle is CNG or Diesel. This is performed with an ifelse statement and the original variable is removed from the data set.
+
+```{r}
+toyotathon$FuelType1 <- ifelse(toyotathon$Fuel_Type == "CNG", 1, 0)
+
+toyotathon$FuelType2 <- ifelse(toyotathon$Fuel_Type == "Diesel", 1, 0)
+
+# Remove original Fuel_Type variable
+toyotathon2 <- toyotathon[-7]
+
+str(toyotathon2)
+```
+
+## Variables of Interest
+
+Next we want to choose the features that may be helpful for predicting price. The variables I've selected are printed below.
+
+```{r}
+var.toyota <- c('KM',
+                'Radio',
+                'FuelType2',
+                'Mfr_Guarantee',
+                'Automatic',
+                'Sport_Model',
+                'HP',
+                'Powered_Windows',
+                'CD_Player',
+                'Mistlamps'
+              )
+small.toyota <- toyotathon2[var.toyota]
+summary(small.toyota)
+```
+
+
+## Normalization
+
+Now we can normalize our remaining variables.
+
+```{r}
+normalize <- function(x){
+  return ((x-min(x))/(max(x)-min(x)))
+}
+
+n.toyota <- as.data.frame(lapply(small.toyota, normalize))
+
+# Add price back to dataset
+n.toyota$Price <- toyotathon2$Price
+head(n.toyota,20)
+```
+
+## Partition Data
+
+Now the data is partitioned in a 60/40 ratio. The target variable is split from the features in the test data.
+
+```{r}
+library(caret)
+part <- createDataPartition(y = n.toyota$Price, p = 0.6, list = FALSE)
+ntrain <- n.toyota[part,]
+ntest <- n.toyota[-part,]                        
+
+test.features <- -ntest[,-11]
+test.class <- -ntest[,11]
+str(test.features)
+```
+
+
+# B
+>Train the neural network model on train dataset, and evaluate the results by testing on the test dataset for hidden node of 1 using neuralnet package (plot the correlation between predict and original). 
+
+The `neuralnet` model is built and plotted below based on our training data and the default of a single hidden neuron in the layer. Unfortunately it performs very poorly when evaluated, with a correlation of .1922.
+
+```{r}
+library(neuralnet)
+model <- neuralnet(Price~., data = ntrain)
+plot(model)
+```
+
+```{r}
+model_results <- compute(model, test.features)
+summary(model_results)
+predicted_price <- model_results$net.result
+cor(predicted_price, test.class)
+```
+
+
+# C
+>Train the neural network model on train dataset, and evaluate the results by testing on the test dataset for hidden node of 5 using neuralnet package (plot the correlation between predict and original). (10 pts)
+
+The model is performed again, this time with 5 nodes in the hidden layer. Unfortunately, there was only a slightly increase in correlation to .1966.
+
+```{r}
+library(neuralnet)
+model5 <- neuralnet(Price~., data = ntrain, hidden = 5)
+plot(model5)
+```
+
+```{r}
+model5_results <- compute(model5, test.features)
+summary(model5_results)
+predicted_price5 <- model5_results$net.result
+cor(predicted_price5, test.class)
+```
+
+
+# D
+>Train the neural network model on train dataset, and evaluate the results by testing on the test dataset for hidden node of 1 using nnet package (plot the correlation between predict and original). (10 pts)
+
+This model is built with the nnet package and produces high RMSE. The correlation evaluation is not producing useful output, perhaps due to an error in partitioning the data.
+
+```{r include=FALSE}
+#library(nnet)
+nn.model <- train(Price~., data = ntrain, method = "nnet")
+```
+
+
+```{r}
+print(nn.model)
+```
+
+```{r}
+nn.prediction <- predict(nn.model, test.features, type = "raw")
+
+summary(nn.prediction)
+cor(nn.prediction, test.class)
+```
+
+
+# E
+>Train the neural network model on train dataset, and evaluate the results by testing on the test dataset for hidden node of 5 using nnet package (plot the correlation between predict and original). (10 pts)
+
+This `nnet` model with 5 nodes in the hidden layer does reduce the RMSE across the generated models, but the correlation evaluation is still not working.
+
+```{r include=FALSE}
+nn.model5 <- train(Price~., data = ntrain, method = "nnet", hidden = 5)
+```
+
+
+```{r}
+print(nn.model5)
+```
+
+```{r}
+nn.prediction5 <- predict(nn.model5, test.features, type = "raw")
+
+summary(nn.prediction5)
+cor(nn.prediction5, test.class)
+```

@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - Supervised learning
 	- Prediction of a given output using other variables in the data set
+	  - Technically plain old linear regression is machine learning if it's used for prediction
 	- Used for tasks involving the prediction of a given output (target, Y variable) using predictor variables (features, X variable) 
 	- Finds patterns that can be applied to an analytic process
 - Unsupervised learning

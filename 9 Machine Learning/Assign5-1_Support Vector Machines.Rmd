@@ -1,0 +1,221 @@
+---
+title: "Assign5-1_Support Vector Machines"
+author: "Jonathan De Los Santos"
+date: "2/24/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Preparation
+
+This example uses German credit customer data. To apply a Support Vector Machine model, we need to identify features that need to be converted to factors or normalized then perform the necessary transformations. 
+
+```{r}
+credit <- read.csv("Data Sets/5.0-GermanCredit.csv")
+str(credit)
+#head(credit, 20)
+```
+
+## Data Prep: Factor Transformations
+
+The following variables need to be converted to factors:
+
+```{r}
+factors <- credit[,c(1,2,4,5,7:13,15:21)]
+str(factors)
+```
+
+### Factor Transformation Function
+
+Let's create a function that we can apply to the variables above:
+
+```{r}
+to.Factor <- function (df, variables){
+  for (i in variables){
+    df[[i]] <- as.factor(df[[i]])
+  }
+  return(df)
+}
+```
+
+Now we will duplicate our original data set, pass our `factors` dataframe into the above function, and store it in the new dataframe
+
+```{r}
+# Duplicate data for transformation
+t.credit <- credit
+
+var.factors <- c("credit.rating",
+                 "account.balance",
+                 "previous.credit.payment.status",
+                 "credit.purpose",
+                 "savings",
+                 "employment.duration",
+                 "installment.rate",
+                 "marital.status",
+                 "guarantor",
+                 "residence.duration",
+                 "current.assets",
+                 "other.credits",
+                 "apartment.type",
+                 "bank.credits",
+                 "occupation",
+                 "dependents",
+                 "telephone",
+                 "foreign.worker"
+                 )
+
+t.credit <- to.Factor(t.credit, var.factors)
+
+#str(t.credit)
+```
+
+# A
+
+### Normalization 
+
+First we will test the three remaining integer variables for normalization, then apply a normalization function to skewed distributions. In this case, we see that all three variables are skewed and require normalization.
+
+```{r}
+#install.packages("lattice")
+library(lattice)
+histogram(credit$credit.duration.months, credit)
+histogram(credit$credit.amount, credit)
+histogram(credit$age, credit)
+```
+#### Normalization Function
+
+```{r}
+scale.variable <- function(df, variables){
+  for (i in variables){
+    df[[i]] <- scale(df[[i]], center = T, scale = T)
+  }
+  return(df)
+}
+
+# Apply normalization function to integers
+var.normalize <- c("credit.duration.months",
+                   "credit.amount",
+                   "age")
+
+t.credit <- scale.variable(t.credit, var.normalize)
+#str(t.credit)
+```
+
+# B
+
+## Confirm Transformations
+
+Let's double check that factors have been converted and the remaining integers have been normalized. Unfortunately in this case our curves have only shifted slightly.
+
+```{r}
+str(t.credit)
+
+histogram(t.credit$credit.duration.months, t.credit)
+histogram(t.credit$credit.amount, t.credit)
+histogram(t.credit$age, t.credit)
+```
+
+# C
+
+## Data Partition
+
+```{r}
+library(caret)
+cpartition <- createDataPartition(y = t.credit$credit.rating, p = 0.6, list = FALSE)
+credit.train <- t.credit[cpartition,]
+credit.test <- t.credit[-cpartition,]                        
+
+str(credit.train)
+```
+
+## Build `svm()` Model
+
+```{r}
+library(e1071)
+
+svm1 <- svm(formula = credit.rating~., data = credit.train)
+
+summary(svm1)
+```
+
+## e1071 SVM Evaluation
+
+The predicted model evaluation of `svm()` with the default costs and gamma is displayed below. It has a success rate of **70.5%,** and performed particularly poorly on frequency of false positives.
+
+```{r}
+pred <- predict (svm1, credit.test)
+table(pred, credit.test$credit.rating)
+
+
+agreement <- pred == credit.test$credit.rating
+table(agreement)
+prop.table(table(agreement))
+
+```
+
+# D
+
+## Linear Kernel
+
+### Build Linear Kernel
+
+```{r}
+library(kernlab)
+
+
+vSVM <- ksvm (credit.rating~., data = credit.train,
+              kernel = "vanilladot")
+
+# Print output
+vSVM
+```
+
+### Evaluate Linear Kernel
+
+The predicted model evaluation of `ksvm()` with a linear kernel (`vanilladot`)is displayed below. It has a success rate of **73.75%.** 
+
+
+```{r}
+myPredictions <- predict(vSVM, credit.test)
+head(myPredictions)
+table(myPredictions, credit.test$credit.rating)
+```
+
+```{r}
+agreement <- myPredictions == credit.test$credit.rating
+table(agreement)
+prop.table(table(agreement))
+```
+
+## Non-Linear Kernel
+
+### Build Gaussian Kernel
+
+```{r}
+# RBFdot SVM
+rbfSVM <- ksvm(credit.rating~., data = credit.train, kernel = "rbfdot")
+rbfSVM
+```
+
+### Evaluate Gaussian Kernel
+
+The predicted model evaluation of `ksvm()` with the Gaussian RBF kernel (`rbfdot`)is displayed below. It has a success rate of **73%** and also erred towards false positives.
+
+```{r}
+rbfPredictions <- predict(rbfSVM, credit.test)
+head(rbfPredictions)
+table(rbfPredictions, credit.test$credit.rating)
+```
+
+```{r}
+rbf_agreement <- rbfPredictions == credit.test$credit.rating
+table(rbf_agreement)
+prop.table(table(rbf_agreement))
+```
+
+# Conclusion
+
+The linear kernel SVM performed the best out of the models performed with a success rate of 73.75%, only slightly better than the non-linear kernel at 73%. Based on the higher success rate and lower computational demands, I would recommend usage of this model.
