@@ -241,8 +241,81 @@ writeLines(as.character(corpus[[2]]))
 
 # Latent Semantic Analysis (LSA) 
 
+## LSA Overview
 
+LSA is a technique for creating a vector representation of a document which allows us to compare documents for their simalirty by calculating the distance between the vectors. We can extract and infer relations of the expected contextual usage of particular words.
 
+>Latent Semantic Analysis is a theory and method for extarcting and repsenting the contextual-usage meaning of words by statistical computations applied to a large corpus of text (Landauer and Dumais, 1997) 
+
+LSA is based on linear algebra concepts, specifically reducing a sparse-term document co-occurrence matrix with singular value decomposition.  
+
+- Not a traditional natural-language processor. There is no training based on dictionaries, grammar, semantic networks, etc
+- Takes as input only raw text parsed into words defined as unique character streams and separated into meaningful text samples
+
+![LSA Procedure](Images/7.1 LSA Procedure.png)
+
+## LSA Model Construction
+
+### Create the Term Matrix
+
+First we build a term-document matrix that shows which terms appear in each document
+- Rows: words, also denoted $i$
+- Columns: documents, also denoted $j$
+- Cell: frequency that each word appears in a document
+
+![Term-Doc Matrix](Images/7.2 Term-Document Matrix.png)
+### Transform Matrix with Weights
+
+$weight_{i,j} = lw(tf_{i,j}) * gw(tf_{i,j})$
+
+- i: rows, words
+- j: columns, documents
+- lw: local weight
+  - Controls for word frequency
+  - Compresses the effects of frequency
+- gw: global weight
+  - Controls for the number of each docs each word appeared in
+  - Words that occur in few documents may be more informative about those documents than common words that appear in many 
+  
+#### TF-IDF Weighting
+
+This method compares two calculations: term-frequency (TF) and inverse document frequency (IDF)
+
+**Term-Frequency (TF)**:
+
+$tf_{i,j}$
+
+  - The importance of a term (frequency) $i$ within a document $j$
+  
+**Inverse Document Frequency (IDF)**:
+
+$\log\frac{N}{df_i}$
+
+- The importance of the term in the corpus
+  - N: total number of documents
+  - $df_i$: number of documents containing term $i$
+  - The amount of information provided by that particular word
+  - If the IDF value is low, the word is less useful as it appears in many documents
+  
+$weight_{i,j} = tf_{i,j} * \log\frac{N}{df_i}$
+
+## Single-Value Decomposition
+
+This method reduces the number of dimensions by "projecting" many (like 10s of thousands many) onto a smaller number.
+
+- It addresses a limitation of TF-IDF vectors that contain a large number of words: most of the columns will be filled with mostly zeroes.
+- E.g. doc1 contains "fruit", doc2 contains "vegetables", doc3 contains both
+  - TF-IDF may miss the that both words belong to the same group and thus the three documents are all related 
+  
+
+Our term Matrixis decomposed into the product of three other matrices:
+
+- Two with orthonormal columns
+- One with singular values on the diagonal 
+
+$\{A\} = \{U\}\{S\}\{V\}^T$
+
+![Single Value Decomposition](Images/7.3 Singular Value Decomposition.png)
 
 # Latent Semantic Analysis in R
 
@@ -259,3 +332,18 @@ writeLines(as.character(corpus[[2]]))
 
 
 
+
+
+
+## Topic Models
+
+This was part of LSA, may delete later not sure where it fits
+
+- Discover hidden topic-based patterns, LSA is one of these models 
+- We assume that documents contain topics which contain related words
+- Two approaches:
+  - Linear algebra
+    - Sparse term document
+    - Co-occurence matrix
+  - Probabilistic modeling 
+  
