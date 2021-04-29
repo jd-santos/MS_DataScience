@@ -1,0 +1,219 @@
+---
+title: "7 Text Analysis"
+author: "Jonathan De Los Santos"
+date: "3/8/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Prompt
+
+This assignment asks you to examine text mining for classification. Provide your answers to the questions in a Word document named Assign6_LastName.doc along with your source code that should be saved as Assign6_LastName, and click the title link to upload and subit them.
+
+The BC3 text file includes news related to Blockchain technologies, and the DS text file contains news regarding Ebola issues. The preprocessing for text files is critical. Notably, in this assignment, you are requested to conduct mining text files. Therefore, the preprocessing becomes much more critical to complete the below two tasks. Please carefully read the directions and answer the questions.
+Please treat yourself as a data scientist and come up with solutions. To provide the best answers to the below questions, you may need to iterate the procedures several times.
+
+# Data Preprocessing:
+
+## A. Import the necessary packages. 
+
+```{r message=FALSE, warning=FALSE}
+library(tm)
+library(stringr)
+library(Matrix)
+library(tidytext)
+library(topicmodels)
+```
+
+
+## B. Create the Corpus
+
+>Import the two text files, and create the corpus. You can create one corpus containing two text files or generate two different corpora (or corpuses) for each text file. If you create two corpora (or corpuses) for two text files, you need to combine two document-term matrices to answer the below questions. (10 pts)
+
+Beginning with our Ebola and Blockchain text files, we will read in both files as lines then execute the `VectorSource()` function to pass in these lines as a document to a corpus object. The first line of each file is displayed to demonstrate what a single document looks like.  
+
+```{r message=FALSE, warning=FALSE}
+textDS = file("DS.txt", open = "r")
+textDS.decomposition = readLines(textDS, encoding="UTF-8")
+textDS.decomposition[1]
+corpusDS <- Corpus(VectorSource(textDS.decomposition))
+#orpusDS
+
+textBC = file("BC3.txt", open = "r")
+textBC.decomposition = readLines(textBC, encoding="UTF-8")
+textBC.decomposition[1]
+corpusBC3 <- Corpus(VectorSource(textBC.decomposition))
+#corpusBC
+```
+
+
+## C. Clean the Data
+
+>Clean the data by applying the necessary steps. In the process of cleaning the data, please come up with reasonable “self-stopwords” for both text files. If you have two corpora (or corpuses), perform the cleaning process separately for each corpus, and combine the document-term matrix after cleaning the data. There is no single way to conduct this task; hence you’re strongly encouraged to provide detailed comments on your code. (35 pts)
+
+We have decided to create two different corpora for the DS and BC3 files and we will begin by cleaning each corpus individually. This includes standard cleaning steps:
+
+- Lowering characters
+- Removing numbers
+- Removing Punctuation
+- Creating custom stop words
+- Removing both these custom stop words and the common English words
+- Stripping whitespace
+- Stemming (pairing to the root word)
+
+### DS Data Cleaning
+
+Perform the above cleaning steps on the DS corpus object. Here I have selected the words "Ebola", "UN", "WHO", and "Virus" as terms that are common and likely not useful to our analysis. We write the first line again below after the whitespace stripping and stemming phases. The stemming appears to be a little aggressive, but hopefully it is consistent and does not affect the overall analysis.
+
+```{r}
+# Basic cleaning
+
+corpusDS <- tm_map(corpusDS, tolower)
+corpusDS <- tm_map(corpusDS, removeNumbers)
+corpusDS <- tm_map(corpusDS, removePunctuation)
+
+# Stopwords
+
+selfstopwordsDS <- c("Ebola", "UN", "WHO", "Virus")
+
+corpusDS<- tm_map(corpusDS, removeWords, c(stopwords("en"), selfstopwordsDS))
+
+# Strip Whitespace
+corpusDS <- tm_map(corpusDS, stripWhitespace)
+
+writeLines(as.character(corpusDS[[1]]))
+
+# Stemming
+corpusDS <- tm_map(corpusDS, stemDocument)
+
+writeLines(as.character(corpusDS[[1]]))
+```
+
+### BC3 Data Cleaning
+
+Perform the above cleaning steps on the BC3 corpus object. Here I have selected the words"crypto", "cryptocurrency", "blockchain", and "technology" as terms that are common and likely not useful to our analysis. However, I did leave the word "bitcoin" as it was not used as frequently as I expected and may reveal some interesting relationships. The first lines are written out again after the whitespace stripping and stemming.
+
+```{r}
+# Basic cleaning
+
+corpusBC3 <- tm_map(corpusBC3, tolower)
+corpusBC3 <- tm_map(corpusBC3, removeNumbers)
+corpusBC3 <- tm_map(corpusBC3, removePunctuation)
+
+# Stopwords
+
+selfstopwordsBC3 <- c("crypto", "cryptocurrency", "blockchain", "technology")
+
+corpusBC3<- tm_map(corpusBC3, removeWords, c(stopwords("en"), selfstopwordsBC3))
+
+# Strip Whitespace
+corpusBC3 <- tm_map(corpusBC3, stripWhitespace)
+
+writeLines(as.character(corpusBC3[[1]]))
+
+# Stemming
+corpusBC3 <- tm_map(corpusBC3, stemDocument)
+
+writeLines(as.character(corpusBC3[[1]]))
+```
+
+### Create Document-Term Matrices
+
+This task ends by creating the Document-Term Matrices for each corpus individually. Then we use the combine (`c()`) function from the `tm` package to create one master DTM. 
+
+```{r}
+# Create DS TDM
+
+corpusDS.dtm <- DocumentTermMatrix(corpusDS)
+#corpusDS.tdm
+
+# Create BC TDM
+
+corpusBC.dtm <- DocumentTermMatrix(corpusBC3)
+#corpusBC.tdm
+
+# Combine matrices
+
+corpus.dtm <- c(corpusDS.dtm, corpusBC.dtm)
+#corpus.dtm
+
+#write.csv(as.matrix(corpus.dtm, file = "CombinedDTM_Test"))
+```
+
+
+# LDA Analysis
+
+>Apply the Latent Dirichlet Allocation (LDA) technique to complete the following.
+
+## D. Find Optimal K
+
+>Find the optimal number of topics k for the text data. (15 pts)
+
+To find the ideal number of topics $k$, we need to calculate **perplexity**. This will be done from a list of candidate values to reduce computational needs. First create some possible values of $k$ and create an empty matrix for them to be filled in with their perplexity below.
+
+```{r}
+can_k <- c(2,3,4,5,10,20,40,60,100)
+
+results <- matrix(0, nrow = length(can_k), ncol = 2)
+colnames(results) <- c("k", "Perplexity")
+```
+
+Next we will loop through the corpus enough times to cover each candidate k (9), perform an LDA, calculate the perplexity, and store the resulting value in the matrix created above.
+
+Based on this analysis, we choose **4 as our k-value** based on lowest calculated perplexity.
+
+```{r}
+for (i in 1:length(can_k)){
+  k <- can_k[i]
+  SEED <- 1234
+  text.lda <- LDA(corpus.dtm, k=k, method = "Gibbs",
+                  control = list(seed = SEED, burnin = 1000,
+                                 thin = 100, iter = 1000))
+  results[i,] <- c(k, perplexity(text.lda, newdata = corpus.dtm))
+}
+
+results_df <- as.data.frame(results)
+results_df
+```
+
+
+## E. Display Term and Document Probabilities
+
+>Display the term-probability and document-probability by setting the number of topics at k for each industry. (20 pts)
+
+Using our $k$ of 10 from above, we can create objects to show the probability distributions for terms and documents. These are long, so uncomment the `write.csv` lines to export the results.
+
+```{r}
+SEED <- 1234
+text.lda <- LDA(corpus.dtm, k = 10, method = "Gibbs",
+                  control = list(seed = SEED, burnin = 1000,
+                                 thin = 100, iter = 1000))
+
+Terms <- posterior(text.lda)$terms
+Topics <- posterior(text.lda)$topics
+
+#write.csv(t(as.matrix(Terms)), file = "Terms_Output.csv")
+#write.csv(as.matrix(Topics), file = "Topics_Output.csv")
+```
+
+
+## F. Verify Results
+
+>Verify your outcomes from (a) and (b) above with the tidy() function. (20 pts) 
+
+Our term and document-term matrices are created below by using matrix types of "beta" and "gamma" respectively.
+
+Looking at line 3 of the term-matrix, we see that there is a 0.35% probability that the term "call" is generated from topic 3.  
+
+Line 1 of the document-term matrix implies that there is a 9% probability that topic 1 will be found in document 1. 
+
+```{r}
+tidy_topics <- tidy(text.lda, matrix = "beta")
+head(tidy_topics, 10)
+
+tidy_docs <- tidy(text.lda, matrix = "gamma")
+head(tidy_docs, 10)
+```
+

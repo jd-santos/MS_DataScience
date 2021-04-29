@@ -1,0 +1,124 @@
+---
+title: "Application of Monte Carlo Simulation in Risk Analysis"
+author: "Alireza Sheikh-Zadeh, Ph.D."
+output:
+  word_document: default
+  html_document: default
+---
+
+
+## Risk Analysis
+
+Monte Carlo simulation can be used for risk analysis. 
+
+**Risk** is the likelihood of an undesirable outcome. It can be assessed by evaluating the probability that the outcome will occur along with the severity of the outcome.
+
+**Risk analysis** seeks to examine the impact of uncertain inputs on various outputs.
+
+
+**Example**: Expected Profit Risk Analysis
+
+A firm is considering producing and selling a new product under a pure/perfect
+competition market and the firm wants to know the probability distribution for the profit associated with this product.
+
+The total profit is given by the equation:
+
+$$TP = (Q*P) - (Q*v + F)$$
+
+Where: 
+
++ $Q$ is the quantity sold
++ $v$ is the variable cost per unit
++ $P$ is the sales price per unit
++ $F$ is the fixed cost for producing the product
+
+For this product, Q, P, and V are random variables with the following
+distributions:
+
++ $Q$: uniform (8000, 12000)
++ $P$: normal(10, 3) truncated on the "left" at 1.0
++ $v$: normal(7, 2) truncated on the "left" at 3.5 and on the "right" at 10
+
+F is estimated to be 5000.
+
+Want to use Monte Carlo simulation to characterize the distribution of total profit for the proposed product. 
+
+Is it a cost benefit business?
+
+
+
+```{r}
+library(truncnorm)
+
+set.seed(123)
+
+num_sim = 1000  #generate your data for quantity sold (larger simulation size is better)
+
+Q <- runif(num_sim, 8000,12000)
+
+P <- rtruncnorm(num_sim, a = 1, mean=10, sd=3)
+
+v <- rtruncnorm(num_sim, a = 3.5, b = 10, mean=7, sd=2)
+
+F <- 5000
+
+TP <- Q*P - (Q*v +F)
+
+mean(TP)
+
+hist(TP)
+
+# Risk of zero or negative profit:  
+mean(TP <= 0)
+
+```
+
+In a long-run, the expected profit for this business is about $26000 but the risk of not gaining or loosing money is about \%22. Which is high. 
+
+
+**Note:** For many decision models, empirical data may not be available. In this situation, we use Uniform or triangular distributions. The parameters of these distributions can be determined based on the experts opinion.
+
+**Example**: Expected Profit Risk Analysis
+
+What if we do not know the exact value for the fixed cost? 
+
+We ask our experts about the minimum, maximum, and the most likely possible option for the fixed cost, then we form a Triangular distribution for the fixed cost value in our simulation. 
+
+Let's assume the fixed cost has a triangular distribution with a minimum of \$4500, maximum of \$6000, and the most likely value of \$5000.
+
+Other paramers are similar to the previous example. 
+
+```{r}
+library(truncnorm)
+
+set.seed(123)
+
+num_sim = 100000  #generate your data for quantity sold (larger simulation size is better)
+
+Q <- runif(num_sim, 8000,12000)
+
+P <- rtruncnorm(num_sim, a = 1, mean=10, sd=3)
+
+v <- rtruncnorm(num_sim, a = 3.5, b = 10, mean=7, sd=2)
+
+library(triangle)
+
+F <- rtriangle(num_sim, a = 4500, b = 6000, c = 5000)
+
+TP <- Q*P - (Q*v +F)
+
+# Expected profit in a long-run:
+mean(TP)
+
+hist(TP)
+
+# Risk of zero or negative profit:  
+mean(TP <= 0)
+
+```
+
+
+
+
+
+

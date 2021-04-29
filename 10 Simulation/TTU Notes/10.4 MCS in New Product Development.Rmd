@@ -1,0 +1,269 @@
+---
+title: "MCS in New Product Development, Moore Pharmaceuticals Case Study"
+author: "Alireza Sheikh-Zadeh, Ph.D."
+output:
+  word_document: default
+  html_document: default
+---
+
+**Example** New-Product Development- Without Randomness
+
+Moore Pharmaceuticals needs to decide whether to conduct clinical trials and seek FDA approval for a newly developed drug. First we assume everything is deterministic. 
+
+Given data:
+
+* R&D cost = $700 million
+* Clinical trials cost = $150 million
+
+project cost = R&D cost + Clinical trials cost
+
+* Market size = 2 million people
+* Market size growth = 3% per year
+
+Market Size in Year t = (current market size) $\times$ (1 + Market size growth)$^{t-1}$  
+
+* Market share = 8%
+* Market share growth = 20% per year
+
+Market share in Year t = (Market share) $\times$ (1 + Market share growth)$^{t-1}$ 
+
+Sale in year t = (Market Size in Year t) $\times$ (Market share in Year t)
+
+* Monthly revenue/prescription = \$130
+
+Total Revenue at year t = 12 $\times$ (Sale in year t) $\times$ (Monthly revenue)
+
+* Monthly variable cost/prescription = \$40
+
+Total Cost at year t  = 12 $\times$ (Sale in year t) $\times$ (Monthly variable cost)
+
+Profit at year t = Total Revenue at year t - Profit at year t
+
+Then There is a formula in accounting for measuring the net present value (NPV) of future earnings based on a given discount rate.
+
+* Discount rate = 9%
+
+$$NPV = \sum_{t=0}^n \frac{R_t}{(1+i)^t}$$
+
+where:
+
+$R_t$ = net profit during a single period t
+
+i= discount rate or return that could be earned in alternative investments
+
+t = number of time periods
+
+**The company needs to know how long it will take to recover its fixed expenses and the net present value over the first 5 years.**
+
+```{r}
+
+# Data
+marketSize = 2e6
+marketSizeGrowth = 0.03
+marketShare = 0.08
+marketShareGrowth = 0.2
+unitRevenue = 130
+unitCost = 40
+discountRate = 0.09
+
+
+# Project Cost
+rdCost = 700e6
+clinicalCost = 150e6
+
+projectCost = rdCost + clinicalCost
+projectCost
+
+#Model
+AnnualProfit = function(year, marketSize, marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost){
+  marketSize = marketSize*(1+marketSizeGrowth)^(year-1)
+  marketShare = marketShare*(1+marketShareGrowth)^(year-1)
+  sale = marketSize*marketShare
+  annualRevenue = 12*sale*unitRevenue
+  annualCost = 12*sale*unitCost
+  return(annualRevenue-annualCost)
+}
+
+# Annual profit the first 5 years
+year = 5
+profit <- AnnualProfit(1:year, marketSize, marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+
+cumsum(profit)
+# how long it will take to recover its fixed expenses
+cumsum(profit)-projectCost
+# Company recover its fixed expenses by year 4. 
+
+# net-present profit model
+netPresentProfit <- function(discountRate, profit, year){
+  netProfit <- 0
+  for(t in 1:year) {
+    netProfit <- netProfit + profit[t]/(1+discountRate)^t
+  }
+  return(netProfit)
+}
+
+
+# Net present profit in year 5
+npvProfit <- netPresentProfit(discountRate, profit, year)
+
+# Net present value in year 5
+npv = npvProfit - projectCost
+npv
+# The net present value over the first 5 years is $185,401,860
+
+```
+
+
+**Example** New-Product Development- With Randomness - Simulation Application
+
+In practice, many of parametrs are stochastic.
+
+* Market size: normal with mean of 2,000,000 units and standard deviation of 400,000 units
+
+* Annual market growth factor: triangular with minimum = 2%, maximum = 6%, and most likely = 3%
+
+* Annual market share growth rate: triangular with minimum = 15%, maximum = 25%, and most likely = 20%
+
+* R&D costs: uniform between $600,000,000 and $800,000,000
+
+* Clinical trial costs: normal with mean of $150,000,000 and standard deviation $10,000,000
+
+
+1. What is the risk that the net present value over the 5 years will not be positive?
+
+2. What are the chances that the product will show a positive cumulative net profit in the 3 year?
+
+3. Create a boxplot for the cumulative net profit over the 10 years.
+
+**Answer to part 1:**
+
+```{r}
+library(triangle)
+set.seed(123)
+
+# Non-stochastic parameters
+marketShare = 0.08
+unitRevenue = 130
+unitCost = 40
+discountRate = 0.09
+
+
+# Other parametrs are stochastic, and we need to simulate them.
+num_sim = 1000
+# Data
+year = 5
+# Here, in each itteration, we only produce one random variate for each parameter. 
+# We repeat the process num_sim times
+# Then we record each calculated npv in to a vector called simulated_npv
+simulated_npv <- c()
+for(i in 1:num_sim){
+  marketSize = rnorm(1, 2e6, 4e5)
+  marketSizeGrowth = rtriangle(1, a = 0.02, b = 0.06, c = 0.03)
+  marketShareGrowth = rtriangle(1, a = 0.15, b = 0.25, c = 0.20)
+
+  # Project Cost
+  rdCost = runif(1, 600e6, 800e6)
+  
+  clinicalCost = rnorm(1, 150e6, 10e6)
+  
+  projectCost = rdCost + clinicalCost
+  
+  profit <- AnnualProfit(1:year, marketSize, marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+  
+  npvProfit <- netPresentProfit(discountRate, profit, year)
+  
+  npv = npvProfit-projectCost
+  
+  simulated_npv <- c(simulated_npv, npv)
+}
+
+
+# Q1: Risk:
+mean(simulated_npv<=0)
+
+hist(simulated_npv)
+```
+
+
+
+**Answer to part 2:**
+
+```{r}
+
+set.seed(123)
+num_sim = 1000
+
+# Data
+year = 3
+
+simulated_cumNetProfit <- c()
+
+for(i in 1:num_sim){
+  marketSize = rnorm(1, 2e6, 4e5)
+  marketSizeGrowth = rtriangle(1, a = 0.02, b = 0.06, c = 0.03)
+  marketShareGrowth = rtriangle(1, a = 0.15, b = 0.25, c = 0.20)
+
+  # Project Cost
+  rdCost = runif(1, 600e6, 800e6)
+  
+  clinicalCost = rnorm(1, 150e6, 10e6)
+  
+  projectCost = rdCost + clinicalCost
+  
+  profit <- AnnualProfit(1:year, marketSize, marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+  
+  cum_profit <- cumsum(profit)
+  
+  # This time, we do not need to find the net present profit
+  
+  simulated_cumNetProfit <- c(simulated_cumNetProfit, cum_profit[year]-projectCost)
+}
+
+mean(simulated_cumNetProfit>0)
+
+hist(simulated_cumNetProfit)
+```
+
+
+**Answer to part 3:**
+
+```{r}
+set.seed(123)
+num_sim = 1000
+
+# Data
+year = 10
+
+simulated_cumNetProfit = matrix(nrow = num_sim, ncol = year)
+
+for(i in 1:num_sim){
+  marketSize = rnorm(1, 2e6, 4e5)
+  marketSizeGrowth = rtriangle(1, a = 0.02, b = 0.06, c = 0.03)
+  marketShareGrowth = rtriangle(1, a = 0.15, b = 0.25, c = 0.20)
+
+  # Project Cost
+  rdCost = runif(1, 600e6, 800e6)
+  
+  clinicalCost = rnorm(1, 150e6, 10e6)
+  
+  projectCost = rdCost + clinicalCost
+  
+  profit <- AnnualProfit(1:year, marketSize, marketSizeGrowth, marketShare, marketShareGrowth, unitRevenue, unitCost)
+  
+  cum_profit <- cumsum(profit)
+  
+  # This time, we do not need to find the net present profit
+  
+  simulated_cumNetProfit[i,] <- cum_profit-projectCost
+}
+
+boxplot(simulated_cumNetProfit, main = "Cumulative Net Profit Boxplots", xlab = "Year")
+abline(h = 0, col = "red")
+
+```
+
+
+
+
+
+

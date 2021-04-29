@@ -127,8 +127,8 @@ Corpus is similar to a data set in a general ML task
 
 ```{r}
 filepath <- ("Data Sets/7.0-txt_examples/txt")
-setwd(filepath)
-dir(filepath)
+#setwd(filepath)
+#dir(filepath)
 
 corpus <- Corpus(DirSource(filepath))
 corpus
@@ -209,7 +209,8 @@ We'll start reviewing the printouts from now on with `writeLines()`
 - Cast it as a character too for some reason
 
 ```{r}
-stopwords("en")
+# Review normal stopwords list
+#stopwords("en")
 
 selfstopwords <- c("app", "hbo", "now")
 
@@ -217,7 +218,7 @@ corpus<- tm_map(corpus, removeWords, c(stopwords("en"), selfstopwords))
 
 # Review output
 
-writeLines(as.character(corpus[[2]]))
+#writeLines(as.character(corpus[[2]]))
 ```
 
 ### Strip Whitespace with `FUN = stripWhitespace`
@@ -299,51 +300,465 @@ $\log\frac{N}{df_i}$
   
 $weight_{i,j} = tf_{i,j} * \log\frac{N}{df_i}$
 
-## Single-Value Decomposition
+## Single-Value Decomposition (SVD)
 
-This method reduces the number of dimensions by "projecting" many (like 10s of thousands many) onto a smaller number.
+This method reduces our sparse-term matrix into a more dense matrix where each of the columns represents a topic ($k$) rather than a document. Topics are conceptual groupings of words that co-occur with other terms in a similar document. 
 
-- It addresses a limitation of TF-IDF vectors that contain a large number of words: most of the columns will be filled with mostly zeroes.
+- It addresses a limitation of TF-IDF vectors that contain a large number of words: most of the columns will be filled with mostly zeroes "sparse-term"
 - E.g. doc1 contains "fruit", doc2 contains "vegetables", doc3 contains both
   - TF-IDF may miss the that both words belong to the same group and thus the three documents are all related 
   
 
-Our term Matrixis decomposed into the product of three other matrices:
+Our term Matrix $A$ is decomposed into the product of three other matrices:
 
-- Two with orthonormal columns
-- One with singular values on the diagonal 
+- $U$ relates terms (m) to a concept (k)
+  - $m*k$
+- $S$ is a diagonal matrix of single values
+  - $k*k$
+- $V^T$ relates concepts (k) to documents (n)
+  - $k*n$
 
 $\{A\} = \{U\}\{S\}\{V\}^T$
+
+In the matrix calculations:
+
+- m: # of terms
+- n: # of documents
+- k: # of topics
 
 ![Single Value Decomposition](Images/7.3 Singular Value Decomposition.png)
 
 # Latent Semantic Analysis in R
 
+Building on the pre-processing examples above, we can look at performing LSA in R.
 
+## Create `workcloud`
+
+A fun visualize the frequency of our data is to use a wordcloud.
+
+```
+wordcloud(words,freq,scale=c(4,.5),min.freq=3,max.words=Inf,
+	random.order=TRUE, random.color=FALSE, rot.per=.1,
+	colors="black",ordered.colors=FALSE,use.r.layout=FALSE,
+	fixed.asp=TRUE, ...)
+```
+
+We pass in as arguments:
+
+- `corpus`
+  - the data
+- `min.freq = 10`
+  - words below this frequency will not be plotted
+- `random.order = FALSE`
+  - The cloud will be arranged with high-frequency words placed close to the center
+  - TRUE would have words arranged randomly, the default
+
+```{r}
+library(wordcloud)
+
+wordcloud(corpus, min.freq = 10, random.order = FALSE)
+
+```
+
+This time, we leave default random.order of TRUE and add a color palette: 
+- `colors~brewer.pal(8, "Dark2"))`
+
+```{r}
+wordcloud(corpus, min.freq = 10, colors = brewer.pal(8,"Dark2"))
+```
+
+
+## Create Term-Document Matrix (TDM)
+
+The `tm` package provides tools to tokenize the text file corpus.
+
+### `TermDocumentMatrix()` Function
+
+This will take our corpus and convert it to a term-document matrix with:
+- rows as words
+- columns as documents
+
+There is also a function for `DocumentTermMatrix()` which creates the matrix with words and documents flipped in rows and columns
+
+- Generally it is easier to display many rows than many columns, so choose the method most suitable for your data
+
+```{r}
+corpus.tdm <- TermDocumentMatrix(corpus)
+write.csv(as.matrix(corpus.tdm), file = "Data Sets/7.1_tdm1.csv")
+```
+
+### `findFreqTerms()` 
+
+Used to find frequent terms in our term-document matrix and returns the character vectors containing the words that appear at least the specified number of times (in this case 5)
+
+```{r}
+corpus_freq_words <- findFreqTerms(corpus.tdm, 5)
+
+# Examine the words
+#corpus_freq_words
+```
+
+### Create Weighted TDM
+
+Next we create a weighted term-document matrix that emphasizes the importance of a term within its document (**local weight**) and the overall corpus (**global weight**). 
+
+#### `weightTfIdf()`
+
+Weights a term-document matrix by term frequency - inverse document frequency. Requires document to be in term frequency format. Optional normalize argument to normalize the term frequencies.
+
+
+Applies the log term we learned above: $\log\frac{N}{df_i}$
+
+
+```{r}
+corpus_tdm_weighted <- weightTfIdf(corpus.tdm)
+```
+
+### Specify the Dimensions
+
+The number of topics
+
+```{r}
+userdimension = 10
+```
+
+
+## Do the Analysis
+
+### `LSA()` Function
+
+Creates an estimated matrix based on LSA. Input our weighted document-term matrix with the expected number of topics. 
+
+- The summary shows us that the resulting object contains tk, dk, and sk matrices
+
+```{r}
+#install.packages("lsa")
+library(lsa)
+corpus_tdm_weighted_LSA <- lsa(corpus_tdm_weighted, dims = userdimension)
+
+# Summarize the resulting matrix
+summary(corpus_tdm_weighted_LSA)
+```
+
+### Term Matrix
+
+The term matrix is represented in our single-value decomposition as $U$:
+
+- $U$ relates terms (m) to a topic (k)
+  - $m*k$
+
+```{r}
+tk <- as.matrix(corpus_tdm_weighted_LSA$tk)
+```
+
+
+### Diagonal Matrix
+
+The diagonal matrix of single values is represented in our single-value decomposition as $S$:
+
+- $S$ is a single-value diagonal matrix
+  - $k*k$
+
+Use `Diagonal()` to create a diagonal matrix with the number of dimensions and the LSA `sk` object
+
+```{r}
+sk <- Diagonal(n = userdimension, as.matrix(corpus_tdm_weighted_LSA$sk))
+```
+
+### Document Matrix
+
+- $V^T$ relates concepts (k) to documents (n)
+  - $k*n$
+
+```{r}
+dk <- as.matrix(corpus_tdm_weighted_LSA$dk)
+```
+
+## Term Loading 
+
+Can be found by multiplying the Term Matrix $U$ by the diagonal matrix $S$
+
+- In this case tk and sk
+- "What are the terms loaded into the topics?"
+- Use `write.csv()` to save the resulting term loading into a csv for later use
+
+```{r}
+termloading <- tk %*% sk
+
+# Write the term loading
+
+write.csv(as.matrix(termloading), file = "Data Sets/7.2_term_loading.csv")
+```
+
+## Document Loading
+
+Can be found by multiplying the document matrix $V^T$ by the diagonal matrix $S$
+
+- dk * sk
+- Gives us the relationship between topics and documents
+- Again we write this to a file
+
+```{r}
+docloading <- dk %*% sk
+
+# write
+
+write.csv(as.matrix(docloading), file = "Data Sets/7.3_doc_loading.csv")
+```
 
 
 # Latent Dirichlet Allocation (LDA)
 
+## LDA Overview
+
+LDA is a topic model that generates topics based on word frequency from a set of documents. It's especially useful for finding reasonably accurate mixtures of topics within a given document.
+
+- Example: Given a data set with all news articles of France from 2018, generate some highlights (topics) 
+- Proposed by Blei et. al. in 2003
+
+### Assumptions
+
+- Documents with similar topics will use similar groupings of words
+- Documents are probability distributions over latent topics
+- Topics are probability distributions over words 
+  - This model relies on these distributions instead of raw frequencies
+ 
+### Plate Notation
+ 
+ ![Plate Notation](Images/8.1 Plate Notation.png)
+
+- Two main rectangles define whether the parameter is applied to:
+  - M: The total number of documents in the corpus
+    - Θ: Topic distribution for documents
+      - $θ_{m}$ topic distribution for document $m$
+   distribution among them
+  - N: The total number of words in the document
+    - z: Denotes each topic assigned to each word
+      - $z_{mn}$ is the topic for the $n$th word in document $m$
+    - w: Denotes word
+      - $w_{mn}$ the $n$th word in document $m$
+- **Dirichlet Priors**
+  - α: Dirichlet parameter on the per-document topic distribution
+    - A high α indicates that each document is likely to contain a mixture of most of the topics and not just one or two in particular
+    - A low α indicates that a document distribution contains just a few of the topics
+  - β: Parameter on the per-topic word distribution
+    - High β indicates that each topic is likely to contain a mixture of most of the words
+    - Low β vice-versa
 
 
 
+![Youtube explainer](https://www.youtube.com/watch?v=Cpt97BpI-t4) from Bhavesh Bhatt.
+
+![Another algorithm explainer](https://www.youtube.com/watch?v=DWJYZq_fQ2A) from Scott Sullivan
+
+## LDA Process
+
+- LDA starts by randomly assigning topics to every word in the documents
+- Calculates a matrix with the count of documents in every topic
+
+### Reassignment
+
+Reassigns the topic for a given word.
+
+- First removes the current topic assignment and decrements that topic by 1
+- Choose the reassigning topic based on two probability calculations:
+  - How much a document "likes" each topic based on other assignments in the *same* document
+  - How much each topic "likes" a specific word based on assignments in *other* documents
+- Multiply these probabilities
+  - (how much doc likes topic) * (how much topic likes a word)
+- Reassign the topic for the word based on the highest resulting probability 
+- Repeat this process for every word in the corpus for a single pass
+  - Most LDA processes will do multiple passes to keep iterating on the "best" topic reassignment
+  
 # Latent Dirichlet Allocation in R
 
+```{r message=FALSE, warning=FALSE}
+#install.packages("topicmodels")
+library(topicmodels)
+data("AssociatedPress")
+AssociatedPress
+```
+
+## LDA R Overview
+
+### Create Topic Models
+
+This example uses Associated Press data containing a document-term matrix of 10,473 terms in 2,246 documents.
+
+#### `LDA()` Function
+
+Estimates an LDA model using for example the VEM algorithm or Gibbs Sampling. From the `topicmodels` package.
+
+- LDA returns several objects with details of the model such as
+  - how words are associated with the topic
+  - how topics are associated with the document
+
+Arguments: Data and k (# of topics)
+
+```{r}
+set.seed(1234)
+apLda <- LDA(AssociatedPress, k=2)
+
+apLda
+```
+
+### Data Format with `tidytext`
+
+`tidytext` provides functions that allow the conversion of text to and from tidy format and switch seamlessly between tidy tools and existing data mining packages.
+
+We'll do some formatting to figure out **word topic probabilities**
+
+### Term (Beta) Matrix 
+
+Estimates the per-topic probability of the term
+
+`tidy(x, matrix = "beta)` 
+
+Setting matrix to beta turns our model into a format of *one topic per term per row*. The last column shows the probability of the term being generated from that particular topic.
+
+```{r message=FALSE, warning=FALSE}
+#install.packages("tidytext")
+library(tidytext)
+
+ap_topics <- tidy(apLda, matrix = "beta")
+ap_topics
+```
+#### Top 5 Terms in each Topic
+
+##### `dplyr` package
+
+Allows us to use pipe operator to arrange a top_terms matrix. The results show us the top 5 terms in each topic.
+
+```{r message=FALSE, warning=FALSE}
+#install.packages("dplyr")
+suppressWarnings(library(dplyr))
+
+top_terms <- ap_topics %>%
+    group_by (topic) %>%
+    top_n (5, beta) %>%
+    arrange (topic, -beta)
+
+top_terms
+```
+### Document-Term (Gamma) Matrix
+
+Estimate term per-document probability.
+
+`tidy(x, matrix = "gamma")`
+
+The first line can be interpreted as "46% of terms from document 1 are generated from topic 1."
+
+```{r}
+#library(tidytext)
+ap_document <- tidy(apLda, matrix = "gamma")
+ap_document
+```
+
+### Filter for Documents
+
+Use the `filter()` function on the document-term matrix (`AssociatedPress`) to pick a specific document. Remember that in this matrix each row is a document, so to grab document 6 we just filter for row 6 in the matrix.
+
+Use `arrange(desc(count)` to arrange our results for document six by the count of each term descending.
+
+```{r}
+tidy(AssociatedPress) %>%
+  filter(document == 6) %>%
+  arrange(desc(count))
+```
+## LDA with Optimal K
+
+This example builds on the HBO data above, be sure to run that code first.
+
+### Find Optimal Value of k
+
+We find the ideal value for k by calculating **Perplexity**
+
+- This is a resource intensive calculation so we will cheat and pick some candidate values for k `can_k`
+- Begin by setting up an empty matrix that we can fill out by looping through each potential k value below
+
+```{r}
+can_k <- c(2,3,4,5,10,20,40,60,100)
+
+results <- matrix(0, nrow = length(can_k), ncol = 2)
+colnames(results) <- c("k", "Perplexity")
+```
+
+#### Create Document-Term Matrix
+
+```{r}
+corpus.dtm <- DocumentTermMatrix(corpus)
+```
+
+
+#### Run LDA with Multiple k-values
+
+We will loop through the model the number of times needed to test every candidate `length(can_k)` and fill in our matrix above.
+
+- Input corpus DTM from above
+- `method = "Gibbs"`
+  - Uses Markov-Chain Monte Carlo algorithm
+- `burnin = 1000`
+  - The model will run this many times before starting to record results
+- `thin = 100` and `iterator= 1000`
+  - Model will run another 1000 iterations and record the result every 100th (thin) run
+
+```{r}
+for (j in 1:length(can_k)){
+  k <- can_k[j]
+  SEED <- 2019
+  text.lda <- LDA(corpus.dtm, k=k, method = "Gibbs",
+                  control = list(seed = SEED, burnin = 1000,
+                                 thin = 100, iter = 1000))
+  results[j,] <- c(k, perplexity(text.lda, newdata = corpus.dtm))
+}
+
+results_df <- as.data.frame(results)
+results_df
+```
+
+The resulting filled matrix shows that the lowest Perplexity is achieved at k = 10. Let's use that for our model.
+
+### Run Model with Optimal k
+
+```{r}
+k <- 10
+SEED <- 2019
+text.lda <- LDA(corpus.dtm, k = k, method = "Gibbs",
+                  control = list(seed = SEED, burnin = 1000,
+                                 thin = 100, iter = 1000))
+
+```
+
+### LDA Model Output
+
+Save the probability distributions of terms and topics.
+
+- Use `t()` to transpose the Terms matrix
+
+```{r}
+Terms <- posterior(text.lda)$terms
+Topics <- posterior(text.lda)$topics
+
+write.csv(t(as.matrix(Terms)), file = "Data Sets/7.4_TermsLDA.csv")
+
+write.csv(as.matrix(Topics), file = "Data Sets/7.5_TopicsLDA.csv")
+```
+
+#### Write the Top Terms for each Topic
+
+```{r}
+top.terms <- terms(text.lda, 10)
+write.csv(as.matrix(top.terms), file = "Data Sets/7.6_TopTermsLDA.csv")
+```
 
 
 
 
 
 
-## Topic Models
 
-This was part of LSA, may delete later not sure where it fits
 
-- Discover hidden topic-based patterns, LSA is one of these models 
-- We assume that documents contain topics which contain related words
-- Two approaches:
-  - Linear algebra
-    - Sparse term document
-    - Co-occurence matrix
-  - Probabilistic modeling 
-  
+
+
+
+

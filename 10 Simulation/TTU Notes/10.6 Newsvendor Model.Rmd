@@ -1,0 +1,167 @@
+---
+title: "Application of MSC in Inventory Management"
+author: "Alireza Sheikh-Zadeh, Ph.D."
+date: "June 12, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+# Newsvendor Model: Single-Period Purchase Decisions
+
+A street newsvendor sells daily newspapers and must make a decision about how many to purchase. Purchasing too few items results in lost opportunity to increase profits, but purchasing too many items results in a loss since the excess must be discarded (or sold at a lower price) at the end of the day. 
+
+We first develop a general model for this problem and then illustrate it with an example. Let us assume that each item costs \$C to purchase and is sold for \$R. At the end of the period, any unsold items can be disposed at \$S each (the salvage value). Clearly, it makes sense to assume that $R>C>S$. 
+
+Let D be the number of units demanded during the period and Q be the quantity purchased. Note that D is an uncontrollable input, whereas Q is a decision variable. If demand is known, then the optimal decision is obvious: Choose Q = D. However, if D is not known in advance, we run the risk of overpurchasing or underpurchasing. If Q < D, then we lose the opportunity of realizing additional profit (since we assume that R>C), and if Q>D, we incur a loss (because C>S).
+
+Notice that we cannot sell more than the minimum of the actual demand and the amount purchased. Thus, the quantity sold at the regular price is the smaller of D and Q. Also, the surplus quantity is the larger of 0 and $Q - D$. The net profit is calculated as:
+
+net profit = $R\times min(Q, D) + S \times max(0, Q-D) - C \times Q$
+
+In reality, the demand $D$ is uncertain. 
+
+**Example**: A Single-Period Purchase Decision Model
+
+Suppose that a small candy store makes Valentine's Day gift boxes that cost \$12.00 and sell for \$18.00. In
+the past, at least 40 boxes have been sold by Valentine's Day, but the actual amount is uncertain, and in the past,
+the owner has often run short or made too many. After the holiday, any unsold boxes are discounted 50% and
+are eventually sold.
+
+The net profit can be calculated for any values of Q and D:
+
+net profit = \$18.00 x min{$D$,$Q$} + \$9.00 x max{0, $Q-D$} - \$12.00 x $Q$
+
+```{r}
+# Data
+R = 18  # Selling price
+C = 12  # Cost
+S = 9   # Discount Price
+
+# Model
+netProfitFun = function(D, Q, R, S, C){
+  R*min(D,Q) + S * max(0, Q-D) - C*Q
+}
+
+# If D is given, the best solution Q = D.
+```
+
+Suppose that the store owner kept records for the past 20 years on the number of boxes sold. Historical candy sales average 44.05. 
+
+```{r}
+histDemand = read.csv("http://tiny.cc/histDemand")
+
+histDemand$Sales
+
+mean(histDemand$Sales)
+
+```
+
+## The Flaw of Averages
+
+The evaluation of a model output using the average value of the input is not necessarily equal to the average value of the outputs when evaluated with each of the input values.
+
+Using 44 for demand, the model predicts a profit of \$264.00.
+
+```{r}
+# Based on average historical data (we round it down to make integer)
+D = 44 
+
+# Rationally we make 44 boxes
+Q = 44
+
+netProfitFun(D, Q, R, S, C)
+```
+
+However, if we construct a data table to evaluate the profit for each of the historical values, the average profit is only $255.00.
+
+```{r}
+# Assuming we make 44 boxes
+Q = 44
+
+D = histDemand$Sales
+
+profitVector <- c()
+
+for (i in 1:length(D)) {
+  profitVector[i] = netProfitFun(D[i], Q, R, S, C)
+}
+
+# Or you can use sapply 
+# profitVector = sapply(D, netProfitFun, Q, R, S, C)
+
+
+mean(profitVector)
+# so different than 264
+```
+
+The evaluation of a model output using the average value of the input (profit =264) is not necessarily equal to the average value of the outputs when evaluated with each of the input values (profit =255). (Why? In the newsvendor example, the quantity sold is limited to the smaller of the demand and purchase quantity (min(D, Q)), so even when demand exceeds the purchase quantity, the profit is limited.)
+
+
+## Simulating the Newsvendor Model Using Resampling (from historical data)
+
+Generate candy sales by resampling from the 20 historical values.
+
+```{r}
+set.seed(123)
+
+num_sim = 10000
+
+sim_D <- sample(D, num_sim, replace = TRUE) # resampling
+
+profit_sim <- c()
+
+for (i in 1:num_sim) {
+  profit_sim[i] = netProfitFun(sim_D[i], Q, R, S, C)
+}
+
+mean(profit_sim)
+# This is the expected profit given the historical data.
+```
+
+## Sampling from empirical data has some drawbacks. 
+
+* The empirical data may not adequately represent the true underlying population because of sampling error. 
+
+* Using an empirical distribution precludes sampling values outside the range of the actual data. 
+It is usually advisable to fit a distribution and use it for the uncertain variable.
+
+
+## In Newsvendor Model, suggest the best purchase quantity Q using Monte Carlo simulation.
+
+```{r}
+# Recall Data Again
+R = 18  # Selling price
+C = 12  # Cost
+S = 9   # Discount Price
+
+# Q = 44 is suggested. Is it the best? If not, what Q you suggest?
+
+num_sim = 1000
+
+Qrange = 40:50
+
+sim_D <- sample(D, num_sim, replace = TRUE) # resampling
+
+profitMatrix <- matrix(nrow = num_sim, ncol = length(Qrange))
+
+j = 0
+for (Q in Qrange) {
+  j = j+1
+  for (i in 1:num_sim) {
+    profitMatrix[i, j] = netProfitFun(sim_D[i], Q, R, S, C)  
+  }
+}
+
+# Expected profit for each Q
+colMeans(profitMatrix)
+
+plot(Qrange, colMeans(profitMatrix), ylab = "Expected Profit", xlab = "Q")
+
+# Q* = 45
+```
+
+
+
+
+

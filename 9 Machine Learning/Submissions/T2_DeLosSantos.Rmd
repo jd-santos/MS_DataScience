@@ -1,0 +1,373 @@
+---
+title: "T2_DeLosSantos"
+author: "Jonathan De Los Santos"
+date: "3/9/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1
+
+## Prompt
+
+>Consider the below simple bank data on consumers’ use of credit cared credit facilities. Assume that there is a small network that has three types of layers; input, hidden, and output. The network has a hidden layer with two nodes. Illustrate one pass of the network for the first observation through a simple neural network. In creating a network, the hidden layer consists of two nodes, each receiving input from the input nodes. To compute the output of a hidden layer nodes, you need to initiate the weights for the input nodes, and ones for the hidden nodes. The initialized values should be small, usually random, typically in the range 0.00  0.05.
+
+
+
+# Question 2
+
+## Prompt
+
+The dataset was collected by the National Institute of Diabetes and Digestive and Kidney Diseases. The objective of the dataset is to diagnostically predict whether or not a patient has diabetes (1-Yes/0-No) based on certain diagnostic measurements included in the dataset.
+
+Your task is to examine and predict those individuals that have diabetes or the risk factors that could lead to diabetes in this sample using SVM classification techniques. The data can be divided into training (70%) and testing dataset (30%). Develop a model using a different “kernel” algorithm, and interpret the best model.
+
+The dataset was collected by the National Institute of Diabetes and Digestive and Kidney Diseases: pima2.csv. The objective of the dataset is to diagnostically predict whether a patient has diabetes (1-Yes/0-No) based on certain diagnostic measurements included in the dataset. Your task is to examine and predict those individuals that have diabetes or the risk factors that could lead to diabetes in this sample using SVM classification techniques. The data can be divided into training (70%) and testing (30%) datasets. Develop a model using a different “kernel” algorithm and interpret the best model.
+
+## Data Prep
+
+Begin by reading in the data and examining it. We immediately notice that type2 is likely a factor that needs to be converted. We will test the integer values for normalization to see if it's necessary.
+
+```{r}
+pima <- read.csv("pima2.csv")
+str(pima)
+#summary(pima$npreg)
+```
+
+### Factor Conversion
+
+```{r}
+pima$type2 <- as.factor(pima$type2)
+str(pima)
+```
+
+### Test Distributions
+
+To test multiple values at once, we create a dataframe without our target variable and leave just the numeric data. Then we apply the Shapiro-Wilks Normality Test to the remaining columns. 
+
+The output is hidden due to length, but normality is rejected for the following columns:
+
+- npreg
+- glu
+- skin
+- ped
+- age
+
+Based on this, we will go ahead and apply normalization to the entire data set.
+
+```{r include=FALSE}
+#library(stats)
+dropY.pima <- pima[-8]
+str(dropY.pima)
+apply(dropY.pima, 2, shapiro.test)
+```
+
+### Normalization 
+
+Now we scale our data by creating a scaling function and applying it to the numeric variables in our data set. For consistency, I decided to scale all variables even if they were alreaduy normally distributed.
+
+```{r}
+# Normaliztion Function
+
+scale.variable <- function(df, variables){
+  for (i in variables){
+    df[[i]] <- scale(df[[i]], center = T, scale = T)
+  }
+  return(df)
+}
+
+to.normalize <- c("npreg",
+                  "glu",
+                  "bp",
+                  "skin",
+                  "bmi",
+                  "ped",
+                  "age")
+
+n.pima <- scale.variable(pima, to.normalize)
+
+summary(n.pima)
+```
+
+### Partition Data
+
+Using the `caret` package we partition our data, using 70% for training.
+
+```{r message=FALSE, warning=FALSE}
+library(caret)
+partition <- createDataPartition(y = n.pima$type2, p = 0.7, list = FALSE)
+train <- n.pima[partition,]
+test <- n.pima[-partition,]                        
+
+str(train)
+```
+
+
+## A. Report SVM with kernel radial classification
+(Training error, misclassification, accuracy, 95% confidence interval) (10 pts)
+
+First build the radial SVM model which is the default. We notice it generates 88 support vectors, this can be evaluated below.
+
+```{r}
+library(e1071)
+
+rbfSVM <- svm(formula = type2~., data = train)
+
+summary(rbfSVM)
+```
+
+### SVM Model Evaluation
+
+The radial SVM model has a success rate of 71.1%. an error rate of 28.8%, and misclassified 17 predictions.
+
+```{r}
+pred <- predict (rbfSVM, test)
+table(pred, test$type2)
+
+agreement <- pred == test$type2
+table(agreement)
+prop.table(table(agreement))
+```
+
+
+## B. Report ksvm with kernel vanilladot classification
+(Training error, misclassification, accuracy, 95% confidence interval) (10 pts)
+
+Next build the linear SVM model with `kernel = "vanilladot"`. This generates 70 support vectors and has a training error of 0.21. 
+
+```{r}
+library(kernlab)
+library(caret)
+
+vSVM <- ksvm(type2~., data = train,
+             kernel = "vanilladot")
+
+# Print output
+vSVM
+```
+
+### Linear SVM Evaluation
+
+The linear SVM model has a success rate of 74.6%, an error rate of 25.4%, and misclassified 15 predictions. This performed slightly better than the default radial kernel.
+
+```{r}
+pred.v <- predict (vSVM, test)
+table(pred.v, test$type2)
+
+agreement.v <- pred.v == test$type2
+table(agreement.v)
+prop.table(table(agreement.v))
+```
+
+## C. Report ksvm with `rbfdot` Classification
+(Training error, misclassification, accuracy, 95% confidence interval) (10 pts)
+
+Next build the RBFdot SVM model with `kernel = "rbfdot"`. This generates 92 support vectors with a training error of 0.15. 
+
+```{r}
+library(kernlab)
+library(caret)
+
+rbfSVM <- ksvm(type2~., data = train,
+             kernel = "rbf")
+
+# Print output
+rbfSVM
+```
+
+### RBFdot SVM Evaluation
+
+The RBFdot SVM model has a success rate of 69.5%, an error rate of 30.5%, and misclassified 18 predictions. This performed worse than both the default radial and linear kernels.
+
+```{r}
+pred.rbf <- predict(rbfSVM, test)
+table(pred.rbf, test$type2)
+
+agreement.rbf <- pred.rbf == test$type2
+table(agreement.rbf)
+prop.table(table(agreement.rbf))
+```
+
+## D. Which kernel is preferred? 
+
+Based on the evaluations above, the linear SVM (`vanilladot`) kernel evaluated as the most accurate when compared with the test data.
+
+# Question 3
+
+## Prompt
+
+>The BC3 text file includes news related to Blockchain technologies, and the DS text file contains news regarding Ebola issues. The preprocessing for text files are critical. Notably, in this assignment, you are requested to conduct not only mining text files but also text classification. Therefore, the preprocessing becomes much more critical to complete the below two tasks. Please carefully read the directions and answer the questions.
+
+>This test requires to conduct text classification using CART classification. Please conduct data pre-processing. It is recommended that you use what you did in the Module 7.
+
+## Data Pre-Processing
+
+Load the required data-cleaning packages:
+
+```{r message=FALSE, warning=FALSE}
+library(tm)
+library(stringr)
+library(Matrix)
+library(tidytext)
+library(topicmodels)
+```
+
+### Create Initial Corpora
+
+Create two corpora from the sample texts:
+
+```{r}
+textDS = file("DS.txt", open = "r")
+textDS.decomposition = readLines(textDS, encoding="UTF-8")
+corpusDS <- Corpus(VectorSource(textDS.decomposition))
+#orpusDS
+
+textBC = file("BC3.txt", open = "r")
+textBC.decomposition = readLines(textBC, encoding="UTF-8")
+corpusBC3 <- Corpus(VectorSource(textBC.decomposition))
+```
+
+### Data Cleaning
+
+Perform the standard cleaning steps on both corpus objects. I have selected stop words for each corpus for words that are not useful to our analysis.
+
+```{r}
+# Basic cleaning
+corpusDS <- tm_map(corpusDS, tolower)
+corpusDS <- tm_map(corpusDS, removeNumbers)
+corpusDS <- tm_map(corpusDS, removePunctuation)
+
+# Stopwords
+
+selfstopwordsDS <- c("Ebola", "UN", "WHO", "Virus")
+
+corpusDS<- tm_map(corpusDS, removeWords, c(stopwords("en"), selfstopwordsDS))
+
+# Strip Whitespace
+corpusDS <- tm_map(corpusDS, stripWhitespace)
+
+# Stemming
+corpusDS <- tm_map(corpusDS, stemDocument)
+```
+
+```{r}
+# Basic cleaning
+corpusBC3 <- tm_map(corpusBC3, tolower)
+corpusBC3 <- tm_map(corpusBC3, removeNumbers)
+corpusBC3 <- tm_map(corpusBC3, removePunctuation)
+
+# Stopwords
+
+selfstopwordsBC3 <- c("crypto", "cryptocurrency", "blockchain", "technology")
+
+# Strip Whitespace
+corpusBC3 <- tm_map(corpusBC3, stripWhitespace)
+
+# Stemming
+corpusBC3 <- tm_map(corpusBC3, stemDocument)
+```
+
+### Create Document-Term Matrices
+
+Now create a document-term matrix for each corpus and combine it into one master DTM with both corpora.
+
+```{r}
+# Create DS DTM
+
+corpusDS.dtm <- DocumentTermMatrix(corpusDS)
+
+# Create BC DTM
+
+corpusBC.dtm <- DocumentTermMatrix(corpusBC3)
+
+# Combine matrices
+
+corpus.dtm <- c(corpusDS.dtm, corpusBC.dtm)
+corpus.dtm
+```
+
+
+## A. Convert the document-term matrix to create a data frame for decision tree analysis
+
+After a lot of overthinking this issue, the DTM above was successfully converted to a data frame.
+
+```{r}
+df.dtm <- as.data.frame(as.matrix(corpus.dtm))
+```
+
+## B. Text Classification
+
+>In the document-term data frame, the first 33 documents are related to “Blockchain” technologies, and the next 33 documents (34th – 66th) are related to “Ebola” disease. For classification analysis, add the “news” to the data frame. For example, if your data frame is named, “dfnew,” your r code may appear as follows:
+
+### Data Frame Conversion
+
+To perform our text classification, the news column was added to our document-term data frame. The printout below shows that the values have been assigned as expected. In this case, the first half of the dataframe documents are the Ebola text. 
+
+```{r}
+newsDF.dtm <- df.dtm
+newsDF.dtm[,"news"] <- "Ebola"
+newsDF.dtm$news[34:66] <- "Blockchain"
+
+newsDF.dtm$news <- as.factor(newsDF.dtm$news)
+#head(newsDF.dtm)
+```
+
+>Your data frame contains so many terms from Q1. Please consider 5 to 10 of the most frequent terms for the decision tree analysis. One of the possible functions to retrieve frequent terms is findFreqTerms (for example, findFreqTerms(“your document term matrix”, # of terms).  You can also manually figure out the appropriate frequent terms using Excel. 
+
+### Selecting Terms
+
+To focus our decision tree on a few terms, we'll use `findFreqTerms()` with a minimum boundary of 10 appearances. Based on the output below (and noticing some terms should have been stop words), I have selected the following:
+
+- Health
+- Record
+- Trust
+- Media
+- Public
+- Document
+
+```{r}
+findFreqTerms(corpus.dtm, lowfreq = 5)
+```
+
+
+>Conduct the tree-based classification to determine which terms contribute to classifying the news into either “BlockChain” or “Ebola.” Please carefully interpret the outputs with the rules and visualization technique, and verify your classification. (25 pts)
+
+
+### Partition Data
+
+```{r}
+set.seed(123)
+partition2 <- createDataPartition(y = newsDF.dtm$news, p = 0.7, list = FALSE)
+
+train3<- newsDF.dtm[partition2,]
+test3 <- newsDF.dtm[-partition2,]
+#str(train$news)
+```
+
+### Create the Tree
+
+The data partitioning creates an interesting issue where it is difficult to pick terms that are guaranteed to be in one of the partitions. I was hoping to develop a more interesting tree, but unfortunately including less common words caused the model to fail. 
+
+In the tree created below, we can see that the root node it split on record, then by health on the left branch.
+
+```{r}
+library(tree)
+
+treeterms <- tree(news ~ health + record + trust + media + public + document, data = train3)
+
+plot(treeterms)
+text(treeterms)
+```
+### Evaluate Model
+
+This model did not perform well, specifically it only predicted a single Blockchain row and missed the other 8. This could be due to the low sample that could be pulled from the data, or the choice of terms in the first place. The accuracy is only 55% with an extremely high p-value. 
+
+```{r}
+library(e1071)
+treepred <- predict(treeterms, test3, type = "class")
+confusionMatrix(treepred, test3$news)
+```
+
