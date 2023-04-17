@@ -1,0 +1,342 @@
+---
+title: "Bootstrap Resampling"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+
+Bootstrapping is a statistical method for estimating the sampling distribution of an estimator by sampling with replacement from the original sample, most often with the purpose of deriving robust estimates of standard errors and confidence intervals of a population parameter like a mean, median, proportion, odds ratio, correlation coefficient or regression coefficient.
+
+A great advantage of bootstrap is its simplicity. It is a straightforward way to derive estimates of standard errors and confidence intervals for complex estimators of complex parameters of the distribution, such as percentile points, proportions, odds ratio, and correlation coefficients. Bootstrap is also an appropriate way to control and check the stability of the results. Although for most problems it is impossible to know the true confidence interval, bootstrap is asymptotically more accurate than the standard intervals obtained using sample variance and assumptions of normality.
+
+
+**Why the bootstrap works?**
+
+The underlying sample that you have collected is the best information you can have about what the population actually looks like. And you surely agree with me that most samples will, if randomly chosen, look quite like the population they came from. Consequently, it is likely that your sample does too. Let us sample a large number of data sets from our underlying sample and compute the statistic of interest on each of these datasets. Thus we receive a distribution of our statistic. This distribution expresses the variability of our estimate. Just let the computer do the work for us.
+
+
+**Example** Find a 95% confidence interval by bootstrapping for the mean of "income" variable in "Prestige" dataset. Compare your answer with the theoritical confidence interval using central limit theorem.
+
+
+```{r}
+library("car")
+data("Prestige")
+income <- Prestige$income
+mean(income)
+
+
+boot_mean <- function(x){
+  mean(sample(x, replace = TRUE))
+}
+
+num_sim = 1000
+
+boot_income_rep <- replicate(num_sim, boot_mean(income))
+
+hist(boot_income_rep, xlab = "Xbar")
+
+# bootstrapping answer
+quantile(boot_income_rep, c(0.025, 0.975))
+
+# hist(boot_income_rep)
+```
+
+```{r}
+# CLT answer
+xbar = mean(income)
+
+#Xbar (+-) 1.96 * sigma/sqrt(n)
+
+se <- qnorm(0.975)*sd(income)/sqrt(length(income))
+
+# low bound
+xbar - se
+# upper bound
+xbar + se
+```
+
+
+**Example** Find a 95% confidence interval by bootstrapping for the standard-deviation of "income" variable in "Prestige" dataset. 
+
+```{r}
+income <- Prestige$income
+sd(income)
+
+boot_sd <- function(x){
+  sd(sample(x, replace = TRUE)) 
+}
+
+num_sim = 1000
+
+boot_income_rep <- replicate(num_sim, boot_sd(income))
+
+hist(boot_income_rep, xlab = "sd")
+abline(v = quantile(boot_income_rep, c(0.025, 0.975)))
+# bootstrapping answer
+quantile(boot_income_rep, c(0.025, 0.975))
+```
+
+
+**Practice:** Find a 95% confidence interval by bootstrapping for the skewness of "income" variable in "Prestige" dataset.
+
+
+```{r}
+data("Prestige")
+income <- Prestige$income
+library(e1071)
+
+boot_skewness <- function(x){
+  skewness(sample(x, replace = TRUE))
+}
+set.seed(123)
+num_sim = 1000
+
+boot_income_rep <- replicate(num_sim, boot_skewness(income))
+
+hist(boot_income_rep, xlab = "skewness")
+
+# bootstrapping answer
+quantile(boot_income_rep, c(0.025, 0.975))
+
+# hist(boot_income_rep)
+```
+
+
+**Example** Find a 95% confidence interval by bootstrapping for the correlation between "income" and "education" variables in "Prestige" dataset. 
+
+
+```{r}
+income <- Prestige$income
+edu <- Prestige$education
+
+data <- cbind(income, edu)
+
+cor(data)
+cor(data)[1,2]
+
+
+
+boot_cor <- function(x){
+  rowIndex = sample(1:nrow(x), replace = TRUE)
+  cor(x[rowIndex,])[1,2] 
+}
+
+num_sim = 1000
+
+boot_income_rep <- replicate(num_sim, boot_cor(data))
+
+# bootstrapping answer
+quantile(boot_income_rep, c(0.025, 0.975))
+```
+
+**Example**
+
+The New York Times had on January 27, 1987 on its front page an article entitled Heart Attack Risk Found to be Cut by Taking Aspirin. This double-blind trial ultimately led to the following table; see also Efron and Tibshirani (1993):
+
+|         | Heart Attacks | #Persons |
+|---------|---------------|----------|
+| Aspirin | 104           | 11037    |
+| Placebo | 189           | 11034    |
+
+
+The odds ratio of the two components is the following:
+(104/11,037)/(189/11,034) = 0.55
+
+
+A header in the newspaper could possibly be: Those who take aspirin regularly have only 55% as many heart attacks as people who take no aspirin.
+
+As statisticians, we want to estimate the real population parameter $\theta$. Of course we are not really interested in only, since is still only a point estimate of $\hat{\theta}$. If we conducted the study again and collected new data, we would get another result (different from 0.55).
+
+We are interested in the accuracy/variability/uncertainty of = 0.55 (statistical inference).
+
+But how do we calculate the confidence interval (CI) for $\hat{\theta}$?
+
+|         | Heart Attacks | #Persons |
+|---------|---------------|----------|
+| Aspirin | a             | c        |
+| Placebo | b             | d        |
+
+$log(\hat\theta) \pm 1.96*\sqrt{1/a + 1/b + 1/c + 1/d}$
+
+
+```{r}
+dat <- matrix(c(104,11037,189,11034),2,2, byrow=TRUE)
+dat
+
+library(vcd)
+
+confint(oddsratio(dat, log=FALSE))
+```
+
+The following questions remain unanswered:
+
++ Are there better analytical estimates of the confidence interval available?
+
++ Do we have simpler methods for the determination of the confidence interval?
+
+
+```{r}
+# bootstrapping
+
+## original surveyed data
+s1 <- rep(c(TRUE, FALSE), times = c(104, 11037-104))
+s2 <- rep(c(TRUE, FALSE), times = c(189, 11034-189))
+
+## function for drawing a bootstrap sample
+## and estimating the boostrap replicate
+
+boot_oddRatio <- function(s1, s2){
+## odds ratio
+# Sampling with replacement
+ac <- sum(sample(s1, replace = TRUE))/length(s1)
+bd <- sum(sample(s2, replace = TRUE))/length(s2)
+oddsRatio <- ac/bd
+return(oddsRatio)
+}
+
+num_sim = 1000
+
+boot_repl <- replicate(num_sim, boot_oddRatio(s1, s2))
+
+## confidence interval
+quantile(boot_repl, c(0.025, 0.975))
+
+# Let's look at the distribution of odds ratio. 
+hist(boot_repl)
+```
+
+For this example, the confidence intervals by bootstrap are very close to the one estimated previously from the analytical method. The estimation of confidence intervals using bootstrap was data-based, without preconditions (except the assumption that a good random number is chosen) and assumptions, and done in a (almost) very intuitive manner without mathematics.
+
+
+**The Application of Bootstrapping in Hypothesis Testing**
+
+Assessing whether the difference between average food expense in Spring 2014 and Fall 2014 is explainable by a null model where all data are produced as iid by the same distribution.
+
+In other words we want to test:
+
+H0: Mu1 - Mu2 = 0
+
+```{r}
+food.s14 = read.csv("http://tiny.cc/food-sp-14")
+food.f14 = read.csv("http://tiny.cc/food-sp-15")
+
+fs = food.s14$Food
+ff = food.f14$Food
+fs 
+ff
+```
+
+```{r}
+# xBar1 - Xbar2
+diff = mean(fs) - mean(ff)
+diff
+```
+
+
+```{r}
+## Under the iid model, all data are from the same process. So pool the data to estimate the process distribution via the bootstrap distribution.
+
+alldata = c(fs,ff)
+# hist(alldata)
+# qq.obj = qqnorm(alldata)
+# agreement = cor(qq.obj$x, qq.obj$y)
+# agreement
+n1 = length(fs)
+n2 = length(ff)
+n1
+n2
+## You can approximate the null distribution of the difference by simulating all data from the same distribution.
+# Null Hypothesis: Mu1 = Mu2 (H0: two sample has the same mean and came from the same distribution)
+## A good distribution to use is the bootstrap distribution of the combined data.
+
+boot_mean <- function(x, sampleSize){
+  mean(sample(x, sampleSize, replace = TRUE))
+}
+
+Nsim = 100000
+
+xbar1.sim = replicate(Nsim, boot_mean(alldata, n1))
+
+xbar2.sim = replicate(Nsim, boot_mean(alldata, n2))
+
+head(cbind(xbar1.sim, xbar2.sim, xbar1.sim - xbar2.sim))
+
+## Now, the null distribution of the difference between averages is estimated using these Nsim differences:
+
+null.diff = xbar1.sim - xbar2.sim
+hist(null.diff, main="Bootstrap Null Distribution of Differences", freq=F, xlab = "Difference between averages", ylab = "estimated null density")
+
+## The observed difference and its negative are indicated by dashed vertical lines
+abline(v = c(diff,-diff), lty=2, col = 'blue')
+```
+
+```{r}
+## The two-sided p-value calculation by Monte-Carlo Simulation:
+
+head(cbind(xbar1.sim, xbar2.sim, null.diff, null.diff >= abs(diff), null.diff <= -abs(diff)))
+
+pval2 = mean(null.diff >= abs(diff)) + mean(null.diff<= -abs(diff))
+pval2
+```
+
+```{r}
+# Compare it with t-test:
+
+t.test(fs, ff)
+```
+
+**Practice** Assess whether the variance of food expense in Spring 2014 and Fall 2014 is explainable by a null model where all data are produced as iid by the same distribution.
+
+In other words we want to test:
+
+H0: Var1/Var2 = 1
+
+
+```{r}
+# Actual data variance ratio
+varRatio = var(fs)/var(ff)
+varRatio
+```
+
+
+```{r}
+
+alldata = c(fs,ff)
+
+n1 = length(fs)
+n2 = length(ff)
+n1
+n2
+
+
+boot_var <- function(x, sampleSize){
+  var(sample(x, sampleSize, replace = TRUE))
+}
+
+Nsim = 100000
+
+var1.sim = replicate(Nsim, boot_var(alldata, n1))
+
+var2.sim = replicate(Nsim, boot_var(alldata, n2))
+
+head(cbind(var1.sim, var2.sim, var1.sim/var2.sim))
+
+null.ratio = var1.sim/var2.sim
+hist(null.ratio, main="Bootstrap Null Distribution of variance ratio", freq=F, xlab = "var1/var2", ylab = "estimated null density")
+abline(v = c(1/varRatio, varRatio), lty=2, col = 'blue')
+```
+
+```{r}
+## The two-sided p-value calculation by Monte-Carlo Simulation:
+
+pval2 = mean(null.ratio >= varRatio) + mean(null.ratio <= 1/varRatio) 
+pval2
+```
+
+```{r}
+# Compare it with t-test:
+
+var.test(fs, ff)
+```
