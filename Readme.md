@@ -40,8 +40,6 @@ Extra content provided by the professor or dug up by me while doing background r
 ## Formats
 Most of descriptive content is in markdown or Jupyter Notebooks (Python and R). There's a possibility I'll migrate the R content to RMD or R-Notebooks, but that's an internet debate I'm not ready to wade into. 
 
-Normal markdown files were lovingly typed by hand into [iA Writer](https://ia.net/writer), my favorite Markdown editor.
-
 ## Cheatsheets
 These are my references that I update with useful snippets I've learned that assist my workflow, they aren't necessarily taught in class.
 TeX, for example, is not a part of the curriculum but I've found it extremely useful for capturing formulas so I can stay in markdown/notebooks.  
